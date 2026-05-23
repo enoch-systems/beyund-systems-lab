@@ -7,7 +7,6 @@ const navItems = [
   { href: "#", label: "Home" },
   { href: "#about", label: "About" },
   { href: "#skills", label: "Skills" },
-  { href: "#projects", label: "Portfolio" },
   { href: "#case-studies", label: "Case Studies" },
   { href: "#testimonials", label: "Testimonials" },
   { href: "#contact", label: "Contact" },
@@ -23,7 +22,7 @@ export default function MobileMenu() {
     <>
       <button
         onClick={toggleMenu}
-        className="md:hidden relative inline-flex items-center justify-center p-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200"
+        className="md:hidden relative inline-flex items-center justify-center p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200"
         aria-label="Toggle menu"
         aria-expanded={isOpen}
       >

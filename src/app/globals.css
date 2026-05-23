@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --animate-slide-in-left: slide-in-left 0.9s ease-out;
+  --animate-slide-in-right: slide-in-right 0.9s ease-out;
+  --animate-fade-in-center: fade-in-center 0.9s ease-out;
+}
+
 :root {
   color-scheme: light;
 }
@@ -42,6 +48,39 @@ svg {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100vw);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-center {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
