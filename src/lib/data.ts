@@ -47,9 +47,18 @@ export const skills = {
   ],
 };
 
+export interface CaseStudy {
+  id: number;
+  title: string;
+  problem: string;
+  solution: string;
+  technologies: string[];
+  results: string[];
+}
+
 export const projects: any[] = [];
 
-export const caseStudies: any[] = [];
+export const caseStudies: CaseStudy[] = [];
 
 export const testimonials = [
   {
