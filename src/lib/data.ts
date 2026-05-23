@@ -47,9 +47,9 @@ export const skills = {
   ],
 };
 
-export const projects: never[] = [];
+export const projects: any[] = [];
 
-export const caseStudies: never[] = [];
+export const caseStudies: any[] = [];
 
 export const testimonials = [
   {
