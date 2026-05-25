@@ -3,11 +3,6 @@ import Image from "next/image";
 export default function Hero({ children }: { children: React.ReactNode }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background image */}
-      <div className="absolute inset-0 bg-black/80" />
-      <div className="absolute inset-0" style={{ backgroundImage: "url('https://res.cloudinary.com/djdbcoyot/image/upload/v1779492891/tvchvy2zbigbduggdlmi.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", filter: "blur(4px)", opacity: 0.6, transform: "scale(1.05)" }} />
-      <div className="absolute inset-0 bg-black/50" />
-
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 lg:px-8">
         <div className="relative flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center">
           <div className="relative z-20 flex flex-col items-center justify-center gap-8">
