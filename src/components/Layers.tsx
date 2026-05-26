@@ -95,41 +95,71 @@ export default function Layers() {
   };
 
   return (
-    <section id="layers" className="relative flex items-center justify-center overflow-hidden">
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-12 md:py-16 lg:px-8">
-        <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-wider text-white sm:text-5xl uppercase">
-            LAYERS I WORK ON
-          </h2>
+    <section id="layers" className="relative overflow-hidden">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-16 md:py-20 lg:px-8">
+        {/* --- TASK 1: EDITORIAL STAGGERED TITLE --- */}
+        <div className="flex items-start gap-4 md:gap-6 mb-10 md:mb-14 max-w-2xl mx-auto">
+          {/* Accent vertical rule */}
+          <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
+          <div>
+            <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
+              [09]&nbsp;&nbsp;the stack
+            </p>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
+              LAYERS
+            </h2>
+            <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
+              I work on
+            </p>
+          </div>
         </div>
 
-        {/* Tree - left-aligned vertical line */}
+        {/* --- TASKS 2 & 3: TIMELINE WITH ACCORDION --- */}
         <div className="relative max-w-2xl mx-auto">
-          {/* Vertical trunk line */}
-          <div className="absolute left-[18px] top-0 bottom-0 w-px bg-white/20" />
+          {/* Vertical trunk line — more visible with gradient */}
+          <div className="absolute left-[18px] top-0 bottom-0 w-px bg-gradient-to-b from-white/30 via-white/10 to-white/5" />
 
           {layersData.map((layer, i) => {
             const isOpen = openIndex === i;
             return (
-              <div key={layer.name} className="relative mb-2 last:mb-0">
-                {/* Branch wire */}
-                <div className="absolute left-[18px] top-[20px] w-[18px] h-px bg-white/20" />
-                {/* Dot */}
-                <div className="relative z-10 shrink-0 w-6 flex justify-center" style={{ paddingTop: "10px" }}>
-                  <div className={`w-2.5 h-2.5 rounded-full ring-[3px] ${layer.dotColor}`} />
+              <div key={layer.name} className="relative">
+                {/* Subtle divider between collapsed rows */}
+                {i > 0 && (
+                  <div className="ml-12 h-px bg-white/5 my-1" />
+                )}
+
+                {/* Branch wire from trunk to dot — brighter on hover */}
+                <div className={`absolute left-[18px] top-[22px] w-[18px] h-px transition-colors duration-300 ${isOpen ? "bg-white/40" : "bg-white/20"}`} />
+
+                {/* Dot — larger, with pulse on open */}
+                <div className="relative z-10 shrink-0 w-6 flex justify-center pt-3">
+                  <div className={`w-3 h-3 rounded-full ring-[4px] transition-all duration-300 ${layer.dotColor} ${isOpen ? "scale-110" : ""}`} />
                 </div>
 
-                {/* Clickable header */}
+                {/* Clickable row */}
                 <button
                   onClick={() => toggle(i)}
-                  className="relative z-10 w-full text-left ml-4 -mt-6 pl-0 cursor-pointer group"
+                  className={`relative z-10 w-full text-left ml-4 -mt-[26px] pl-0 cursor-pointer group rounded-lg transition-all duration-200 ${
+                    isOpen
+                      ? "bg-white/5 py-2.5 px-3 -ml-1"
+                      : "py-2.5 px-3 -ml-1 hover:bg-white/[0.03]"
+                  }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs md:text-sm font-thin tracking-[0.25em] md:tracking-[0.3em] text-white/80 uppercase group-hover:text-white transition-colors duration-200">
+                    <span
+                      className={`text-xs md:text-sm font-medium tracking-[0.25em] md:tracking-[0.3em] uppercase transition-colors duration-200 ${
+                        isOpen ? "text-white" : "text-white/70 group-hover:text-white"
+                      }`}
+                    >
                       {layer.name}
                     </span>
+                    {/* Chevron — more visible, consistently right-aligned */}
                     <svg
-                      className={`w-3.5 h-3.5 text-white/40 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                      className={`w-4 h-4 transition-all duration-300 ${
+                        isOpen
+                          ? "rotate-180 text-white/60"
+                          : "text-white/30 group-hover:text-white/60"
+                      }`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -143,13 +173,13 @@ export default function Layers() {
                 {/* Expandable content */}
                 <div
                   className={`overflow-hidden transition-all duration-400 ease-in-out ml-3 ${
-                    isOpen ? "max-h-[800px] opacity-100 mt-2" : "max-h-0 opacity-0"
+                    isOpen ? "max-h-[800px] opacity-100 mt-1" : "max-h-0 opacity-0"
                   }`}
                 >
-                  <div className="pl-8 border-l border-white/10 pb-3 space-y-3">
+                  <div className="pl-8 border-l border-white/15 pb-4 space-y-3.5">
                     {/* What you build */}
                     <div>
-                      <p className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-white/40 mb-1.5">what you build</p>
+                      <p className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-white/40 mb-1.5 font-mono">what you build</p>
                       <div className="flex flex-wrap gap-1.5">
                         {layer.build.map((item) => (
                           <Pill key={item} label={item} className="bg-white/10 text-white/60 border-white/15" />
@@ -159,7 +189,7 @@ export default function Layers() {
 
                     {/* Tools */}
                     <div>
-                      <p className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-white/40 mb-1.5">tools</p>
+                      <p className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-white/40 mb-1.5 font-mono">tools</p>
                       <div className="flex flex-wrap gap-1.5">
                         {layer.tools.map((tool) => (
                           <Pill key={tool} label={tool} className={layer.toolColor} />
@@ -169,7 +199,7 @@ export default function Layers() {
 
                     {/* Concepts */}
                     <div>
-                      <p className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-white/40 mb-1.5">concepts</p>
+                      <p className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-white/40 mb-1.5 font-mono">concepts</p>
                       <div className="flex flex-wrap gap-1.5">
                         {layer.concepts.map((concept) => (
                           <Pill key={concept} label={concept} className="bg-white/10 text-white/60 border-white/15" />
@@ -183,8 +213,8 @@ export default function Layers() {
           })}
 
           {/* Root node */}
-          <div className="flex justify-start ml-[14px] mt-3">
-            <div className="w-4 h-4 rounded-full bg-indigo-300 ring-[5px] ring-indigo-300/30 shadow-sm" />
+          <div className="flex justify-start ml-[14px] mt-4">
+            <div className="w-4 h-4 rounded-full bg-indigo-300/60 ring-[5px] ring-indigo-300/20 shadow-sm" />
           </div>
         </div>
       </div>
