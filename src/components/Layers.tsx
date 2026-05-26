@@ -13,10 +13,10 @@ export default function Layers() {
 
   return (
     <section id="layers" className="relative flex items-center justify-center overflow-hidden">
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-3 md:py-16 lg:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-12 md:py-16 lg:px-8">
         <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
-            Layers I Work On
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-wider text-white sm:text-5xl uppercase">
+            LAYERS I WORK ON
           </h2>
         </div>
 
