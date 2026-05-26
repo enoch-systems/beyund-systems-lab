@@ -85,7 +85,7 @@ export default function Hero({ children }: { children: React.ReactNode }) {
               <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
                 Turning operational complexity into scalable, reliable backend infrastructure and workflow systems.
               </p>
-              <div className="mt-8 mb-15 flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="mt-8 mb-15 flex flex-row gap-4 justify-center">
                 <a
                   href="#contact"
                   className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-black/20 transition hover:bg-white/90"
