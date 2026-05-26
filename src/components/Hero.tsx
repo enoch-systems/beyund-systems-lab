@@ -82,33 +82,21 @@ export default function Hero({ children }: { children: React.ReactNode }) {
               <p className="mt-4 text-sm uppercase tracking-[0.35em] text-white/70 animate-slide-in-right" style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}>
                 Systems-Focused Backend Engineer
               </p>
-              <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto md:mx-0 animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
+              <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
                 Turning operational complexity into scalable, reliable backend infrastructure and workflow systems.
               </p>
-              <div className="mt-8 mb-15 flex flex-wrap gap-x-8 gap-y-3 justify-center md:flex-nowrap md:justify-between md:max-w-xl">
-                <a
-                  href="#about"
-                  className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 hover:text-white"
-                >
-                  About
-                </a>
-                <a
-                  href="#skills"
-                  className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 hover:text-white"
-                >
-                  Skills
-                </a>
+              <div className="mt-8 mb-15 flex flex-row gap-4 justify-center">
                 <a
                   href="#contact"
-                  className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80 transition-colors duration-300 hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-black/20 transition hover:bg-white/90"
                 >
                   Contact Me
                 </a>
                 <a
-                  href="#"
-                  className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 hover:text-white"
+                  href="#projects"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/20"
                 >
-                  Download CV
+                  View Work
                 </a>
               </div>
             </div>
