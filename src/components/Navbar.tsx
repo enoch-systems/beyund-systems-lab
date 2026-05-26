@@ -51,10 +51,10 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Download CV button — desktop */}
+          {/* Download CV button — desktop only */}
           <a
             href="#"
-            className="hidden md:group inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-medium tracking-[0.08em] text-white backdrop-blur-sm transition-all duration-200 hover:bg-white hover:text-black hover:border-white hover:shadow-xl hover:shadow-white/20"
+            className="hidden md:inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-medium tracking-[0.08em] text-white backdrop-blur-sm transition-all duration-200 hover:bg-white hover:text-black hover:border-white hover:shadow-xl hover:shadow-white/20"
           >
             <svg
               viewBox="0 0 24 24"
