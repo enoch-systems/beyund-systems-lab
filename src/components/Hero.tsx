@@ -75,7 +75,7 @@ export default function Hero({ children }: { children: React.ReactNode }) {
               </div>
             </div>
 
-            <div className="text-center mb-10">
+            <div className="text-center mb-4">
               <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl animate-slide-in-left">
                 Enoch Chukwudi
               </h1>
