@@ -1,96 +1,138 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const navItems = [
-  { href: "#", label: "Home" },
   { href: "#about", label: "About" },
   { href: "#skills", label: "Skills" },
-  { href: "#case-studies", label: "Case Studies" },
-  { href: "#testimonials", label: "Testimonials" },
-  { href: "#contact", label: "Contact" },
+  { href: "#contact", label: "Contact Me" },
 ];
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   return (
     <>
+      {/* Hamburger button */}
       <button
         onClick={toggleMenu}
-        className="md:hidden relative inline-flex items-center justify-center p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200"
+        className="md:hidden relative inline-flex items-center justify-center w-10 h-10 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200"
         aria-label="Toggle menu"
         aria-expanded={isOpen}
       >
-        {isOpen ? (
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        )}
+        {/* Three-line hamburger */}
+        <span className="sr-only">Menu</span>
+        <span className="absolute flex flex-col gap-[5px] items-center justify-center w-5">
+          <span
+            className={`block h-px w-5 bg-current transition-all duration-300 origin-center ${
+              isOpen ? "rotate-45 translate-y-[3px]" : ""
+            }`}
+          />
+          <span
+            className={`block h-px w-5 bg-current transition-all duration-300 ${
+              isOpen ? "opacity-0 scale-x-0" : ""
+            }`}
+          />
+          <span
+            className={`block h-px w-5 bg-current transition-all duration-300 origin-center ${
+              isOpen ? "-rotate-45 -translate-y-[3px]" : ""
+            }`}
+          />
+        </span>
       </button>
 
-      {isOpen && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-md z-40 md:hidden transition-opacity duration-300"
-            onClick={closeMenu}
-            aria-hidden="true"
-          />
-          <div className="fixed inset-y-0 right-0 w-full max-w-md bg-gray-900 shadow-2xl z-50 md:hidden transform transition-all duration-300 ease-out">
-            <div className="flex flex-col h-full min-h-screen">
-              <div className="flex items-center justify-between px-6 py-5 border-b border-gray-800">
-                <h2 className="text-xl font-bold text-white tracking-tight">Navigation</h2>
-                <button
-                  onClick={closeMenu}
-                  className="inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200"
-                  aria-label="Close menu"
-                >
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+      {/* Overlay */}
+      <div
+        className={`fixed inset-0 z-40 md:hidden transition-opacity duration-300 ${
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Background image with overlay — matches hero */}
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: "url('https://res.cloudinary.com/djdbcoyot/image/upload/v1779492891/tvchvy2zbigbduggdlmi.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div className="absolute inset-0 bg-black/85" onClick={closeMenu} />
 
-              <nav className="flex-1 px-6 py-6 bg-gray-900 overflow-y-auto">
-                <ul className="space-y-2">
-                  {navItems.map((item, index) => (
-                    <li key={index}>
-                      <Link
-                        href={item.href}
-                        onClick={closeMenu}
-                        className="block px-4 py-3 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 font-medium text-lg"
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+        {/* Menu panel */}
+        <div className="relative z-10 flex flex-col h-full min-h-screen px-8 py-8">
+          {/* Nav links — centered vertically */}
+          <nav className="flex-1 flex flex-col justify-center">
+            <ul className="space-y-0">
+              {navItems.map((item, index) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={closeMenu}
+                    className="group block py-7 border-b border-white/[0.06]"
+                    style={{
+                      transitionDelay: mounted && isOpen ? `${100 + index * 80}ms` : "0ms",
+                      transitionDuration: "400ms",
+                      transitionTimingFunction: "ease-out",
+                      transitionProperty: "opacity, transform",
+                      opacity: mounted && isOpen ? 1 : 0,
+                      transform: mounted && isOpen ? "translateY(0)" : "translateY(16px)",
+                    }}
+                  >
+                    <span className="block text-[34px] sm:text-[40px] font-semibold tracking-[0.08em] text-white/90 transition-colors duration-200 group-hover:text-white">
+                      {item.label}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
-              <div className="px-6 py-5 border-t border-gray-800 bg-gray-900/50">
-                <a
-                  href="#"
-                  onClick={closeMenu}
-                  className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-lg"
-                >
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Download CV
-                </a>
-              </div>
+            {/* Download CV — natural position below links */}
+            <div
+              style={{
+                opacity: mounted && isOpen ? 1 : 0,
+                transform: mounted && isOpen ? "translateY(0)" : "translateY(16px)",
+                transitionDelay: "400ms",
+                transitionDuration: "400ms",
+                transitionTimingFunction: "ease-out",
+                transitionProperty: "opacity, transform",
+              }}
+            >
+              <a
+                href="#"
+                onClick={closeMenu}
+                className="mt-12 flex items-center justify-center gap-3 w-full rounded-xl border border-white/40 bg-transparent px-6 py-4 text-lg font-medium tracking-[0.06em] text-white transition-all duration-200 hover:bg-white hover:text-black hover:border-white"
+              >
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span>Download CV</span>
+              </a>
             </div>
-          </div>
-        </>
-      )}
+          </nav>
+        </div>
+      </div>
     </>
   );
 }
