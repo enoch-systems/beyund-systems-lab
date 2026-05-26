@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function Hero({ children }: { children: React.ReactNode }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-15 lg:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-2 -mb-10 pt-20 lg:px-8">
         <div className="relative flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center">
           <div className="relative z-20 flex flex-col items-center justify-center gap-8">
             <div className="relative mx-auto">
@@ -75,28 +75,40 @@ export default function Hero({ children }: { children: React.ReactNode }) {
               </div>
             </div>
 
-            <div className="text-center mb-4">
+            <div className="text-center md:text-left mb-4">
               <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl animate-slide-in-left">
                 Enoch Chukwudi
               </h1>
               <p className="mt-4 text-sm uppercase tracking-[0.35em] text-white/70 animate-slide-in-right" style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}>
                 Systems-Focused Backend Engineer
               </p>
-              <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
+              <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto md:mx-0 animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
                 Turning operational complexity into scalable, reliable backend infrastructure and workflow systems.
               </p>
-              <div className="mt-8 mb-15 flex flex-row gap-4 justify-center">
+              <div className="mt-8 mb-15 flex flex-wrap gap-x-8 gap-y-3 justify-center md:justify-start">
+                <a
+                  href="#about"
+                  className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 hover:text-white"
+                >
+                  About
+                </a>
+                <a
+                  href="#skills"
+                  className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 hover:text-white"
+                >
+                  Skills
+                </a>
                 <a
                   href="#contact"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-black/20 transition hover:bg-white/90"
+                  className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80 transition-colors duration-300 hover:text-white"
                 >
                   Contact Me
                 </a>
                 <a
-                  href="#projects"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/20"
+                  href="#"
+                  className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 hover:text-white"
                 >
-                  View Work
+                  Download CV
                 </a>
               </div>
             </div>
