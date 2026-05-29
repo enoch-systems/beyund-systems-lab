@@ -14,42 +14,42 @@ export default function Hero({ children }: { children: React.ReactNode }) {
                     <path id="circlePath" d="M 270, 270 m -250, 0 a 250,250 0 1,1 500,0 a 250,250 0 1,1 -500,0" />
                   </defs>
                   <circle cx="270" cy="270" r="250" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-thin fill-white" fontSize="2.0" fontWeight="100">
+                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
                     <textPath href="#circlePath" startOffset="0%">
                       Interface
                     </textPath>
                   </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-thin fill-white" fontSize="2.0" fontWeight="100">
+                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
                     <textPath href="#circlePath" startOffset="12.5%">
                       APIs
                     </textPath>
                   </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-thin fill-white" fontSize="2.0" fontWeight="100">
+                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
                     <textPath href="#circlePath" startOffset="25%">
                       Logic
                     </textPath>
                   </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-thin fill-white" fontSize="2.0" fontWeight="100">
+                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
                     <textPath href="#circlePath" startOffset="37.5%">
                       Access
                     </textPath>
                   </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-thin fill-white" fontSize="2.0" fontWeight="100">
+                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
                     <textPath href="#circlePath" startOffset="50%">
                       Storage
                     </textPath>
                   </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-thin fill-white" fontSize="2.0" fontWeight="100">
+                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
                     <textPath href="#circlePath" startOffset="62.5%">
                       Workflow
                     </textPath>
                   </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-thin fill-white" fontSize="2.0" fontWeight="100">
+                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
                     <textPath href="#circlePath" startOffset="75%">
                       Integration
                     </textPath>
                   </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-thin fill-white" fontSize="2.0" fontWeight="100">
+                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
                     <textPath href="#circlePath" startOffset="87.5%">
                       Intelligence
                     </textPath>
@@ -79,11 +79,12 @@ export default function Hero({ children }: { children: React.ReactNode }) {
               <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl animate-slide-in-left">
                 Enoch Chukwudi
               </h1>
-              <p className="mt-4 text-sm uppercase tracking-[0.35em] text-white/70 animate-slide-in-right" style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}>
-                Systems-Focused Backend Engineer
+              <p className="mt-4 text-xl sm:text-2xl md:text-3xl tracking-wide text-white/80 animate-slide-in-right" style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}>
+                <span className="font-light">Fullstack Engineer</span>
+                <span className="block sm:inline text-sm sm:text-base md:text-lg text-white/50 font-thin"> (Backend-Focused)</span>
               </p>
               <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
-                Turning operational complexity into scalable, reliable backend infrastructure and workflow systems.
+                Building real-world operational systems, web apps, mobile apps, dashboards, and desktop software using modern web technologies.
               </p>
               <div className="mt-8 mb-15 flex flex-row gap-4 justify-center">
                 <a

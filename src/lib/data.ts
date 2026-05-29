@@ -1,49 +1,41 @@
 export const personalData = {
   name: "Enoch Chukwudi",
-  tagline: "BACKEND SYSTEMS ENGINEER // OPERATIONAL INFRASTRUCTURE",
+  tagline: "BACKEND FULLSTACK DEVELOPER // OPERATIONAL SYSTEMS",
   introduction:
-    "Designing scalable backend systems, workflows, and operational platforms built for reliability, visibility, and coordination.",
+    "I'm a backend-leaning fullstack developer focused on building real-world operational systems using modern web technologies.",
   location: "Owerri, Nigeria",
   timezone: "WAT (UTC+1)",
-  email: "enoch@example.com",
-  linkedin: "https://linkedin.com/in/enochchukwudi",
-  github: "https://github.com/enochchukwudi",
-  twitter: "https://twitter.com/enochchukwudi",
-  bio: "Systems-focused backend engineer building workflow-heavy platforms, APIs, and operational infrastructure around real-time visibility, integrations, business logic, and scalable architecture.",
+  email: "enochchukwudi@gmail.com",
+  linkedin: "https://linkedin.com/in/enoch-chukwudi",
+  github: "https://github.com/enoch-systems",
+  twitter: "https://x.com/enoch_systems",
+  bio: "I enjoy designing APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences. My current focus includes fintech-style systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture.",
 };
 
 export const skills = {
-  frontend: [
-    { name: "React", level: 95 },
-    { name: "Next.js", level: 90 },
-    { name: "TypeScript", level: 88 },
-    { name: "Tailwind CSS", level: 92 },
-    { name: "Vue.js", level: 80 },
-  ],
   backend: [
-    { name: "Node.js", level: 85 },
-    { name: "Python", level: 82 },
-    { name: "Go", level: 75 },
-    { name: "GraphQL", level: 80 },
+    { name: "Node.js", level: 92 },
+    { name: "Express", level: 90 },
+    { name: "TypeScript", level: 90 },
+    { name: "PostgreSQL", level: 88 },
   ],
-  database: [
-    { name: "PostgreSQL", level: 85 },
-    { name: "MongoDB", level: 82 },
-    { name: "Redis", level: 78 },
-    { name: "Prisma", level: 85 },
+  framework: [
+    { name: "Next.js", level: 90 },
+    { name: "Prisma", level: 88 },
+    { name: "REST APIs", level: 92 },
+    { name: "Authentication", level: 85 },
+  ],
+  systems: [
+    { name: "Workflow Design", level: 88 },
+    { name: "Transaction Systems", level: 85 },
+    { name: "Fraud Detection Logic", level: 80 },
+    { name: "API Architecture", level: 90 },
   ],
   tools: [
     { name: "Git", level: 90 },
     { name: "Docker", level: 80 },
-    { name: "AWS", level: 75 },
-    { name: "Figma", level: 85 },
-    { name: "VS Code", level: 95 },
-  ],
-  others: [
-    { name: "REST APIs", level: 90 },
-    { name: "CI/CD", level: 82 },
-    { name: "Testing", level: 80 },
-    { name: "Agile", level: 85 },
+    { name: "CI/CD", level: 85 },
+    { name: "Testing", level: 82 },
   ],
 };
 
