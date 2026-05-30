@@ -72,11 +72,12 @@ export default function Contact() {
             <div>
               <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Mobile Number</label>
               <div className="flex gap-3">
-                <select
-                  defaultValue="+234"
-                  className="shrink-0 px-2 py-4 rounded-xl bg-[#1a1a2e] border border-white/20 text-white/70 text-xs sm:text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                  style={{ minWidth: "100px", maxWidth: "120px", colorScheme: "dark" }}
-                >
+                <div className="relative shrink-0" style={{ minWidth: "100px", maxWidth: "120px" }}>
+                  <select
+                    defaultValue="+234"
+                    className="w-full px-2 py-4 pr-6 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-xs sm:text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                    style={{ colorScheme: "dark" }}
+                  >
                   <option value="+93">+93 (AF)</option>
                   <option value="+355">+355 (AL)</option>
                   <option value="+213">+213 (DZ)</option>
@@ -221,7 +222,12 @@ export default function Contact() {
                   <option value="+967">+967 (YE)</option>
                   <option value="+260">+260 (ZM)</option>
                   <option value="+263">+263 (ZW)</option>
-                </select>
+                  </select>
+                  {/* Chevron indicator */}
+                  <svg className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
                 <input
                   type="tel"
                   name="mobile"
