@@ -85,7 +85,7 @@ export default function About() {
               <div className="mt-6 p-5 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm">
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white text-sm font-bold">
-                    ✓
+                    ?
                   </span>
                   <div>
                     <p className="text-base md:text-lg text-white leading-relaxed font-semibold mb-4">
