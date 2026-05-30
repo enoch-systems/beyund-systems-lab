@@ -369,11 +369,12 @@ export default function Contact() {
                       placeholder="Enter your phone number"
                       value={form.mobile}
                       onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, "");
+                        const val = e.target.value.replace(/\D/g, "").slice(0, 25);
                         setForm({ ...form, mobile: val });
                       }}
                       inputMode="numeric"
                       pattern="[0-9]*"
+                      maxLength={25}
                       required
                       className="flex-1 px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
                     />
