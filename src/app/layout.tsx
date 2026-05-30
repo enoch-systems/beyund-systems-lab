@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     url: "https://enochchukwudi.com",
     title: "Enochsystems - Fullstack Engineer (Backend-Focused)",
     description: "Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.",
-    siteName: "nochsystems Portfolio",
+    siteName: "Enochsystems Portfolio",
   },
   twitter: {
     card: "summary_large_image",

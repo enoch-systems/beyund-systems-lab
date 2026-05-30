@@ -94,13 +94,13 @@ export default function Hero({ children }: { children: React.ReactNode }) {
               <div className="mt-8 mb-15 flex flex-row gap-4 justify-center">
                 <a
                   href="#contact"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-black/20 transition hover:bg-white/90"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-black/20 transition hover:bg-white/90 cursor-pointer"
                 >
                   Contact Me
                 </a>
                 <a
                   href="#projects"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/20"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/20 cursor-pointer"
                 >
                   View Projects
                 </a>

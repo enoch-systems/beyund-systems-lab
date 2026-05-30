@@ -258,7 +258,7 @@ export default function Contact() {
             </div>
             <button
               type="submit"
-              className="w-full py-4 rounded-xl bg-white text-black font-semibold text-sm tracking-[0.1em] uppercase hover:bg-white/90 transition-all duration-200"
+              className="w-full py-4 rounded-xl bg-white text-black font-semibold text-sm tracking-[0.1em] uppercase hover:bg-white/90 transition-all duration-200 cursor-pointer"
             >
               Send Message
             </button>
