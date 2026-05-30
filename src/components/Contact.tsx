@@ -303,6 +303,9 @@ export default function Contact() {
 
           {/* Email — below X */}
           <div className="mt-6">
+            <p className="text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-4">
+              You can reach out via email
+            </p>
             <a
               href={`mailto:${personalData.email}`}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 text-sm font-medium"
