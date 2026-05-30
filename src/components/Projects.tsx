@@ -109,7 +109,7 @@ export default function Projects() {
                 </p>
                 <button className="w-full mt-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-[11px] md:text-xs font-medium rounded-lg border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 group">
                   View Project
-                  <File className="w-3 h-3 text-yellow-400 transition-transform duration-200 group-hover:translate-x-0.5" />
+<File className="w-3 h-3 text-white transition-transform duration-200 group-hover:translate-x-0.5" />
                 </button>
               </div>
             </div>
