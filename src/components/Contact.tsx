@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useState } from "react";
 import { personalData } from "@/lib/data";
@@ -74,8 +74,8 @@ export default function Contact() {
               <div className="flex gap-3">
                 <select
                   defaultValue="+234"
-                  className="shrink-0 px-3 py-4 pr-1 rounded-xl bg-white/10 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 appearance-none cursor-pointer"
-                  style={{ minWidth: "130px", maxWidth: "150px" }}
+                  className="shrink-0 px-2 py-4 rounded-xl bg-[#1a1a2e] border border-white/20 text-white/70 text-xs sm:text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                  style={{ minWidth: "100px", maxWidth: "120px", colorScheme: "dark" }}
                 >
                   <option value="+93">+93 (AF)</option>
                   <option value="+355">+355 (AL)</option>
