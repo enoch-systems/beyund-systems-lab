@@ -62,7 +62,7 @@ export default function About() {
               }`}
             >
               <p className="text-lg text-white/70 leading-relaxed">
-                Learn fullstack development with us at <span className="text-green-300 font-semibold">Beyund Systems Lab</span>, a structured learning program focused on building real world operational systems using modern web technologies.
+                Learn fullstack development with us at <span className="text-green-300 font-semibold">Beyond Systems Lab</span>, a structured learning program focused on building real world operational systems using modern web technologies.
               </p>
               <p className="text-lg text-white/70 leading-relaxed">
                 We teach how to design APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.

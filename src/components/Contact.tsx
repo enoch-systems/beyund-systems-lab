@@ -38,7 +38,7 @@ export default function Contact() {
 
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-lg text-white/70 mb-8 leading-relaxed">
-            Interested in learning fullstack development at <span className="text-green-300 font-semibold">Beyund Systems Lab</span>? Whether you want to enroll in the program, have a project in mind, or simply want to connect, do not hesitate to reach out.
+            Interested in learning fullstack development at <span className="text-green-300 font-semibold">Beyond Systems Lab</span>? Whether you want to enroll in the program, have a project in mind, or simply want to connect, do not hesitate to reach out.
           </p>
 
           {/* Contact form */}

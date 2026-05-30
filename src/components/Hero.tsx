@@ -64,10 +64,10 @@ export default function Hero({ children }: { children: React.ReactNode }) {
               </h1>
               <p className="mt-4 text-xl sm:text-2xl md:text-3xl tracking-wide text-white/80 animate-slide-in-right" style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}>
                 <span className="font-light">Fullstack Developer</span>
-                <span className="block sm:inline text-sm sm:text-base md:text-lg text-white/50 font-thin"> (Mentor at Beyund Systems Lab)</span>
+                <span className="block sm:inline text-sm sm:text-base md:text-lg text-white/50 font-thin"> (Mentor at Beyond Systems Lab)</span>
               </p>
               <p className="mt-6 text-sm md:text-base lg:text-lg text-white/60 max-w-2xl mx-auto animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
-                Learn fullstack development with me at Beyund Technologies — from APIs and backend logic to complete fullstack applications using modern web technologies.
+                Learn fullstack development with me at Beyond Systems Lab, a structured learning program focused on building real world operational systems using modern web technologies.
               </p>
               <div className="mt-8 mb-15 flex flex-row gap-4 justify-center">
                 <a

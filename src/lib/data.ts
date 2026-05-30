@@ -1,18 +1,18 @@
 export const personalData = {
   name: "Enoch Chukwudi",
-  tagline: "LEARN FULLSTACK DEVELOPMENT // BEYUND TECHNOLOGIES",
+  tagline: "LEARN FULLSTACK DEVELOPMENT // BEYOND SYSTEMS LAB",
   introduction:
-    "Learn fullstack development with me at Beyund Technologies — building real-world operational systems using modern web technologies.",
-  location: "Nigeria (Remote)",
+    "Learn fullstack development with us at Beyond Systems Lab, a structured learning program focused on building real world operational systems using modern web technologies.",
+  location: "Nigeria Remote",
   timezone: "WAT (UTC+1)",
   email: "enochc.official@gmail.com",
   linkedin: "https://www.linkedin.com/in/enochchukwudi?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
   github: "https://github.com/enoch-systems",
   twitter: "https://x.com/_enochsystems?s=21",
   bio: [
-    "Learn fullstack development with me at Beyund Technologies. I teach how to build real-world operational systems using modern web technologies — from APIs and backend logic to complete fullstack applications.",
-    "You'll learn to design REST APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.",
-    "My curriculum covers fintech-style systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture — everything you need to ship production-grade software.",
+    "Learn fullstack development with us at Beyond Systems Lab. We teach how to build real world operational systems using modern web technologies, from APIs and backend logic to complete fullstack applications.",
+    "You'll learn to design APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.",
+    "Our curriculum covers fintech systems, logistics operations, fraud aware workflows, and fullstack applications with structured architecture, everything you need to ship production grade software.",
   ],
 };
 
