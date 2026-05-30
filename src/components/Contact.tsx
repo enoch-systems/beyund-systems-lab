@@ -290,7 +290,7 @@ export default function Contact() {
                     value={form.sex || ""}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 appearance-none cursor-pointer"
+                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Select your sex</option>
                     <option value="male">Male</option>
@@ -327,7 +327,7 @@ export default function Contact() {
                     value={form.course || ""}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 appearance-none cursor-pointer"
+                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Select a course</option>
                     <option value="fullstack">Fullstack Development</option>
@@ -343,7 +343,7 @@ export default function Contact() {
                     value={form.employment || ""}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 appearance-none cursor-pointer"
+                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Select status</option>
                     <option value="employed">Employed</option>
@@ -362,7 +362,7 @@ export default function Contact() {
                     value={form.laptop || ""}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 appearance-none cursor-pointer"
+                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Select option</option>
                     <option value="yes">Yes</option>
@@ -376,7 +376,7 @@ export default function Contact() {
                     value={form.scholarship || ""}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 appearance-none cursor-pointer"
+                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Select option</option>
                     <option value="yes">Yes, I'm interested</option>
@@ -399,7 +399,7 @@ export default function Contact() {
                     value={form.hearAboutUs || ""}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 appearance-none cursor-pointer"
+                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Select an option</option>
                     <option value="social-media">Social Media</option>
