@@ -54,7 +54,7 @@ export default function About() {
                 visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
               }`}
             >
-              About Me
+              About Us
             </h2>
             <div
               className={`space-y-4 transition-all duration-1000 ease-out delay-200 ${
@@ -62,13 +62,13 @@ export default function About() {
               }`}
             >
               <p className="text-lg text-white/70 leading-relaxed">
-                Learn fullstack development with us at <span className="text-green-300 font-semibold">Beyund Systems Lab</span> — a structured learning program focused on building real world operational systems using modern web technologies.
+                Learn fullstack development with us at <span className="text-green-300 font-semibold">Beyund Systems Lab</span>, a structured learning program focused on building real world operational systems using modern web technologies.
               </p>
               <p className="text-lg text-white/70 leading-relaxed">
                 We teach how to design APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.
               </p>
               <p className="text-lg text-white/70 leading-relaxed">
-                Our curriculum covers fintech systems, logistics operations, fraud aware workflows, and fullstack applications with structured architecture — everything you need to ship production grade software.
+                Our curriculum covers fintech systems, logistics operations, fraud aware workflows, and fullstack applications with structured architecture, everything you need to ship production grade software.
               </p>
             </div>
             <div className={`mt-10 space-y-4 transition-all duration-1000 ease-out delay-500 ${
