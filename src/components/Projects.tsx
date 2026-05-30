@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { File } from "lucide-react";
 import { africanProjects, globalProjects } from "@/lib/data";
 
 export default function Projects() {
@@ -108,9 +109,7 @@ export default function Projects() {
                 </p>
                 <button className="w-full mt-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-[11px] md:text-xs font-medium rounded-lg border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 group">
                   View Project
-                  <svg className="w-3 h-3 text-yellow-400 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
+                  <File className="w-3 h-3 text-yellow-400 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </button>
               </div>
             </div>
