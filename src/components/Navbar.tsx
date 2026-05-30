@@ -43,13 +43,6 @@ export default function Navbar() {
               <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
             </a>
             <a
-              href="#projects"
-              className="group relative text-[15px] font-medium tracking-[0.12em] text-white/80 transition-all duration-200 hover:text-white"
-            >
-              Projects
-              <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
-            </a>
-            <a
               href="#contact"
               className="group relative text-[15px] font-medium tracking-[0.12em] text-white/80 transition-all duration-200 hover:text-white"
             >
