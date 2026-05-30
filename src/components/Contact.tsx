@@ -354,35 +354,19 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-                <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Do You Have a Laptop? *</label>
-                  <select
-                    name="laptop"
-                    value={form.laptop || ""}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                  >
-                    <option value="" disabled>Select option</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Scholarship Interest *</label>
-                  <select
-                    name="scholarship"
-                    value={form.scholarship || ""}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                  >
-                    <option value="" disabled>Select option</option>
-                    <option value="yes">Yes, I'm interested</option>
-                    <option value="no">No, I'll pay full</option>
-                  </select>
-                </div>
+              <div className="mt-6">
+                <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Do You Have a Laptop? *</label>
+                <select
+                  name="laptop"
+                  value={form.laptop || ""}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                >
+                  <option value="" disabled>Select option</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
               </div>
             </div>
 
