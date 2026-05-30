@@ -329,11 +329,7 @@ export default function Contact() {
                     required
                     className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                   >
-                    <option value="" disabled>Select a course</option>
-                    <option value="fullstack">Fullstack Development</option>
-                    <option value="frontend">Frontend Development</option>
-                    <option value="backend">Backend Development</option>
-                    <option value="mobile">Mobile Development</option>
+                    <option value="fullstack">Full Stack Development</option>
                   </select>
                 </div>
                 <div>
