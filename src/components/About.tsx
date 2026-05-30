@@ -70,6 +70,11 @@ export default function About() {
               <p className="text-lg text-white/70 leading-relaxed">
                 Our curriculum covers fintech systems, logistics operations, fraud aware workflows, and fullstack applications with structured architecture, everything you need to ship production grade software.
               </p>
+              <div className="mt-6 p-4 md:p-5 rounded-xl border border-green-500/30 bg-green-500/10">
+                <p className="text-base md:text-lg text-green-200 leading-relaxed font-medium">
+                  Become freelance ready and job ready with further mastery. After completing our program you will have the skills and portfolio to take on real world freelance projects or land a full time role as a fullstack developer.
+                </p>
+              </div>
             </div>
             <div className={`mt-10 space-y-4 transition-all duration-1000 ease-out delay-500 ${
               visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
