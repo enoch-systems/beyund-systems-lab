@@ -1,6 +1,16 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function Hero({ children }: { children: React.ReactNode }) {
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimate(true), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-2 -mb-10 pt-10 md:pt-32 lg:px-8">
@@ -56,9 +66,9 @@ export default function Hero({ children }: { children: React.ReactNode }) {
                   </text>
                 </svg>
 
-                {/* Image container */}
+                {/* Image container — fades in after 5 seconds with glassmorphism */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative w-[90%] h-[90%] animate-fade-in-up-delayed rounded-full overflow-hidden">
+                  <div className={`relative w-[90%] h-[90%] rounded-full overflow-hidden bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all duration-1000 ${animate ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
                     <Image
                       src="https://res.cloudinary.com/djdbcoyot/image/upload/v1777316852/construction/about/eng3.png"
                       alt="Enoch Chukwudi"

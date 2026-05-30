@@ -102,15 +102,30 @@ svg {
   }
 }
 
+@keyframes spin-slow-delayed {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .animate-fade-in-up {
   animation: fade-in-up 1s ease-out;
 }
 
-.animate-fade-in-up-delayed {
-  animation: fade-in-up 1s ease-out 5s both;
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
 }
 
-.animate-spin-slow {
+.animate-spin-slow-delayed {
+  animation: spin-slow-delayed 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-spin-slow-delayed.active {
+  opacity: 1;
   animation: spin-slow 20s linear infinite;
 }
 

@@ -11,10 +11,10 @@ export default function About() {
               <div className="absolute -inset-4 rounded-3xl bg-black/20 blur-2xl" />
               <div className="relative h-full w-full rounded-3xl bg-white/10 ring-1 ring-white/20 shadow-xl overflow-hidden backdrop-blur-sm">
                 <Image
-                  src="https://res.cloudinary.com/djdbcoyot/image/upload/v1779492891/tvchvy2zbigbduggdlmi.jpg"
+                  src="https://res.cloudinary.com/djdbcoyot/image/upload/v1777316852/construction/about/eng3.png"
                   alt={personalData.name}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
             </div>
