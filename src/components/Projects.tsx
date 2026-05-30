@@ -85,7 +85,7 @@ export default function Projects() {
                 <h3 className="text-xs md:text-sm font-semibold text-white leading-snug">
                   {project.name}
                 </h3>
-                <span className="shrink-0 text-[10px] md:text-xs font-mono uppercase text-white/30 border border-white/10 rounded-full px-2 py-0.5">
+                <span className="shrink-0 text-[10px] md:text-xs font-mono uppercase rounded-full px-2 py-0.5 border border-yellow-500/30 bg-yellow-500/15 text-yellow-200">
                   {project.category}
                 </span>
               </div>
