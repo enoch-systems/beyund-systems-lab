@@ -53,48 +53,60 @@ export default function Contact() {
           </a>
 
           {/* Contact form */}
-          <form onSubmit={handleSubmit} className="space-y-5 mb-12 text-left">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <form onSubmit={handleSubmit} className="space-y-6 mb-12 text-left">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter your name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Mobile Number</label>
               <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={form.name}
+                type="tel"
+                name="mobile"
+                placeholder="Enter your mobile number"
+                value={form.mobile}
                 onChange={handleChange}
                 required
-                className="w-full px-5 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className="w-full px-5 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
+                className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
               />
             </div>
-            <input
-              type="tel"
-              name="mobile"
-              placeholder="Your Mobile Number"
-              value={form.mobile}
-              onChange={handleChange}
-              required
-              className="w-full px-5 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
-            />
-            <textarea
-              name="message"
-              placeholder="Your Message"
-              rows={4}
-              value={form.message}
-              onChange={handleChange}
-              required
-              className="w-full px-5 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 resize-none"
-            />
+            <div>
+              <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Your Message</label>
+              <textarea
+                name="message"
+                placeholder="Enter your message"
+                rows={5}
+                value={form.message}
+                onChange={handleChange}
+                required
+                className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 resize-none"
+              />
+            </div>
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-white text-black font-semibold text-sm tracking-[0.1em] uppercase hover:bg-white/90 transition-all duration-200"
+              className="w-full py-4 rounded-xl bg-white text-black font-semibold text-sm tracking-[0.1em] uppercase hover:bg-white/90 transition-all duration-200"
             >
               Send Message
             </button>
