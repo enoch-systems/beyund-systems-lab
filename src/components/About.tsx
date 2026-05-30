@@ -57,7 +57,7 @@ export default function About() {
               About Me
             </h2>
             <div
-              className={`space-y-10 transition-all duration-1000 ease-out delay-200 ${
+              className={`space-y-4 transition-all duration-1000 ease-out delay-200 ${
                 visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
               }`}
             >
@@ -67,7 +67,7 @@ export default function About() {
                 </p>
               ))}
             </div>
-            <div className={`space-y-4 transition-all duration-1000 ease-out delay-500 ${
+            <div className={`mt-10 space-y-4 transition-all duration-1000 ease-out delay-500 ${
               visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
             }`}>
               <div className="flex items-center gap-3">
