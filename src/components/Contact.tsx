@@ -38,7 +38,7 @@ export default function Contact() {
 
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-lg text-white/70 mb-8 leading-relaxed">
-            I'm currently available for freelance engagements and full-time opportunities. Whether you have a project in mind, an interesting challenge to discuss, or simply want to connect — don't hesitate to reach out.
+            I am currently available for freelance engagements and full time opportunities. Whether you have a project in mind, an interesting challenge to discuss, or simply want to connect, do not hesitate to reach out.
           </p>
 
           {/* Email — prominent, opens mail client */}
