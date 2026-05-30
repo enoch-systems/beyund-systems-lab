@@ -25,7 +25,7 @@ export default function Navbar() {
           <img
             src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
             alt="Logo"
-            className="h-6 w-auto"
+            className="h-6 w-auto md:h-8 lg:h-10"
           />
           <span className="text-base md:text-xl font-light tracking-wide -ml-1.5"><span className="text-white">eyund</span><span className="text-green-300"> systems labs</span></span>
         </a>
