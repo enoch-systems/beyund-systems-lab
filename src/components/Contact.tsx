@@ -28,7 +28,7 @@ export default function Contact() {
               contact
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              Get In Touch
+              READY TO KICKOFF YOUR JOURNEY
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
               Register Now
