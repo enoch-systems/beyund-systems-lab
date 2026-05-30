@@ -92,25 +92,37 @@ export default function About() {
                       What you stand to get
                     </p>
                     
-                    <p className="text-white/70 leading-relaxed mb-4">
-                      Hands on training on real world projects that prepare you for freelance and full time roles.
-                    </p>
-                    
-                    <p className="text-white/70 leading-relaxed mb-4">
-                      You will build a portfolio of production grade systems, get mentorship from an experienced engineer, and gain the confidence to work on any fullstack application independently.
-                    </p>
-                    
-                    <p className="text-white/70 leading-relaxed mb-4">
-                      Become freelance ready and develop your own things.
-                    </p>
-                    
-                    <p className="text-white/70 leading-relaxed mb-4">
-                      Start your freelance journey with resilience and deeper mastery.
-                    </p>
-                    
-                    <p className="text-white/70 leading-relaxed">
-                      Job possibility with resilience and deeper mastery.
-                    </p>
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                        <p className="text-white/70 leading-relaxed">
+                          <span className="text-white font-semibold mr-2">1.</span> Hands on training on real world projects that prepare you for freelance and full time roles.
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                        <p className="text-white/70 leading-relaxed">
+                          <span className="text-white font-semibold mr-2">2.</span> You will build a portfolio of production grade systems, get mentorship from an experienced engineer, and gain the confidence to work on any fullstack application independently.
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                        <p className="text-white/70 leading-relaxed">
+                          <span className="text-white font-semibold mr-2">3.</span> Become freelance ready and develop your own things.
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                        <p className="text-white/70 leading-relaxed">
+                          <span className="text-white font-semibold mr-2">4.</span> Start your freelance journey with resilience and deeper mastery.
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                        <p className="text-white/70 leading-relaxed">
+                          <span className="text-white font-semibold mr-2">5.</span> Job possibility with resilience and deeper mastery.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
