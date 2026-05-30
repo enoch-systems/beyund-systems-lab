@@ -31,14 +31,14 @@ export default function Contact() {
               Get In Touch
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              Learn with us
+              Register Now
             </p>
           </div>
         </div>
 
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-lg text-white/70 mb-8 leading-relaxed">
-            Interested in learning fullstack development at <span className="text-green-300 font-semibold">Beyund systems labs</span>? Whether you want to enroll in the program, have a project in mind, or simply want to connect, do not hesitate to reach out.
+            Ready to start your fullstack development journey at <span className="text-green-300 font-semibold">Beyund systems labs</span>? Fill out the form below to register for our program and take the first step towards becoming a production-ready fullstack developer.
           </p>
 
           {/* Contact form */}
