@@ -77,25 +77,29 @@ export default function Contact() {
 
       setLoadingStates(true);
       try {
-        const response = await fetch(`https://api.countrystatecity.in/v1/countries/${form.country}/states`, {
-          headers: {
-            "X-CSCAPI-KEY": "Z2VDWUFCN2E5TEtwT1FJR3dqUk5Rb3YzNHBHTTk3NG9HU3B0b0g3bw=="
-          }
-        });
+        const response = await fetch(`https://countriesnow.space/api/v0.1/countries/states`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        if (Array.isArray(data)) {
-          const sortedStates = data
-            .map((state: any) => ({
-              code: state.iso2 || state.id,
-              name: state.name
-            }))
-            .sort((a: any, b: any) => a.name.localeCompare(b.name));
-          setStates(sortedStates);
+        if (data?.data && Array.isArray(data.data)) {
+          const countryData = data.data.find(
+            (item: any) => item.iso2 === form.country || item.iso3 === form.country || item.country === form.country
+          );
+          if (countryData?.states && Array.isArray(countryData.states)) {
+            const sortedStates = countryData.states
+              .map((state: any) => ({
+                code: state.state_code || state.name,
+                name: state.name
+              }))
+              .sort((a: any, b: any) => a.name.localeCompare(b.name));
+            setStates(sortedStates);
+          } else {
+            console.error("No states found for country:", form.country);
+            setStates([]);
+          }
         } else {
-          console.error("States data is not an array:", data);
+          console.error("States data is not in expected format:", data);
           setStates([]);
         }
       } catch (error) {
