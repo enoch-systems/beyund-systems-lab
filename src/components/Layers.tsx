@@ -135,7 +135,7 @@ export default function Layers() {
                       <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">tools i use</p>
                       <div className="flex flex-wrap gap-2">
                         {layer.tools.map((tool) => (
-                          <span key={tool} className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-medium rounded-full border border-yellow-500/30 bg-yellow-500/15 text-yellow-200">
+                          <span key={tool} className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-medium rounded-full border border-green-500/30 bg-green-500/15 text-green-200">
                             {tool}
                           </span>
                         ))}
