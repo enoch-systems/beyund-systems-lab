@@ -7,10 +7,12 @@ import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-black">
+      <ScrollToTop />
       {/* Fixed background covering entire page */}
       <div className="fixed inset-0 bg-black/80" />
       <div
