@@ -131,19 +131,25 @@ export default function Projects() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`w-9 h-9 rounded-full text-xs font-medium transition-all duration-200 ${
-                  page === p
-                    ? "bg-white text-black"
-                    : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white/90"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
+            {(() => {
+              const maxVisible = 3;
+              let start = Math.max(1, page - 1);
+              if (start + maxVisible - 1 > totalPages) start = Math.max(1, totalPages - maxVisible + 1);
+              const visiblePages = Array.from({ length: Math.min(maxVisible, totalPages) }, (_, i) => start + i);
+              return visiblePages.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`w-9 h-9 rounded-full text-xs font-medium transition-all duration-200 ${
+                    page === p
+                      ? "bg-white text-black"
+                      : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white/90"
+                  }`}
+                >
+                  {p}
+                </button>
+              ));
+            })()}
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
