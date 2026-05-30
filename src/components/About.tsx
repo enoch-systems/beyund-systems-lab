@@ -1,4 +1,15 @@
-"use client";
+About Us
+Learn fullstack development with us at Beyond Systems Lab, a structured learning program focused on building real world operational systems using modern web technologies.
+
+We teach how to design APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.
+
+Our curriculum covers fintech systems, logistics operations, fraud aware workflows, and fullstack applications with structured architecture, everything you need to ship production grade software.
+
+Become freelance ready and job ready with further mastery. After completing our program you will have the skills and portfolio to take on real world freelance projects or land a full time role as a fullstack developer.
+
+Location: Nigeria Remote
+Classes: Virtual
+Timezone: WAT (UTC+1)"use client";
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -49,16 +60,15 @@ export default function About() {
 
           {/* Right — text slides in from right, location/timezone fade from center */}
           <div>
-            <h2
-              className={`text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl mb-6 transition-all duration-1000 ease-out delay-100 ${
-                visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
-              }`}
-            >
-              <a href="#contact" className="hover:text-green-300 transition-colors duration-200 group">
+            <a href="#contact" className="inline-block">
+              <h2
+                className={`text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl mb-6 transition-all duration-1000 ease-out delay-100 hover:text-green-300 ${
+                  visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
+                }`}
+              >
                 About Us
-                <span className="inline-block ml-2 text-lg text-white/30 group-hover:text-green-300 transition-colors duration-200">→</span>
-              </a>
-            </h2>
+              </h2>
+            </a>
             <div
               className={`space-y-4 transition-all duration-1000 ease-out delay-200 ${
                 visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"

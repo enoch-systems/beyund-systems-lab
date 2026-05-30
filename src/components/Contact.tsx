@@ -28,39 +28,26 @@ export default function Contact() {
               contact
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              <a href="#contact" className="hover:text-green-300 transition-colors duration-200 group">
-                Get In Touch
-                <span className="inline-block ml-3 text-2xl text-white/30 group-hover:text-green-300 transition-colors duration-200">→</span>
-              </a>
+              Get In Touch
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              what you stand to get
+              Let's work together
             </p>
           </div>
         </div>
 
         <div className="max-w-2xl mx-auto text-center">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-            <div className="p-4 md:p-5 rounded-xl border border-white/15 bg-white/[0.05] text-left">
-              <p className="text-green-300 text-lg font-semibold mb-1">Hands On Skills</p>
-              <p className="text-white/60 text-sm leading-relaxed">Build real world systems from day one. APIs, backends, fullstack apps you can ship.</p>
-            </div>
-            <div className="p-4 md:p-5 rounded-xl border border-white/15 bg-white/[0.05] text-left">
-              <p className="text-green-300 text-lg font-semibold mb-1">Portfolio Projects</p>
-              <p className="text-white/60 text-sm leading-relaxed">Leave with production grade projects that prove what you can do.</p>
-            </div>
-            <div className="p-4 md:p-5 rounded-xl border border-white/15 bg-white/[0.05] text-left">
-              <p className="text-green-300 text-lg font-semibold mb-1">Freelance Ready</p>
-              <p className="text-white/60 text-sm leading-relaxed">Gain the confidence and skills to take on freelance clients immediately.</p>
-            </div>
-            <div className="p-4 md:p-5 rounded-xl border border-white/15 bg-white/[0.05] text-left">
-              <p className="text-green-300 text-lg font-semibold mb-1">Job Ready</p>
-              <p className="text-white/60 text-sm leading-relaxed">Master the stack employers need. Be prepared for full time roles.</p>
-            </div>
-          </div>
           <p className="text-lg text-white/70 mb-8 leading-relaxed">
             Interested in learning fullstack development at <span className="text-green-300 font-semibold">Beyond Systems Lab</span>? Whether you want to enroll in the program, have a project in mind, or simply want to connect, do not hesitate to reach out.
           </p>
+
+          {/* What you stand to get */}
+          <div className="mb-10 p-4 md:p-5 rounded-xl border border-green-500/30 bg-green-500/10 text-left">
+            <p className="text-sm md:text-base text-green-200 leading-relaxed font-medium">
+              <span className="block text-green-300 font-semibold mb-1">What you stand to get:</span>
+              Hands on training on real world projects that prepare you for freelance and full time roles. You will build a portfolio of production grade systems, get mentorship from an experienced engineer, and gain the confidence to work on any fullstack application independently.
+            </p>
+          </div>
 
           {/* Contact form */}
           <form onSubmit={handleSubmit} className="space-y-6 mb-12 text-left">
