@@ -4,8 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { File } from "lucide-react";
 import { africanProjects, globalProjects } from "@/lib/data";
 
+const PER_PAGE = 4;
+
 export default function Projects() {
   const [tab, setTab] = useState<"african" | "global">("african");
+  const [page, setPage] = useState(1);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -25,7 +28,14 @@ export default function Projects() {
     return () => observer.disconnect();
   }, []);
 
-  const projects = tab === "african" ? africanProjects : globalProjects;
+  const allProjects = tab === "african" ? africanProjects : globalProjects;
+  const totalPages = Math.ceil(allProjects.length / PER_PAGE);
+  const projects = allProjects.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+  const switchTab = (t: "african" | "global") => {
+    setTab(t);
+    setPage(1);
+  };
 
   return (
     <section id="projects" className="py-24 relative overflow-hidden">
@@ -49,7 +59,7 @@ export default function Projects() {
         {/* Tab toggle */}
         <div className={`flex justify-center gap-2 mb-10 transition-all duration-1000 ease-out delay-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
           <button
-            onClick={() => setTab("african")}
+            onClick={() => switchTab("african")}
             className={`px-6 py-2.5 rounded-full text-sm font-medium tracking-[0.15em] uppercase transition-all duration-200 ${
               tab === "african"
                 ? "bg-white text-black"
@@ -59,7 +69,7 @@ export default function Projects() {
             African Focus
           </button>
           <button
-            onClick={() => setTab("global")}
+            onClick={() => switchTab("global")}
             className={`px-6 py-2.5 rounded-full text-sm font-medium tracking-[0.15em] uppercase transition-all duration-200 ${
               tab === "global"
                 ? "bg-white text-black"
@@ -108,6 +118,25 @@ export default function Projects() {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-10">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`w-9 h-9 rounded-full text-xs font-medium transition-all duration-200 ${
+                  page === p
+                    ? "bg-white text-black"
+                    : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white/90"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
