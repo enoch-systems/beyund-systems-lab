@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     creator: "@enochchukwudi",
   },
   icons: {
-    icon: "https://res.cloudinary.com/djdbcoyot/image/upload/v1780129800/p4pkxnlgqhyuwnysu7b9.png",
+    icon: "https://res.cloudinary.com/djdbcoyot/image/upload/v1780133162/mnteqbivqp3h4rd5umcn.png",
   },
   robots: {
     index: true,

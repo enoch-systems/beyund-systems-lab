@@ -8,11 +8,11 @@ export default function Footer() {
           <div className="text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start">
               <img
-                src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780129800/p4pkxnlgqhyuwnysu7b9.png"
+                src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780133162/mnteqbivqp3h4rd5umcn.png"
                 alt="Logo"
                 className="h-6 w-auto"
               />
-              <span className="text-base md:text-xl font-semibold tracking-wide -ml-0.5"><span className="text-white">noch</span><span className="text-blue-200">systems</span></span>
+              <span className="text-base md:text-xl font-light tracking-wide -ml-0.5"><span className="text-white">noch</span><span className="text-green-300">systems</span></span>
             </div>
             <p className="text-slate-400 text-sm mt-1">© {new Date().getFullYear()} All rights reserved.</p>
           </div>

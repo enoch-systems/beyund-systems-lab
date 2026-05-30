@@ -24,11 +24,11 @@ export default function Navbar() {
         {/* Logo */}
         <a href="#" className="flex items-center">
           <img
-            src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780129800/p4pkxnlgqhyuwnysu7b9.png"
+            src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780133162/mnteqbivqp3h4rd5umcn.png"
             alt="Logo"
             className="h-6 w-auto"
           />
-          <span className="text-base md:text-xl font-semibold tracking-wide -ml-0.5"><span className="text-white">noch</span><span className="text-blue-200">systems</span></span>
+          <span className="text-base md:text-xl font-light tracking-wide -ml-0.5"><span className="text-white">noch</span><span className="text-green-300">systems</span></span>
         </a>
 
         {/* Right side: links + button */}
