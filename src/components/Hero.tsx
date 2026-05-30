@@ -7,8 +7,7 @@ export default function Hero({ children }: { children: React.ReactNode }) {
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setAnimate(true), 5000);
-    return () => clearTimeout(timer);
+    setAnimate(true);
   }, []);
 
   return (
@@ -66,9 +65,9 @@ export default function Hero({ children }: { children: React.ReactNode }) {
                   </text>
                 </svg>
 
-                {/* Image container — fades in after 5 seconds with glassmorphism */}
+                {/* Image container — fades in from bottom on mount with glassmorphism */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className={`relative w-[90%] h-[90%] rounded-full overflow-hidden bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all duration-1000 ${animate ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
+                  <div className={`relative w-[90%] h-[90%] rounded-full overflow-hidden bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all duration-1000 ${animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}`}>
                     <Image
                       src="https://res.cloudinary.com/djdbcoyot/image/upload/v1777316852/construction/about/eng3.png"
                       alt="Enoch Chukwudi"
