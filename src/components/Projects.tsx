@@ -58,7 +58,7 @@ export default function Projects() {
               PROJECTS
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              I ship — and projects you would build
+              what you should be able to build
             </p>
           </div>
         </div>
