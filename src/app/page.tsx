@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-white">
+    <main className="relative min-h-screen bg-white">
       {/* Full-page background spanning Hero to Footer */}
       <div className="absolute inset-0 h-full bg-black/80" />
       <div
