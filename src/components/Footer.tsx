@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="flex gap-6 text-sm text-slate-400">
             <a href="#about" className="hover:text-white transition">About</a>
             <a href="#projects" className="hover:text-white transition">Projects</a>
-            <a href="#contact" className="hover:text-white transition">Contact</a>
+            <a href="#contact" className="hover:text-white transition">Registration</a>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center">
