@@ -303,7 +303,7 @@ export default function Contact() {
 
           {/* Email — below X */}
           <div className="mt-6">
-            <p className="text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-4">
+            <p className="text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-4 mt-10">
               You can reach out via email
             </p>
             <a
