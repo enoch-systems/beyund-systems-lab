@@ -11,7 +11,7 @@ export default function Hero({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-12">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-19">
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-2 -mb-10 pt-10 md:pt-32 lg:px-8">
         <div className="relative flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center">
           <div className="relative z-20 flex flex-col items-center justify-center gap-8">

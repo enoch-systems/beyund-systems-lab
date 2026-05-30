@@ -1,4 +1,5 @@
- "use client";
+
+"use client";
 
 import { useState } from "react";
 import { personalData } from "@/lib/data";
