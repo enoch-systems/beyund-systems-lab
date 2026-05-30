@@ -13,27 +13,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Enoch Chukwudi - Fullstack Engineer (Backend-Focused)",
-  description: "Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.",
-  keywords: ["Software Engineer", "Product Designer", "Web Developer", "Full Stack", "React", "Next.js", "TypeScript"],
+  title: "Beyund systems labs - Learn Fullstack Development",
+  description: "Learn fullstack development at Beyund systems labs. Build real-world operational systems using modern web technologies.",
+  keywords: ["Fullstack Development", "Software Engineering", "Web Development", "Learn to Code", "Next.js", "TypeScript", "Beyund systems labs"],
   authors: [{ name: "Enoch Chukwudi" }],
-  creator: "Enoch Chukwudi",
+  creator: "Beyund systems labs",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://enochchukwudi.com",
-    title: "Enochsystems - Fullstack Engineer (Backend-Focused)",
-    description: "Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.",
-    siteName: "Enochsystems Portfolio",
+    url: "https://beyund-systems-lab.vercel.app",
+    title: "Beyund systems labs - Learn Fullstack Development",
+    description: "Learn fullstack development at Beyund systems labs. Build real-world operational systems using modern web technologies.",
+    siteName: "Beyund systems labs",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Enochsystems - Fullstack Engineer (Backend-Focused)",
-    description: "Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.",
+    title: "Beyund systems labs - Learn Fullstack Development",
+    description: "Learn fullstack development at Beyund systems labs. Build real-world operational systems using modern web technologies.",
     creator: "@enochchukwudi",
   },
   icons: {
-    icon: "https://res.cloudinary.com/djdbcoyot/image/upload/v1780133162/mnteqbivqp3h4rd5umcn.png",
+    icon: "https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png",
   },
   robots: {
     index: true,

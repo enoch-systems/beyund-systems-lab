@@ -1,15 +1,15 @@
 <div align="center">
 
-# Enoch Chukwudi
+# Beyund systems labs
 
-**Fullstack Engineer (Backend Focused)**
-Backend architecture, operational SaaS,
-infrastructure-driven product design.
+**Learn Fullstack Development**
+Build real-world operational systems with modern web technologies.
+Structured curriculum for production-ready fullstack engineers.
 
 [![X](https://img.shields.io/badge/-_enochsystems-000?style=flat-square&logo=x&logoColor=white)](https://x.com/_enochsystems)
 [![Email](https://img.shields.io/badge/enochc.official@gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:enochc.official@gmail.com)
 [![GitHub](https://img.shields.io/badge/-enoch--systems-333?style=flat-square&logo=github&logoColor=white)](https://github.com/enoch-systems)
-[![Portfolio](https://img.shields.io/badge/enochsystems.vercel.app-000?style=flat-square&logo=vercel&logoColor=white)](https://enochsystems.vercel.app)
+[![Beyund systems labs](https://img.shields.io/badge/beyund--systems--lab.vercel.app-000?style=flat-square&logo=vercel&logoColor=white)](https://beyund-systems-lab.vercel.app)
 
 </div>
 
@@ -17,10 +17,11 @@ infrastructure-driven product design.
 
 ## About
 
-Backend-leaning fullstack developer building real-world operational systems.
-I focus on API design, business workflows, transaction systems, authentication flows, and scalable backend architectures, paired with clean frontend execution.
+Learn fullstack development at Beyund systems labs, a structured learning program focused on building real-world operational systems using modern web technologies.
 
-Current focus areas: fintech-style systems, logistics operations, fraud-aware workflows, and structured fullstack applications.
+We teach how to design APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.
+
+Our curriculum covers fintech systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture, everything you need to ship production-grade software.
 
 <br>
 

@@ -14,7 +14,7 @@ export default function Footer() {
             <div className="flex items-center justify-center">
               <img
                 src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
-                alt="Logo"
+            alt="Beyund systems labs logo"
                 className="h-6 w-auto md:h-8"
               />
               <span className="text-base md:text-xl font-light tracking-wide -ml-1.5"><span className="text-white">eyund</span><span className="text-green-300"> systems labs</span></span>

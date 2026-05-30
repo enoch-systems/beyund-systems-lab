@@ -1,12 +1,12 @@
-# Enoch Chukwudi - Professional Portfolio
+# Beyund systems labs - Learn Fullstack Development
 
-A modern, responsive portfolio website showcasing my expertise in software engineering and product design. Built with Next.js 16, TypeScript, and Tailwind CSS.
+A modern, responsive landing page for Beyund systems labs, a structured learning program focused on building real-world operational systems using modern web technologies. Built with Next.js 16, TypeScript, and Tailwind CSS.
 
 ---
 
 ## Project Overview
 
-This portfolio serves as both a personal branding tool and a technical demonstration of modern web development practices. It features modular component architecture, responsive design across all devices, and optimized performance for production deployment.
+This is the official landing page for Beyund systems labs, featuring a modular component architecture, responsive design across all devices, and optimized performance for production deployment.
 
 ---
 
@@ -80,7 +80,7 @@ portfolio/
 └── README.md
 
 # Clone the repository
-git clone https://github.com/enoch-systems/portfolio.git
+git clone https://github.com/enoch-systems/beyund-systems-lab.git
 cd portfolio
 
 # Install dependencies
@@ -91,7 +91,7 @@ npm run dev
 
 ## Deployment
 
-Live Demo: [https://enochsystems.vercel.app](https://enochsystems.vercel.app)
+Live Demo: [Beyund systems labs](https://beyund-systems-lab.vercel.app)
 
 This project is deployed on Vercel (automatic deployment from GitHub).
 

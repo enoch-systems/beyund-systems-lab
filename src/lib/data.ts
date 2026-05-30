@@ -3,7 +3,7 @@ export const personalData = {
   tagline: "LEARN FULLSTACK DEVELOPMENT // BEYUND SYSTEMS LABS",
   introduction:
     "Learn fullstack development with us at Beyund systems labs, a structured learning program focused on building real world operational systems using modern web technologies.",
-  location: "Nigeria Remote",
+  location: "Owerri, Nigeria",
   timezone: "WAT (UTC+1)",
   email: "enochc.official@gmail.com",
   linkedin: "https://www.linkedin.com/in/enochchukwudi?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
