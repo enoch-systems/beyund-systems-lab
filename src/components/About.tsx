@@ -82,48 +82,39 @@ export default function About() {
               </p>
 
               {/* What You Stand to Get */}
-              <div className="mt-6 p-5 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm">
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white text-sm font-bold">
-                    ?
-                  </span>
-                  <div>
-                    <p className="text-base md:text-lg text-white leading-relaxed font-semibold mb-4">
-                      What you stand to get
-                    </p>
-                    
-                    <div className="space-y-3">
-                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                        <p className="text-white/70 leading-relaxed">
-                          <span className="text-white font-semibold mr-2">1.</span> Hands on training on real world projects that prepare you for freelance and full time roles.
-                        </p>
-                      </div>
-                      
-                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                        <p className="text-white/70 leading-relaxed">
-                          <span className="text-white font-semibold mr-2">2.</span> You will build a portfolio of production grade systems, get mentorship from an experienced engineer, and gain the confidence to work on any fullstack application independently.
-                        </p>
-                      </div>
-                      
-                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                        <p className="text-white/70 leading-relaxed">
-                          <span className="text-white font-semibold mr-2">3.</span> Become freelance ready and develop your own things.
-                        </p>
-                      </div>
-                      
-                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                        <p className="text-white/70 leading-relaxed">
-                          <span className="text-white font-semibold mr-2">4.</span> Start your freelance journey with resilience and deeper mastery.
-                        </p>
-                      </div>
-                      
-                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                        <p className="text-white/70 leading-relaxed">
-                          <span className="text-white font-semibold mr-2">5.</span> Job possibility with resilience and deeper mastery.
-                        </p>
-                      </div>
-                    </div>
+              <div className="mt-10 p-6 md:p-8 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] backdrop-blur-sm shadow-lg shadow-black/20">
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-8 pb-4 border-b border-white/10">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/20 shadow-lg">
+                    <span className="text-white text-base font-bold">?</span>
                   </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl md:text-2xl font-bold tracking-tight text-white">
+                      What you stand to get
+                    </h3>
+                    <p className="text-sm text-white/50 font-mono tracking-wide">
+                      BENEFITS OVERVIEW
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  {[
+                    "Hands on training on real world projects that prepare you for freelance and full time roles.",
+                    "You will build a portfolio of production grade systems, get mentorship from an experienced engineer, and gain the confidence to work on any fullstack application independently.",
+                    "Become freelance ready and develop your own things.",
+                    "Start your freelance journey with resilience and deeper mastery.",
+                    "Job possibility with resilience and deeper mastery."
+                  ].map((text, i) => (
+                    <div key={i} className="group flex items-start gap-4 p-4 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/15 transition-all duration-300">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-white/15 to-white/5 text-white text-xs font-bold border border-white/10 shadow-sm group-hover:from-white/25 group-hover:to-white/10 transition-all duration-300">
+                        {i + 1}
+                      </span>
+                      <p className="text-white/70 leading-relaxed group-hover:text-white/80 transition-all duration-300">
+                        {text}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
