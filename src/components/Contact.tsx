@@ -25,10 +25,10 @@ export default function Contact() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              contact
+              embrace clarity
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              READY TO KICKOFF YOUR JOURNEY
+              READY TO KICKOFF YOUR JOURNEY ?
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
               Register Now
@@ -37,7 +37,7 @@ export default function Contact() {
         </div>
 
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-lg text-white/70 mb-8 leading-relaxed">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white/70 mb-8 leading-relaxed">
             Ready to start your fullstack development journey at <span className="text-green-300 font-semibold">Beyund systems labs</span>? Fill out the form below to register for our program and take the first step towards becoming a production-ready fullstack developer.
           </p>
 
