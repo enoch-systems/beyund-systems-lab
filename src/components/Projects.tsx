@@ -75,23 +75,16 @@ export default function Projects() {
           {projects.map((project, i) => (
             <div
               key={project.name}
-              className={`relative flex flex-col min-h-[280px] border border-white/10 rounded-xl overflow-hidden transition-all duration-700 ease-out ${
+              className={`relative flex flex-col min-h-[280px] border border-white/[0.15] rounded-xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-700 ease-out ${
                 visible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
               }`}
               style={{ transitionDelay: `${i * 60}ms` }}
             >
-              {/* Background image blended behind content */}
-              <div className="absolute inset-0 opacity-15 mix-blend-overlay"
-                style={{
-                  backgroundImage: "url('https://res.cloudinary.com/djdbcoyot/image/upload/v1780110256/bxvqwouvuya7mtfc1jz4.jpg')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}
-              />
-              <div className="absolute inset-0 bg-black/50" />
+              {/* Glass background matching WhatsApp bubble */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.12] to-white/[0.05] backdrop-blur-xl" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#25D366]/10 to-transparent" />
               <div className="relative z-10 p-4 md:p-5 flex flex-col flex-1">
                 <div className="mb-2">
                   <span className="inline-block text-[10px] md:text-xs font-mono uppercase rounded-full px-2 py-0.5 border border-yellow-500/30 bg-yellow-500/15 text-yellow-200 mb-2">
