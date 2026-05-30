@@ -80,7 +80,7 @@ export default function Hero({ children }: { children: React.ReactNode }) {
                   href="#contact"
                   className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/20 cursor-pointer"
                 >
-                  Contact Us
+                  Get Started
                 </a>
               </div>
             </div>
