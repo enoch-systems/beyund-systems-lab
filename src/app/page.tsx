@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import SocialSidebar from "@/components/SocialSidebar";
 import Layers from "@/components/Layers";
 import About from "@/components/About";
-import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -38,7 +37,6 @@ export default function Home() {
         </Hero>
         <Layers />
         <About />
-        <Projects />
         <Contact />
         <Footer />
         <WhatsAppButton />
