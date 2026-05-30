@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 
@@ -117,30 +117,6 @@ export default function MobileMenu() {
                 ))}
               </ul>
 
-              {/* Download CV */}
-              <div
-                style={{
-                  opacity: isOpen ? 1 : 0,
-                  transform: isOpen ? "translateY(0)" : "translateY(16px)",
-                  transitionDelay: "400ms",
-                  transitionDuration: "400ms",
-                  transitionTimingFunction: "ease-out",
-                  transitionProperty: "opacity, transform",
-                }}
-              >
-                <a
-                  href="#"
-                  onClick={closeMenu}
-                  className="mt-12 flex items-center justify-center gap-3 w-full rounded-xl border border-white/40 bg-transparent px-6 py-4 text-lg font-medium tracking-[0.06em] text-white transition-all duration-200 hover:bg-white hover:text-black hover:border-white"
-                >
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  <span>Download CV</span>
-                </a>
-              </div>
             </nav>
           </div>
         </div>,

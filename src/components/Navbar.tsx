@@ -51,27 +51,6 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Download CV button — desktop only */}
-          <a
-            href="#"
-            className="hidden md:inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-medium tracking-[0.08em] text-white backdrop-blur-sm transition-all duration-200 hover:bg-white hover:text-black hover:border-white hover:shadow-xl hover:shadow-white/20"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            <span>Download CV</span>
-          </a>
-
           {/* Hamburger — mobile */}
           <MobileMenu />
         </div>
