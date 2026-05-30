@@ -11,7 +11,7 @@ export default function Hero({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-12">
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-2 -mb-10 pt-10 md:pt-32 lg:px-8">
         <div className="relative flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center">
           <div className="relative z-20 flex flex-col items-center justify-center gap-8">
@@ -88,7 +88,7 @@ export default function Hero({ children }: { children: React.ReactNode }) {
                 <span className="font-light">Fullstack Engineer</span>
                 <span className="block sm:inline text-sm sm:text-base md:text-lg text-white/50 font-thin"> (Backend-Focused)</span>
               </p>
-              <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
+              <p className="mt-6 text-sm md:text-base lg:text-lg text-white/60 max-w-2xl mx-auto animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
                 Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.
               </p>
               <div className="mt-8 mb-15 flex flex-row gap-4 justify-center">

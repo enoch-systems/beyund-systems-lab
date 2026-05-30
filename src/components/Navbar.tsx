@@ -22,8 +22,13 @@ export default function Navbar() {
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <a href="#" className="text-2xl font-bold text-white tracking-tight hover:text-white/80 transition-colors duration-200">
-          E
+        <a href="#" className="flex items-center">
+          <img
+            src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780129800/p4pkxnlgqhyuwnysu7b9.png"
+            alt="Logo"
+            className="h-6 w-auto"
+          />
+          <span className="text-base md:text-xl font-semibold tracking-wide -ml-0.5"><span className="text-white">noch</span><span className="text-blue-200">systems</span></span>
         </a>
 
         {/* Right side: links + button */}

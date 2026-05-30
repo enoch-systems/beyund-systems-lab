@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Enoch Chukwudi - Software Engineer & Product Designer",
-  description: "I build exceptional digital experiences that blend creativity with technical excellence. Software Engineer and Product Designer with 5+ years of experience.",
+  title: "Enoch Chukwudi - Fullstack Engineer (Backend-Focused)",
+  description: "Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.",
   keywords: ["Software Engineer", "Product Designer", "Web Developer", "Full Stack", "React", "Next.js", "TypeScript"],
   authors: [{ name: "Enoch Chukwudi" }],
   creator: "Enoch Chukwudi",
@@ -22,15 +22,18 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://enochchukwudi.com",
-    title: "Enoch Chukwudi - Software Engineer & Product Designer",
-    description: "I build exceptional digital experiences that blend creativity with technical excellence.",
-    siteName: "Enoch Chukwudi Portfolio",
+    title: "Enochsystems - Fullstack Engineer (Backend-Focused)",
+    description: "Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.",
+    siteName: "nochsystems Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Enoch Chukwudi - Software Engineer & Product Designer",
-    description: "I build exceptional digital experiences that blend creativity with technical excellence.",
+    title: "Enochsystems - Fullstack Engineer (Backend-Focused)",
+    description: "Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.",
     creator: "@enochchukwudi",
+  },
+  icons: {
+    icon: "https://res.cloudinary.com/djdbcoyot/image/upload/v1780129800/p4pkxnlgqhyuwnysu7b9.png",
   },
   robots: {
     index: true,
