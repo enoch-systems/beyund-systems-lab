@@ -5,7 +5,7 @@ export const personalData = {
     "I'm a backend-leaning fullstack developer focused on building real-world operational systems using modern web technologies.",
   location: "Nigeria (Remote)",
   timezone: "WAT (UTC+1)",
-  email: "enochchukwudi@gmail.com",
+  email: "enochc.official@gmail.com",
   linkedin: "https://linkedin.com/in/enoch-chukwudi",
   github: "https://github.com/enoch-systems",
   twitter: "https://x.com/enoch_systems",
