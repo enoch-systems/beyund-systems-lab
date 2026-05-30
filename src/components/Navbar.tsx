@@ -28,7 +28,7 @@ export default function Navbar() {
             alt="Logo"
             className="h-6 w-auto"
           />
-          <span className="text-base md:text-xl font-light tracking-wide -ml-0.5"><span className="text-white">noch</span><span className="text-green-300">systems</span></span>
+          <span className="text-base md:text-xl font-light tracking-wide -ml-0.5"><span className="text-white">beyund</span><span className="text-green-300">.tech</span></span>
         </a>
 
         {/* Right side: links + button */}

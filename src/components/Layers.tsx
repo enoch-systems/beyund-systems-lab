@@ -46,10 +46,10 @@ const layersData = [
     concepts: ["OAuth 2.0 flows", "webhook verification (HMAC)", "idempotent payments"],
   },
   {
-    name: "Intelligence / Monitoring Layer",
+    name: "Monitoring / Observability Layer",
     build: ["error tracking", "usage analytics", "logging pipelines"],
-    tools: ["Sentry", "PostHog", "OpenAI / Anthropic APIs"],
-    concepts: ["structured logging", "error alerting", "RAG pipelines"],
+    tools: ["Sentry", "PostHog", "OpenTelemetry"],
+    concepts: ["structured logging", "error alerting", "observability"],
   },
   {
     name: "Architecture Layer",

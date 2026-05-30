@@ -1,8 +1,8 @@
 export const personalData = {
   name: "Enoch Chukwudi",
-  tagline: "BACKEND FULLSTACK DEVELOPER // OPERATIONAL SYSTEMS",
+  tagline: "LEARN FULLSTACK DEVELOPMENT // BEYUND TECHNOLOGIES",
   introduction:
-    "I'm a backend-leaning fullstack developer focused on building real-world operational systems using modern web technologies.",
+    "Learn fullstack development with me at Beyund Technologies — building real-world operational systems using modern web technologies.",
   location: "Nigeria (Remote)",
   timezone: "WAT (UTC+1)",
   email: "enochc.official@gmail.com",
@@ -10,9 +10,9 @@ export const personalData = {
   github: "https://github.com/enoch-systems",
   twitter: "https://x.com/_enochsystems?s=21",
   bio: [
-    "I'm a backend-leaning fullstack developer focused on building real-world operational systems using modern web technologies.",
-    "I enjoy designing APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.",
-    "My current focus includes fintech-style systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture.",
+    "Learn fullstack development with me at Beyund Technologies. I teach how to build real-world operational systems using modern web technologies — from APIs and backend logic to complete fullstack applications.",
+    "You'll learn to design REST APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.",
+    "My curriculum covers fintech-style systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture — everything you need to ship production-grade software.",
   ],
 };
 
