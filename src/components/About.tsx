@@ -54,7 +54,10 @@ export default function About() {
                 visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
               }`}
             >
-              About Us
+              <a href="#contact" className="hover:text-green-300 transition-colors duration-200 group">
+                About Us
+                <span className="inline-block ml-2 text-lg text-white/30 group-hover:text-green-300 transition-colors duration-200">→</span>
+              </a>
             </h2>
             <div
               className={`space-y-4 transition-all duration-1000 ease-out delay-200 ${
