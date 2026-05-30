@@ -285,18 +285,23 @@ export default function Contact() {
                 </div>
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Sex *</label>
-                  <select
-                    name="sex"
-                    value={form.sex || ""}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                  >
-                    <option value="" disabled>Select your sex</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="sex"
+                      value={form.sex || ""}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled>Select your sex</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
@@ -322,47 +327,62 @@ export default function Contact() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Course Applying For *</label>
-                  <select
-                    name="course"
-                    value={form.course || ""}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                  >
-                    <option value="fullstack">Full Stack Development</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="course"
+                      value={form.course || ""}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                    >
+                      <option value="fullstack">Full Stack Development</option>
+                    </select>
+                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Employment Status *</label>
-                  <select
-                    name="employment"
-                    value={form.employment || ""}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                  >
-                    <option value="" disabled>Select status</option>
-                    <option value="employed">Employed</option>
-                    <option value="unemployed">Unemployed</option>
-                    <option value="student">Student</option>
-                    <option value="freelancer">Freelancer</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="employment"
+                      value={form.employment || ""}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled>Select status</option>
+                      <option value="employed">Employed</option>
+                      <option value="unemployed">Unemployed</option>
+                      <option value="student">Student</option>
+                      <option value="freelancer">Freelancer</option>
+                    </select>
+                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
               <div className="mt-6">
                 <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Do You Have a Laptop? *</label>
-                <select
-                  name="laptop"
-                  value={form.laptop || ""}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                >
-                  <option value="" disabled>Select option</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </select>
+                  <div className="relative">
+                    <select
+                      name="laptop"
+                      value={form.laptop || ""}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled>Select option</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
               </div>
             </div>
 
@@ -374,20 +394,25 @@ export default function Contact() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">How Did You Hear About Us? *</label>
-                  <select
-                    name="hearAboutUs"
-                    value={form.hearAboutUs || ""}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                  >
-                    <option value="" disabled>Select an option</option>
-                    <option value="social-media">Social Media</option>
-                    <option value="friend">Friend/Referral</option>
-                    <option value="search">Search Engine</option>
-                    <option value="blog">Blog/Article</option>
-                    <option value="other">Other</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="hearAboutUs"
+                      value={form.hearAboutUs || ""}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled>Select an option</option>
+                      <option value="social-media">Social Media</option>
+                      <option value="friend">Friend/Referral</option>
+                      <option value="search">Search Engine</option>
+                      <option value="blog">Blog/Article</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Why Do You Want To Learn This Skill? *</label>
