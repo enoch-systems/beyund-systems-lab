@@ -89,7 +89,7 @@ export default function Hero({ children }: { children: React.ReactNode }) {
                 <span className="block sm:inline text-sm sm:text-base md:text-lg text-white/50 font-thin"> (Backend-Focused)</span>
               </p>
               <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto animate-fade-in-center" style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}>
-                Building real-world operational systems, web apps, mobile apps, dashboards, and desktop software using modern web technologies.
+                Shipping end to end operational systems across web apps, mobile apps, dashboards, and desktop software using modern web technologies.
               </p>
               <div className="mt-8 mb-15 flex flex-row gap-4 justify-center">
                 <a
