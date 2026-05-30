@@ -107,7 +107,7 @@ export default function Layers() {
                     {layer.name}
                   </span>
                   <svg
-                    className={`w-5 h-5 md:w-6 md:h-6 shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-white/80" : "text-white/50"}`}
+                    className={`w-5 h-5 md:w-6 md:h-6 shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-yellow-400" : "text-yellow-400/50"}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
