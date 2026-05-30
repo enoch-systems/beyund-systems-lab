@@ -3,13 +3,13 @@ export const personalData = {
   tagline: "BACKEND FULLSTACK DEVELOPER // OPERATIONAL SYSTEMS",
   introduction:
     "I'm a backend-leaning fullstack developer focused on building real-world operational systems using modern web technologies.",
-  location: "Owerri, Nigeria",
+  location: "Owerri, Nigeria (Remote)",
   timezone: "WAT (UTC+1)",
   email: "enochchukwudi@gmail.com",
   linkedin: "https://linkedin.com/in/enoch-chukwudi",
   github: "https://github.com/enoch-systems",
   twitter: "https://x.com/enoch_systems",
-  bio: "I enjoy designing APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences. My current focus includes fintech-style systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture.",
+  bio: "I'm a backend-leaning fullstack developer focused on building real-world operational systems using modern web technologies. I enjoy designing APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences. My current focus includes fintech-style systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture.",
 };
 
 export const skills = {
