@@ -92,9 +92,18 @@ export default function Projects() {
               <p className="text-[10px] md:text-xs text-white/50 font-mono mb-2 leading-relaxed">
                 {project.platforms}
               </p>
-              <p className="text-[11px] md:text-sm text-white/60 leading-relaxed">
+              <p className="text-[11px] md:text-sm text-white/60 leading-relaxed mb-3">
                 {project.description}
               </p>
+              <a
+                href="#"
+                className="inline-flex items-center gap-1.5 text-[11px] md:text-xs font-medium text-white/40 hover:text-white transition-colors duration-200 group"
+              >
+                View Project
+                <svg className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
             </div>
           ))}
         </div>
