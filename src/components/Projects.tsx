@@ -75,7 +75,7 @@ export default function Projects() {
           {projects.map((project, i) => (
             <div
               key={project.name}
-              className={`relative flex flex-col border border-white/10 rounded-xl overflow-hidden transition-all duration-700 ease-out ${
+              className={`relative flex flex-col min-h-[280px] border border-white/10 rounded-xl overflow-hidden transition-all duration-700 ease-out ${
                 visible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
@@ -107,7 +107,7 @@ export default function Projects() {
                 <p className="text-[11px] md:text-sm text-white/60 leading-relaxed mb-3">
                   {project.description}
                 </p>
-                <button className="w-full mt-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-[11px] md:text-xs font-medium rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 group">
+                <button className="w-full mt-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-[11px] md:text-xs font-medium rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 group mt-5">
                   View Project
                   <File className="w-3 h-3 text-white transition-transform duration-200 group-hover:translate-x-0.5" />
                 </button>
