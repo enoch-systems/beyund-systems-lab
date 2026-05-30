@@ -233,7 +233,12 @@ export default function Contact() {
                   name="mobile"
                   placeholder="Enter your mobile number"
                   value={form.mobile}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "");
+                    setForm({ ...form, mobile: val });
+                  }}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   required
                   className="flex-1 px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
                 />
