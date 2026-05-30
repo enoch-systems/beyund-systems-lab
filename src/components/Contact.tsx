@@ -77,15 +77,27 @@ export default function Contact() {
 
       setLoadingStates(true);
       try {
-        const response = await fetch(`https://api.countrystatecity.in/v1/countries/${form.country}/states`);
+        const response = await fetch(`https://api.countrystatecity.in/v1/countries/${form.country}/states`, {
+          headers: {
+            "X-CSCAPI-KEY": "Z2VDWUFCN2E5TEtwT1FJR3dqUk5Rb3YzNHBHTTk3NG9HU3B0b0g3bw=="
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
-        const sortedStates = data
-          .map((state: any) => ({
-            code: state.iso2 || state.id,
-            name: state.name
-          }))
-          .sort((a: any, b: any) => a.name.localeCompare(b.name));
-        setStates(sortedStates);
+        if (Array.isArray(data)) {
+          const sortedStates = data
+            .map((state: any) => ({
+              code: state.iso2 || state.id,
+              name: state.name
+            }))
+            .sort((a: any, b: any) => a.name.localeCompare(b.name));
+          setStates(sortedStates);
+        } else {
+          console.error("States data is not an array:", data);
+          setStates([]);
+        }
       } catch (error) {
         console.error("Error fetching states:", error);
         setStates([]);
