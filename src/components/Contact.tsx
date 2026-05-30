@@ -302,15 +302,12 @@ export default function Contact() {
           </div>
 
           {/* Email — below X */}
-          <div className="mt-12">
-            <p className="text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-4">
-              You can reach out via email
-            </p>
+          <div className="mt-6">
             <a
               href={`mailto:${personalData.email}`}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border border-yellow-500/40 text-yellow-300 text-lg md:text-xl font-semibold hover:from-yellow-500/30 hover:to-yellow-600/20 hover:text-yellow-200 transition-all duration-200 shadow-lg shadow-yellow-500/10"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 text-sm font-medium"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               {personalData.email}
