@@ -4,6 +4,8 @@
   --animate-slide-in-left: slide-in-left 0.9s ease-out;
   --animate-slide-in-right: slide-in-right 0.9s ease-out;
   --animate-fade-in-center: fade-in-center 0.9s ease-out;
+  --animate-spin-slow: spin-slow 20s linear infinite;
+  --animate-marquee: marquee 30s linear infinite;
 }
 
 :root {
@@ -114,6 +116,15 @@ svg {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }
 

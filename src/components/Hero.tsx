@@ -17,53 +17,31 @@ export default function Hero({ children }: { children: React.ReactNode }) {
           <div className="relative z-20 flex flex-col items-center justify-center gap-8">
             <div className="relative mx-auto">
               <div className="relative w-[90vw] h-[90vw] sm:w-[440px] sm:h-[440px] md:w-[520px] md:h-[520px] max-w-[520px] max-h-[520px]">
-                {/* Circular badge with text */}
-                <svg className="absolute inset-0 w-full h-full animate-spin-slow" viewBox="0 0 540 540" aria-hidden="true">
-                  <defs>
-                    <path id="circlePath" d="M 270, 270 m -250, 0 a 250,250 0 1,1 500,0 a 250,250 0 1,1 -500,0" />
-                  </defs>
+                {/* Decorative circle outline only */}
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 540 540" aria-hidden="true">
                   <circle cx="270" cy="270" r="250" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
-                    <textPath href="#circlePath" startOffset="0%">
-                      Interface
-                    </textPath>
-                  </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
-                    <textPath href="#circlePath" startOffset="12.5%">
-                      APIs
-                    </textPath>
-                  </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
-                    <textPath href="#circlePath" startOffset="25%">
-                      Logic
-                    </textPath>
-                  </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
-                    <textPath href="#circlePath" startOffset="37.5%">
-                      Access
-                    </textPath>
-                  </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
-                    <textPath href="#circlePath" startOffset="50%">
-                      Storage
-                    </textPath>
-                  </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
-                    <textPath href="#circlePath" startOffset="62.5%">
-                      Workflow
-                    </textPath>
-                  </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
-                    <textPath href="#circlePath" startOffset="75%">
-                      Integration
-                    </textPath>
-                  </text>
-                  <text className="text-[1.6rem] sm:text-[1.8rem] font-light fill-white/80" fontSize="2.0" fontWeight="300">
-                    <textPath href="#circlePath" startOffset="87.5%">
-                      Intelligence
-                    </textPath>
-                  </text>
                 </svg>
+
+                {/* Marquee: items scroll left-to-right above the circle */}
+                <div className="absolute -top-12 sm:-top-14 md:-top-16 left-0 w-full overflow-hidden">
+                  <div className="flex whitespace-nowrap animate-marquee">
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Video lessons</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Live Classes</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Assignments</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">PDFs / notes</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Community</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Assignments</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Progress tracking</span>
+                    {/* Duplicate for seamless loop */}
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Video lessons</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Live Classes</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Assignments</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">PDFs / notes</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Community</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Assignments</span>
+                    <span className="mx-6 sm:mx-8 text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-light text-white/70 uppercase tracking-[0.15em]">Progress tracking</span>
+                  </div>
+                </div>
 
                 {/* Image container — fades in from bottom on mount with glassmorphism */}
                 <div className="absolute inset-0 flex items-center justify-center">
