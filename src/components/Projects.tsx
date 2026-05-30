@@ -81,13 +81,13 @@ export default function Projects() {
               }`}
               style={{ transitionDelay: `${i * 60}ms` }}
             >
-              <div className="flex items-start justify-between gap-2 mb-2">
+              <div className="mb-2">
+                <span className="inline-block text-[10px] md:text-xs font-mono uppercase rounded-full px-2 py-0.5 border border-yellow-500/30 bg-yellow-500/15 text-yellow-200 mb-2">
+                  {project.category}
+                </span>
                 <h3 className="text-xs md:text-sm font-semibold text-white leading-snug">
                   {project.name}
                 </h3>
-                <span className="shrink-0 text-[10px] md:text-xs font-mono uppercase rounded-full px-2 py-0.5 border border-yellow-500/30 bg-yellow-500/15 text-yellow-200">
-                  {project.category}
-                </span>
               </div>
               <p className="text-[10px] md:text-xs text-white/50 font-mono mb-2 leading-relaxed">
                 {project.platforms}
