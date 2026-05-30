@@ -6,9 +6,9 @@ export const personalData = {
   location: "Nigeria (Remote)",
   timezone: "WAT (UTC+1)",
   email: "enochc.official@gmail.com",
-  linkedin: "https://linkedin.com/in/enoch-chukwudi",
+  linkedin: "https://www.linkedin.com/in/enochchukwudi?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
   github: "https://github.com/enoch-systems",
-  twitter: "https://x.com/enoch_systems",
+  twitter: "https://x.com/_enochsystems?s=21",
   bio: [
     "I'm a backend-leaning fullstack developer focused on building real-world operational systems using modern web technologies.",
     "I enjoy designing APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.",

@@ -1,30 +1,47 @@
+import { personalData } from "@/lib/data";
+
 export default function SocialSidebar() {
   return (
     <div className="fixed left-8 top-1/2 z-40 hidden -translate-y-1/2 lg:flex flex-col items-center gap-6">
-      <div className="h-[1px] w-8 bg-slate-300" />
+      <div className="h-[1px] w-8 bg-white/30" />
 
-      <a href="#" className="text-slate-400 transition hover:text-slate-950">
-        <span className="sr-only">Instagram</span>
+      <a
+        href={personalData.linkedin}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-white/40 transition hover:text-white"
+      >
+        <span className="sr-only">LinkedIn</span>
         <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm0 1.5A4.25 4.25 0 003.5 7.75v8.5A4.25 4.25 0 007.75 20.5h8.5a4.25 4.25 0 004.25-4.25v-8.5A4.25 4.25 0 0016.25 3.5h-8.5zm4.25 3.75a5 5 0 110 10 5 5 0 010-10zm0 1.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm4.75-.75a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z" />
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
         </svg>
       </a>
 
-      <a href="#" className="text-slate-400 transition hover:text-slate-950">
-        <span className="sr-only">Behance</span>
+      <a
+        href={personalData.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-white/40 transition hover:text-white"
+      >
+        <span className="sr-only">GitHub</span>
         <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M14.5 9.5a3.5 3.5 0 110 7h-3.5V9.5H14.5zm4 0h3.5v1.5h-3.5V9.5zm0 3.5h3.5v1.5h-3.5V13zM7 6.5A4.5 4.5 0 002.5 11v2a4.5 4.5 0 004.5 4.5h4A4.5 4.5 0 0015 13v-2a4.5 4.5 0 00-4.5-4.5H7zM7 8h4a2.5 2.5 0 01.13 5H7V8z" />
+          <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
         </svg>
       </a>
 
-      <a href="#" className="text-slate-400 transition hover:text-slate-950">
-        <span className="sr-only">Dribbble</span>
+      <a
+        href={personalData.twitter}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-white/40 transition hover:text-white"
+      >
+        <span className="sr-only">X</span>
         <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 2C6.48 2 2 6.48 2 12a9.99 9.99 0 0014.71 9.22c2.46-1 4.34-2.98 5.31-5.46A9.962 9.962 0 0012 2zm5.61 16.12c-.82 1.5-2.1 2.72-3.63 3.47a8.48 8.48 0 01-5.3-.55A8.493 8.493 0 014 12c0-1.35.33-2.63.92-3.75l6.56 6.56c.02.34.05.68.05 1.03 0 .37-.02.73-.06 1.09l-.56-.56c.46-.36.88-.76 1.24-1.19l5.4 5.4c.06-.13.12-.26.17-.4a8.53 8.53 0 00.84-2.37z" />
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
         </svg>
       </a>
 
-      <div className="h-[1px] w-8 bg-slate-300" />
+      <div className="h-[1px] w-8 bg-white/30" />
     </div>
   );
 }
