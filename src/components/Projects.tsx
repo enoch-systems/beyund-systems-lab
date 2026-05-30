@@ -57,7 +57,7 @@ export default function Projects() {
               PROJECTS
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              I ship
+              I ship — and projects you would build
             </p>
           </div>
         </div>
@@ -72,7 +72,7 @@ export default function Projects() {
                 : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white/90"
             }`}
           >
-            African Focus
+            My Projects
           </button>
           <button
             onClick={() => switchTab("global")}
@@ -82,7 +82,7 @@ export default function Projects() {
                 : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white/90"
             }`}
           >
-            Global
+            Student Projects
           </button>
         </div>
 

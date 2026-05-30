@@ -5,37 +5,37 @@ import { useState } from "react";
 const layersData = [
   {
     name: "Client Layer",
-    build: ["web apps", "dashboards", "mobile apps", "admin panels"],
+    build: ["responsive UIs", "component architecture", "state management"],
     tools: ["Next.js", "React", "Flutter"],
     concepts: ["SSR / SSG / ISR", "auth flows (JWT / OAuth2)", "role-based UI"],
   },
   {
     name: "Communication / API Layer",
-    build: ["REST APIs", "real-time endpoints", "webhooks"],
+    build: ["RESTful endpoints", "real-time connections", "webhooks"],
     tools: ["Express.js", "Hono", "FastAPI", "tRPC"],
     concepts: ["versioning", "middleware chains", "rate limiting", "request validation"],
   },
   {
     name: "Backend / Application Logic Layer",
-    build: ["business logic", "service modules", "multi-tenant systems"],
+    build: ["service modules", "business rules", "multi-tenant architecture"],
     tools: ["Node.js", "NestJS", "Next.js API Routes"],
     concepts: ["separation of concerns", "event-driven design", "dependency injection"],
   },
   {
     name: "Data Access Layer",
-    build: ["data models", "query layers", "migrations"],
+    build: ["data modeling", "query optimization", "schema migrations"],
     tools: ["Prisma", "Drizzle", "Supabase (PostgREST)"],
     concepts: ["ORM vs raw SQL tradeoffs", "query optimization", "type-safe queries"],
   },
   {
     name: "Storage Layer",
-    build: ["file uploads", "image pipelines", "caching layers"],
+    build: ["file upload pipelines", "image optimization", "caching strategies"],
     tools: ["PostgreSQL", "Redis", "Cloudinary"],
     concepts: ["ACID transactions", "indexing strategy", "cache invalidation"],
   },
   {
     name: "Workflow / Background Jobs Layer",
-    build: ["email pipelines", "scheduled tasks", "async processing"],
+    build: ["email automation", "scheduled tasks", "async processing"],
     tools: ["BullMQ", "Inngest", "Puppeteer"],
     concepts: ["job queues", "retry & backoff", "idempotency"],
   },
@@ -53,7 +53,7 @@ const layersData = [
   },
   {
     name: "Architecture Layer",
-    build: ["project scaffolds", "CI/CD pipelines", "deployment configs"],
+    build: ["project scaffolding", "CI/CD pipelines", "deployment configs"],
     tools: ["Vercel", "Docker", "GitHub Actions", "Turborepo"],
     concepts: ["serverless vs containerized", "zero-downtime deploys", "scalability planning"],
   },
@@ -88,7 +88,7 @@ export default function Layers() {
               LAYERS
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              I work on
+              relate how we teach
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function Layers() {
                 >
                   <div className="px-5 md:px-7 pb-6 md:pb-7 space-y-4 md:space-y-5 border-t border-white/10 pt-4 md:pt-5">
                     <div>
-                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">what i build</p>
+                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">what you learn</p>
                       <div className="flex flex-wrap gap-2">
                         {layer.build.map((item) => (
                           <Pill key={item} label={item} />
@@ -132,7 +132,7 @@ export default function Layers() {
                       </div>
                     </div>
                     <div>
-                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">tools i use</p>
+                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">tools you use</p>
                       <div className="flex flex-wrap gap-2">
                         {layer.tools.map((tool) => (
                           <span key={tool} className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-medium rounded-full border border-green-500/30 bg-green-500/15 text-green-200">
@@ -142,7 +142,7 @@ export default function Layers() {
                       </div>
                     </div>
                     <div>
-                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">concepts i consider</p>
+                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">concepts you master</p>
                       <div className="flex flex-wrap gap-2">
                         {layer.concepts.map((concept) => (
                           <Pill key={concept} label={concept} />
