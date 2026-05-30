@@ -122,6 +122,15 @@ export default function Projects() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-10">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="w-9 h-9 rounded-full text-xs font-medium flex items-center justify-center bg-white/10 text-white/60 hover:bg-white/20 hover:text-white/90 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
               <button
                 key={p}
@@ -135,6 +144,15 @@ export default function Projects() {
                 {p}
               </button>
             ))}
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="w-9 h-9 rounded-full text-xs font-medium flex items-center justify-center bg-white/10 text-white/60 hover:bg-white/20 hover:text-white/90 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         )}
       </div>
