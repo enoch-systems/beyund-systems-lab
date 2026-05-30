@@ -56,13 +56,17 @@ export default function About() {
             >
               About Me
             </h2>
-            <p
-              className={`text-lg text-white/70 mb-6 leading-relaxed transition-all duration-1000 ease-out delay-200 ${
+            <div
+              className={`space-y-10 transition-all duration-1000 ease-out delay-200 ${
                 visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
               }`}
             >
-              {personalData.bio}
-            </p>
+              {personalData.bio.map((paragraph, i) => (
+                <p key={i} className="text-lg text-white/70 leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
             <div className={`space-y-4 transition-all duration-1000 ease-out delay-500 ${
               visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
             }`}>
