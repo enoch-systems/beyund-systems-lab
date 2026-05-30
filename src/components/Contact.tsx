@@ -425,28 +425,47 @@ export default function Contact() {
               </div>
 
               <div className="mt-6">
-                <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">State/Province *</label>
-                <div className="relative">
-                  <select
-                    name="state"
-                    value={form.state || ""}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                  >
-                    <option value="" disabled>
-                      {loadingStates ? "Loading states..." : "Select state"}
-                    </option>
-                    {states.map((state) => (
-                      <option key={state.code} value={state.code}>
-                        {state.name}
-                      </option>
-                    ))}
-                  </select>
-                  <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+                {loadingStates ? (
+                  <>
+                    <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">State/Province</label>
+                    <div className="relative">
+                      <select
+                        disabled
+                        className="w-full px-5 py-4 rounded-xl bg-neutral-900/50 border border-white/10 text-white/40 text-sm cursor-not-allowed"
+                      >
+                        <option>Loading states...</option>
+                      </select>
+                    </div>
+                  </>
+                ) : states.length > 0 ? (
+                  <>
+                    <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">State/Province *</label>
+                    <div className="relative">
+                      <select
+                        name="state"
+                        value={form.state || ""}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                      >
+                        <option value="" disabled>Select state</option>
+                        {states.map((state) => (
+                          <option key={state.code} value={state.code}>
+                            {state.name}
+                          </option>
+                        ))}
+                      </select>
+                      <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </>
+                ) : form.country && form.country !== "OTHER" ? (
+                  <>
+                    <input type="hidden" name="state" value="n/a" />
+                    <p className="text-white/40 text-xs mt-2 italic">This country has no states/provinces.</p>
+                  </>
+                ) : null}
               </div>
             </div>
 
