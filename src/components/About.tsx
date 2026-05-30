@@ -70,7 +70,7 @@ export default function About() {
               }`}
             >
               <p className="text-white/70 leading-relaxed">
-                Learn fullstack development with us at Beyund systems labs, a structured learning program focused on building real world operational systems using modern web technologies.
+                Learn fullstack development with us at Beyund systems labs — a structured learning program focused on building real world operational systems using modern web technologies.
               </p>
               
               <p className="text-white/70 leading-relaxed">
@@ -79,6 +79,10 @@ export default function About() {
               
               <p className="text-white/70 leading-relaxed">
                 Our curriculum covers fintech systems, logistics operations, fraud aware workflows, and fullstack applications with structured architecture, everything you need to ship production grade software.
+              </p>
+              
+              <p className="text-white/70 leading-relaxed">
+                <span className="text-green-300 font-semibold">Cohort 1 is now open</span> — Limited spots available. Join the first intake and be part of shaping the program from the ground up.
               </p>
 
               {/* What You Stand to Get */}
