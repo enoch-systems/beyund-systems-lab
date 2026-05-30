@@ -21,8 +21,10 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Left spacer / logo area */}
-        <div />
+        {/* Logo */}
+        <a href="#" className="text-2xl font-bold text-white tracking-tight hover:text-white/80 transition-colors duration-200">
+          E
+        </a>
 
         {/* Right side: links + button */}
         <div className="flex items-center gap-4 lg:gap-6">
