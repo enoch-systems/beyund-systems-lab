@@ -23,11 +23,11 @@ export default function Navbar() {
         {/* Logo */}
         <a href="#" className="flex items-center">
           <img
-            src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780133162/mnteqbivqp3h4rd5umcn.png"
+            src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
             alt="Logo"
             className="h-6 w-auto"
           />
-          <span className="text-base md:text-xl font-light tracking-wide -ml-0.5"><span className="text-white">beyond</span><span className="text-green-300"> systems lab</span></span>
+          <span className="text-base md:text-xl font-light tracking-wide -ml-1.5"><span className="text-white">eyund</span><span className="text-green-300"> systems labs</span></span>
         </a>
 
         {/* Right side — empty, just pushes logo left */}

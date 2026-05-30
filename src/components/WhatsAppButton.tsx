@@ -20,18 +20,17 @@ export default function WhatsAppButton() {
             ✕
           </button>
           {/* Chat bubble with glass effect */}
-          <div className="relative bg-gradient-to-br from-white/[0.12] to-white/[0.05] backdrop-blur-xl border border-white/[0.15] rounded-2xl px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+          <div className="relative bg-gradient-to-br from-white/[0.12] to-white/[0.05] backdrop-blur-xl border border-white/[0.15] rounded-lg px-3 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.4)] max-w-[180px]">
             {/* Inner glow */}
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#25D366]/10 to-transparent pointer-events-none" />
             <div className="relative">
               <p className="text-white/90 text-[13px] font-semibold leading-snug tracking-wide">
-                Let's collaborate 👋🏼
+                Speak to Enoch
               </p>
-              <p className="text-white/50 text-[11px] mt-1.5 leading-relaxed">
-                Have an idea or project?<br />
-                Reach out directly on{" "}
-                <span className="text-[#25D366] font-medium">WhatsApp</span>
+              <p className="text-white/50 text-[10px] mt-1.5 leading-relaxed">
+                Chat or secure a call section to make enquiries
               </p>
+           
               {/* Typing dots */}
               <div className="flex items-center gap-1 mt-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#25D366]/60 animate-pulse" />

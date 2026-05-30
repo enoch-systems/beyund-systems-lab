@@ -1,15 +1,4 @@
-About Us
-Learn fullstack development with us at Beyond Systems Lab, a structured learning program focused on building real world operational systems using modern web technologies.
-
-We teach how to design APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.
-
-Our curriculum covers fintech systems, logistics operations, fraud aware workflows, and fullstack applications with structured architecture, everything you need to ship production grade software.
-
-Become freelance ready and job ready with further mastery. After completing our program you will have the skills and portfolio to take on real world freelance projects or land a full time role as a fullstack developer.
-
-Location: Nigeria Remote
-Classes: Virtual
-Timezone: WAT (UTC+1)"use client";
+"use client";
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -60,33 +49,70 @@ export default function About() {
 
           {/* Right — text slides in from right, location/timezone fade from center */}
           <div>
-            <a href="#contact" className="inline-block">
-              <h2
-                className={`text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl mb-6 transition-all duration-1000 ease-out delay-100 hover:text-green-300 ${
-                  visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
-                }`}
-              >
-                About Us
-              </h2>
-            </a>
+            <div className="flex items-start gap-4 md:gap-6 mb-10 md:mb-14 max-w-2xl mx-auto">
+              <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
+              <div>
+                <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
+                  about
+                </p>
+                <h2
+                  className={`text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none transition-all duration-1000 ease-out delay-100 ${
+                    visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
+                  }`}
+                >
+                  About Us
+                </h2>
+              </div>
+            </div>
             <div
               className={`space-y-4 transition-all duration-1000 ease-out delay-200 ${
                 visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
               }`}
             >
-              <p className="text-lg text-white/70 leading-relaxed">
-                Learn fullstack development with us at <span className="text-green-300 font-semibold">Beyond Systems Lab</span>, a structured learning program focused on building real world operational systems using modern web technologies.
+              <p className="text-white/70 leading-relaxed">
+                Learn fullstack development with us at Beyund systems labs, a structured learning program focused on building real world operational systems using modern web technologies.
               </p>
-              <p className="text-lg text-white/70 leading-relaxed">
+              
+              <p className="text-white/70 leading-relaxed">
                 We teach how to design APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.
               </p>
-              <p className="text-lg text-white/70 leading-relaxed">
+              
+              <p className="text-white/70 leading-relaxed">
                 Our curriculum covers fintech systems, logistics operations, fraud aware workflows, and fullstack applications with structured architecture, everything you need to ship production grade software.
               </p>
-              <div className="mt-6 p-4 md:p-5 rounded-xl border border-green-500/30 bg-green-500/10">
-                <p className="text-base md:text-lg text-green-200 leading-relaxed font-medium">
-                  Become freelance ready and job ready with further mastery. After completing our program you will have the skills and portfolio to take on real world freelance projects or land a full time role as a fullstack developer.
-                </p>
+
+              {/* What You Stand to Get */}
+              <div className="mt-6 p-5 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm">
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white text-sm font-bold">
+                    ✓
+                  </span>
+                  <div>
+                    <p className="text-base md:text-lg text-white leading-relaxed font-semibold mb-4">
+                      What you stand to get
+                    </p>
+                    
+                    <p className="text-white/70 leading-relaxed mb-4">
+                      Hands on training on real world projects that prepare you for freelance and full time roles.
+                    </p>
+                    
+                    <p className="text-white/70 leading-relaxed mb-4">
+                      You will build a portfolio of production grade systems, get mentorship from an experienced engineer, and gain the confidence to work on any fullstack application independently.
+                    </p>
+                    
+                    <p className="text-white/70 leading-relaxed mb-4">
+                      Become freelance ready and develop your own things.
+                    </p>
+                    
+                    <p className="text-white/70 leading-relaxed mb-4">
+                      Start your freelance journey with resilience and deeper mastery.
+                    </p>
+                    
+                    <p className="text-white/70 leading-relaxed">
+                      Job possibility with resilience and deeper mastery.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
             <div className={`mt-10 space-y-4 transition-all duration-1000 ease-out delay-500 ${

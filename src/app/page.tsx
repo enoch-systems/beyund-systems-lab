@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
 import SocialSidebar from "@/components/SocialSidebar";
+import MeetTheMentor from "@/components/MeetTheMentor";
 import Layers from "@/components/Layers";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
@@ -10,14 +10,14 @@ import ScrollToTop from "@/components/ScrollToTop";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-black">
+    <main className="relative min-h-screen bg-black pt-5">
       <ScrollToTop />
       {/* Fixed background covering entire page */}
       <div className="fixed inset-0 bg-black/80" />
       <div
         className="fixed inset-0"
         style={{
-          backgroundImage: "url('https://res.cloudinary.com/djdbcoyot/image/upload/v1779492891/tvchvy2zbigbduggdlmi.jpg')",
+          backgroundImage: "url('https://res.cloudinary.com/djdbcoyot/image/upload/v1779492891/luiuteuxzssb1yhzwggr.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -32,9 +32,8 @@ export default function Home() {
 
       <div className="relative z-10">
         <Navbar />
-        <Hero>
-          <SocialSidebar />
-        </Hero>
+        <SocialSidebar />
+        <MeetTheMentor />
         <Layers />
         <About />
         <Contact />
