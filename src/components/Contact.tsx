@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { personalData } from "@/lib/data";
 
 export default function Contact() {
@@ -18,6 +18,84 @@ export default function Contact() {
     hearAboutUs: "",
     reason: ""
   });
+
+  const [countries, setCountries] = useState<{ code: string; name: string }[]>([]);
+  const [states, setStates] = useState<{ code: string; name: string }[]>([]);
+  const [loadingCountries, setLoadingCountries] = useState(true);
+  const [loadingStates, setLoadingStates] = useState(false);
+
+  useEffect(() => {
+    // Fetch countries from REST Countries API
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch("https://restcountries.com/v3.1/all?fields=cca2,name");
+        const data = await response.json();
+        const sortedCountries = data
+          .map((country: any) => ({
+            code: country.cca2,
+            name: country.name.common
+          }))
+          .sort((a: any, b: any) => a.name.localeCompare(b.name));
+        setCountries(sortedCountries);
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+        // Fallback to a minimal list if API fails
+        setCountries([
+          { code: "NG", name: "Nigeria" },
+          { code: "US", name: "United States" },
+          { code: "GB", name: "United Kingdom" },
+          { code: "CA", name: "Canada" },
+          { code: "AU", name: "Australia" },
+          { code: "DE", name: "Germany" },
+          { code: "FR", name: "France" },
+          { code: "IN", name: "India" },
+          { code: "BR", name: "Brazil" },
+          { code: "ZA", name: "South Africa" },
+          { code: "KE", name: "Kenya" },
+          { code: "GH", name: "Ghana" },
+          { code: "EG", name: "Egypt" },
+          { code: "MA", name: "Morocco" },
+          { code: "TZ", name: "Tanzania" },
+          { code: "UG", name: "Uganda" },
+          { code: "OTHER", name: "Other" }
+        ]);
+      } finally {
+        setLoadingCountries(false);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  useEffect(() => {
+    // Fetch states based on selected country
+    const fetchStates = async () => {
+      if (!form.country || form.country === "OTHER") {
+        setStates([]);
+        return;
+      }
+
+      setLoadingStates(true);
+      try {
+        const response = await fetch(`https://api.countrystatecity.in/v1/countries/${form.country}/states`);
+        const data = await response.json();
+        const sortedStates = data
+          .map((state: any) => ({
+            code: state.iso2 || state.id,
+            name: state.name
+          }))
+          .sort((a: any, b: any) => a.name.localeCompare(b.name));
+        setStates(sortedStates);
+      } catch (error) {
+        console.error("Error fetching states:", error);
+        setStates([]);
+      } finally {
+        setLoadingStates(false);
+      }
+    };
+
+    fetchStates();
+  }, [form.country]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -314,25 +392,14 @@ export default function Contact() {
                       required
                       className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                     >
-                      <option value="" disabled>Select country</option>
-                      <option value="NG">Nigeria</option>
-                      <option value="US">United States</option>
-                      <option value="GB">United Kingdom</option>
-                      <option value="CA">Canada</option>
-                      <option value="AU">Australia</option>
-                      <option value="DE">Germany</option>
-                      <option value="FR">France</option>
-                      <option value="IN">India</option>
-                      <option value="BR">Brazil</option>
-                      <option value="ZA">South Africa</option>
-                      <option value="KE">Kenya</option>
-                      <option value="GH">Ghana</option>
-                      <option value="EG">Egypt</option>
-                      <option value="MA">Morocco</option>
-                      <option value="TZ">Tanzania</option>
-                      <option value="UG">Uganda</option>
-                      <option value="ZA">South Africa</option>
-                      <option value="OTHER">Other</option>
+                      <option value="" disabled>
+                        {loadingCountries ? "Loading countries..." : "Select country"}
+                      </option>
+                      {countries.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.name}
+                        </option>
+                      ))}
                     </select>
                     <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -351,442 +418,14 @@ export default function Contact() {
                     required
                     className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                   >
-                    <option value="" disabled>Select state</option>
-                    {form.country === "NG" && (
-                      <>
-                        <option value="AB">Abia</option>
-                        <option value="AD">Adamawa</option>
-                        <option value="AK">Akwa Ibom</option>
-                        <option value="AN">Anambra</option>
-                        <option value="BA">Bauchi</option>
-                        <option value="BE">Bayelsa</option>
-                        <option value="BO">Benue</option>
-                        <option value="BO">Borno</option>
-                        <option value="CR">Cross River</option>
-                        <option value="DE">Delta</option>
-                        <option value="EB">Ebonyi</option>
-                        <option value="ED">Edo</option>
-                        <option value="EK">Ekiti</option>
-                        <option value="EN">Enugu</option>
-                        <option value="GO">Gombe</option>
-                        <option value="IM">Imo</option>
-                        <option value="JI">Jigawa</option>
-                        <option value="KD">Kaduna</option>
-                        <option value="KN">Kano</option>
-                        <option value="KT">Katsina</option>
-                        <option value="KE">Kebbi</option>
-                        <option value="KO">Kogi</option>
-                        <option value="KW">Kwara</option>
-                        <option value="LA">Lagos</option>
-                        <option value="NA">Nasarawa</option>
-                        <option value="NI">Niger</option>
-                        <option value="OG">Ogun</option>
-                        <option value="ON">Ondo</option>
-                        <option value="OS">Osun</option>
-                        <option value="OY">Oyo</option>
-                        <option value="PL">Plateau</option>
-                        <option value="RI">Rivers</option>
-                        <option value="SO">Sokoto</option>
-                        <option value="TA">Taraba</option>
-                        <option value="YO">Yobe</option>
-                        <option value="ZA">Zamfara</option>
-                        <option value="FC">FCT</option>
-                      </>
-                    )}
-                    {form.country === "US" && (
-                      <>
-                        <option value="AL">Alabama</option>
-                        <option value="AK">Alaska</option>
-                        <option value="AZ">Arizona</option>
-                        <option value="AR">Arkansas</option>
-                        <option value="CA">California</option>
-                        <option value="CO">Colorado</option>
-                        <option value="CT">Connecticut</option>
-                        <option value="DE">Delaware</option>
-                        <option value="FL">Florida</option>
-                        <option value="GA">Georgia</option>
-                        <option value="HI">Hawaii</option>
-                        <option value="ID">Idaho</option>
-                        <option value="IL">Illinois</option>
-                        <option value="IN">Indiana</option>
-                        <option value="IA">Iowa</option>
-                        <option value="KS">Kansas</option>
-                        <option value="KY">Kentucky</option>
-                        <option value="LA">Louisiana</option>
-                        <option value="ME">Maine</option>
-                        <option value="MD">Maryland</option>
-                        <option value="MA">Massachusetts</option>
-                        <option value="MI">Michigan</option>
-                        <option value="MN">Minnesota</option>
-                        <option value="MS">Mississippi</option>
-                        <option value="MO">Missouri</option>
-                        <option value="MT">Montana</option>
-                        <option value="NE">Nebraska</option>
-                        <option value="NV">Nevada</option>
-                        <option value="NH">New Hampshire</option>
-                        <option value="NJ">New Jersey</option>
-                        <option value="NM">New Mexico</option>
-                        <option value="NY">New York</option>
-                        <option value="NC">North Carolina</option>
-                        <option value="ND">North Dakota</option>
-                        <option value="OH">Ohio</option>
-                        <option value="OK">Oklahoma</option>
-                        <option value="OR">Oregon</option>
-                        <option value="PA">Pennsylvania</option>
-                        <option value="RI">Rhode Island</option>
-                        <option value="SC">South Carolina</option>
-                        <option value="SD">South Dakota</option>
-                        <option value="TN">Tennessee</option>
-                        <option value="TX">Texas</option>
-                        <option value="UT">Utah</option>
-                        <option value="VT">Vermont</option>
-                        <option value="VA">Virginia</option>
-                        <option value="WA">Washington</option>
-                        <option value="WV">West Virginia</option>
-                        <option value="WI">Wisconsin</option>
-                        <option value="WY">Wyoming</option>
-                      </>
-                    )}
-                    {form.country === "GB" && (
-                      <>
-                        <option value="ENG">England</option>
-                        <option value="SCT">Scotland</option>
-                        <option value="WLS">Wales</option>
-                        <option value="NIR">Northern Ireland</option>
-                      </>
-                    )}
-                    {form.country === "CA" && (
-                      <>
-                        <option value="AB">Alberta</option>
-                        <option value="BC">British Columbia</option>
-                        <option value="MB">Manitoba</option>
-                        <option value="NB">New Brunswick</option>
-                        <option value="NL">Newfoundland and Labrador</option>
-                        <option value="NS">Nova Scotia</option>
-                        <option value="ON">Ontario</option>
-                        <option value="PE">Prince Edward Island</option>
-                        <option value="QC">Quebec</option>
-                        <option value="SK">Saskatchewan</option>
-                        <option value="NT">Northwest Territories</option>
-                        <option value="NU">Nunavut</option>
-                        <option value="YT">Yukon</option>
-                      </>
-                    )}
-                    {form.country === "AU" && (
-                      <>
-                        <option value="NSW">New South Wales</option>
-                        <option value="VIC">Victoria</option>
-                        <option value="QLD">Queensland</option>
-                        <option value="WA">Western Australia</option>
-                        <option value="SA">South Australia</option>
-                        <option value="TAS">Tasmania</option>
-                        <option value="ACT">Australian Capital Territory</option>
-                        <option value="NT">Northern Territory</option>
-                      </>
-                    )}
-                    {form.country === "DE" && (
-                      <>
-                        <option value="BW">Baden-Württemberg</option>
-                        <option value="BY">Bavaria</option>
-                        <option value="BE">Berlin</option>
-                        <option value="BB">Brandenburg</option>
-                        <option value="HB">Bremen</option>
-                        <option value="HH">Hamburg</option>
-                        <option value="HE">Hesse</option>
-                        <option value="MV">Mecklenburg-Vorpommern</option>
-                        <option value="NI">Lower Saxony</option>
-                        <option value="NW">North Rhine-Westphalia</option>
-                        <option value="RP">Rhineland-Palatinate</option>
-                        <option value="SL">Saarland</option>
-                        <option value="SN">Saxony</option>
-                        <option value="ST">Saxony-Anhalt</option>
-                        <option value="SH">Schleswig-Holstein</option>
-                        <option value="TH">Thuringia</option>
-                      </>
-                    )}
-                    {form.country === "FR" && (
-                      <>
-                        <option value="IDF">Île-de-France</option>
-                        <option value="NAQ">Nouvelle-Aquitaine</option>
-                        <option value="OCC">Occitanie</option>
-                        <option value="HDF">Hauts-de-France</option>
-                        <option value="ARA">Auvergne-Rhône-Alpes</option>
-                        <option value="BFC">Bourgogne-Franche-Comté</option>
-                        <option value="NOR">Normandie</option>
-                        <option value="PDL">Pays de la Loire</option>
-                        <option value="BRE">Bretagne</option>
-                        <option value="CVL">Centre-Val de Loire</option>
-                        <option value="COR">Corsica</option>
-                        <option value="GES">Grand Est</option>
-                        <option value="PAC">Provence-Alpes-Côte d'Azur</option>
-                        <option value="GUA">Guadeloupe</option>
-                        <option value="MTQ">Martinique</option>
-                        <option value="GUF">Guyane</option>
-                        <option value="RE">Réunion</option>
-                        <option value="MYT">Mayotte</option>
-                      </>
-                    )}
-                    {form.country === "IN" && (
-                      <>
-                        <option value="AN">Andhra Pradesh</option>
-                        <option value="AP">Arunachal Pradesh</option>
-                        <option value="AS">Assam</option>
-                        <option value="BR">Bihar</option>
-                        <option value="CH">Chhattisgarh</option>
-                        <option value="GA">Goa</option>
-                        <option value="GJ">Gujarat</option>
-                        <option value="HR">Haryana</option>
-                        <option value="HP">Himachal Pradesh</option>
-                        <option value="JH">Jharkhand</option>
-                        <option value="KA">Karnataka</option>
-                        <option value="KL">Kerala</option>
-                        <option value="MP">Madhya Pradesh</option>
-                        <option value="MH">Maharashtra</option>
-                        <option value="MN">Manipur</option>
-                        <option value="ML">Meghalaya</option>
-                        <option value="MZ">Mizoram</option>
-                        <option value="NL">Nagaland</option>
-                        <option value="OR">Odisha</option>
-                        <option value="PB">Punjab</option>
-                        <option value="RJ">Rajasthan</option>
-                        <option value="SK">Sikkim</option>
-                        <option value="TN">Tamil Nadu</option>
-                        <option value="TG">Telangana</option>
-                        <option value="TR">Tripura</option>
-                        <option value="UP">Uttar Pradesh</option>
-                        <option value="UT">Uttarakhand</option>
-                        <option value="WB">West Bengal</option>
-                        <option value="AN">Andaman and Nicobar Islands</option>
-                        <option value="CH">Chandigarh</option>
-                        <option value="DN">Dadra and Nagar Haveli</option>
-                        <option value="DD">Daman and Diu</option>
-                        <option value="DL">Delhi</option>
-                        <option value="JK">Jammu and Kashmir</option>
-                        <option value="LA">Ladakh</option>
-                        <option value="LD">Lakshadweep</option>
-                        <option value="PY">Puducherry</option>
-                      </>
-                    )}
-                    {form.country === "BR" && (
-                      <>
-                        <option value="AC">Acre</option>
-                        <option value="AL">Alagoas</option>
-                        <option value="AP">Amapá</option>
-                        <option value="AM">Amazonas</option>
-                        <option value="BA">Bahia</option>
-                        <option value="CE">Ceará</option>
-                        <option value="DF">Distrito Federal</option>
-                        <option value="ES">Espírito Santo</option>
-                        <option value="GO">Goiás</option>
-                        <option value="MA">Maranhão</option>
-                        <option value="MT">Mato Grosso</option>
-                        <option value="MS">Mato Grosso do Sul</option>
-                        <option value="MG">Minas Gerais</option>
-                        <option value="PA">Pará</option>
-                        <option value="PB">Paraíba</option>
-                        <option value="PR">Paraná</option>
-                        <option value="PE">Pernambuco</option>
-                        <option value="PI">Piauí</option>
-                        <option value="RJ">Rio de Janeiro</option>
-                        <option value="RN">Rio Grande do Norte</option>
-                        <option value="RS">Rio Grande do Sul</option>
-                        <option value="RO">Rondônia</option>
-                        <option value="RR">Roraima</option>
-                        <option value="SC">Santa Catarina</option>
-                        <option value="SP">São Paulo</option>
-                        <option value="SE">Sergipe</option>
-                        <option value="TO">Tocantins</option>
-                      </>
-                    )}
-                    {form.country === "ZA" && (
-                      <>
-                        <option value="EC">Eastern Cape</option>
-                        <option value="FS">Free State</option>
-                        <option value="GP">Gauteng</option>
-                        <option value="KZ">KwaZulu-Natal</option>
-                        <option value="LP">Limpopo</option>
-                        <option value="MP">Mpumalanga</option>
-                        <option value="NW">North West</option>
-                        <option value="NC">Northern Cape</option>
-                        <option value="WC">Western Cape</option>
-                      </>
-                    )}
-                    {form.country === "KE" && (
-                      <>
-                        <option value="01">Baringo</option>
-                        <option value="02">Bomet</option>
-                        <option value="03">Bungoma</option>
-                        <option value="04">Busia</option>
-                        <option value="05">Embu</option>
-                        <option value="06">Garissa</option>
-                        <option value="07">Homa Bay</option>
-                        <option value="08">Isiolo</option>
-                        <option value="09">Kajiado</option>
-                        <option value="10">Kakamega</option>
-                        <option value="11">Kericho</option>
-                        <option value="12">Kiambu</option>
-                        <option value="13">Kilifi</option>
-                        <option value="14">Kirinyaga</option>
-                        <option value="15">Kisii</option>
-                        <option value="16">Kisumu</option>
-                        <option value="17">Kitui</option>
-                        <option value="18">Kwale</option>
-                        <option value="19">Laikipia</option>
-                        <option value="20">Lamu</option>
-                        <option value="21">Machakos</option>
-                        <option value="22">Makueni</option>
-                        <option value="23">Mandera</option>
-                        <option value="24">Marsabit</option>
-                        <option value="25">Meru</option>
-                        <option value="26">Migori</option>
-                        <option value="27">Mombasa</option>
-                        <option value="28">Murang'a</option>
-                        <option value="29">Nairobi</option>
-                        <option value="30">Nakuru</option>
-                        <option value="31">Nandi</option>
-                        <option value="32">Narok</option>
-                        <option value="33">Nyamira</option>
-                        <option value="34">Nyandarua</option>
-                        <option value="35">Nyeri</option>
-                        <option value="36">Samburu</option>
-                        <option value="37">Siaya</option>
-                        <option value="38">Taita Taveta</option>
-                        <option value="39">Tana River</option>
-                        <option value="40">Tharaka-Nithi</option>
-                        <option value="41">Trans Nzoia</option>
-                        <option value="42">Turkana</option>
-                        <option value="43">Uasin Gishu</option>
-                        <option value="44">Vihiga</option>
-                        <option value="45">Wajir</option>
-                        <option value="46">West Pokot</option>
-                      </>
-                    )}
-                    {form.country === "GH" && (
-                      <>
-                        <option value="AH">Ashanti</option>
-                        <option value="BA">Brong-Ahafo</option>
-                        <option value="CE">Central</option>
-                        <option value="EA">Eastern</option>
-                        <option value="GA">Greater Accra</option>
-                        <option value="NO">Northern</option>
-                        <option value="UE">Upper East</option>
-                        <option value="UW">Upper West</option>
-                        <option value="VO">Volta</option>
-                        <option value="WE">Western</option>
-                      </>
-                    )}
-                    {form.country === "EG" && (
-                      <>
-                        <option value="ALX">Alexandria</option>
-                        <option value="ASN">Aswan</option>
-                        <option value="AST">Asyut</option>
-                        <option value="BNS">Beheira</option>
-                        <option value="BHR">Beni Suef</option>
-                        <option value="C">Cairo</option>
-                        <option value="DK">Dakahlia</option>
-                        <option value="DT">Damietta</option>
-                        <option value="FYM">Faiyum</option>
-                        <option value="GH">Gharbia</option>
-                        <option value="GZ">Giza</option>
-                        <option value="IS">Ismailia</option>
-                        <option value="KFS">Kafr El Sheikh</option>
-                        <option value="MT">Matrouh</option>
-                        <option value="MN">Minya</option>
-                        <option value="MNF">Monufia</option>
-                        <option value="WAD">New Valley</option>
-                        <option value="PTS">North Sinai</option>
-                        <option value="PT">Port Said</option>
-                        <option value="SHG">Qalyubia</option>
-                        <option value="KN">Qena</option>
-                        <option value="BA">Red Sea</option>
-                        <option value="RH">Rural Giza</option>
-                        <option value="SHR">Sharqia</option>
-                        <option value="SIN">South Sinai</option>
-                        <option value="SU">Suez</option>
-                        <option value="LX">Luxor</option>
-                      </>
-                    )}
-                    {form.country === "MA" && (
-                      <>
-                        <option value="01">Tanger-Tetouan-Al Hoceima</option>
-                        <option value="02">Oriental</option>
-                        <option value="03">Fès-Meknès</option>
-                        <option value="04">Rabat-Salé-Kénitra</option>
-                        <option value="05">Béni Mellal-Khénifra</option>
-                        <option value="06">Casablanca-Settat</option>
-                        <option value="07">Marrakech-Safi</option>
-                        <option value="08">Drâa-Tafilalet</option>
-                        <option value="09">Souss-Massa</option>
-                        <option value="10">Guelmim-Oued Noun</option>
-                        <option value="11">Laâyoune-Sakia El Hamra</option>
-                        <option value="12">Dakhla-Oued Ed-Dahab</option>
-                      </>
-                    )}
-                    {form.country === "TZ" && (
-                      <>
-                        <option value="01">Arusha</option>
-                        <option value="02">Dar es Salaam</option>
-                        <option value="03">Dodoma</option>
-                        <option value="04">Iringa</option>
-                        <option value="05">Kagera</option>
-                        <option value="06">Kaskazini Pemba</option>
-                        <option value="07">Kaskazini Unguja</option>
-                        <option value="08">Kigoma</option>
-                        <option value="09">Kilimanjaro</option>
-                        <option value="10">Kusini Pemba</option>
-                        <option value="11">Kusini Unguja</option>
-                        <option value="12">Mara</option>
-                        <option value="13">Mbeya</option>
-                        <option value="14">Morogoro</option>
-                        <option value="15">Mtwara</option>
-                        <option value="16">Mwanza</option>
-                        <option value="17">Pwani</option>
-                        <option value="18">Rukwa</option>
-                        <option value="19">Ruvuma</option>
-                        <option value="20">Shinyanga</option>
-                        <option value="21">Simiyu</option>
-                        <option value="22">Singida</option>
-                        <option value="23">Tabora</option>
-                        <option value="24">Tanga</option>
-                        <option value="25">Manyara</option>
-                      </>
-                    )}
-                    {form.country === "UG" && (
-                      <>
-                        <option value="AL">Algeria</option>
-                        <option value="AS">Aswan</option>
-                        <option value="AST">Asyut</option>
-                        <option value="BNS">Beheira</option>
-                        <option value="BHR">Beni Suef</option>
-                        <option value="C">Cairo</option>
-                        <option value="DK">Dakahlia</option>
-                        <option value="DT">Damietta</option>
-                        <option value="FYM">Faiyum</option>
-                        <option value="GH">Gharbia</option>
-                        <option value="GZ">Giza</option>
-                        <option value="IS">Ismailia</option>
-                        <option value="KFS">Kafr El Sheikh</option>
-                        <option value="MT">Matrouh</option>
-                        <option value="MN">Minya</option>
-                        <option value="MNF">Monufia</option>
-                        <option value="WAD">New Valley</option>
-                        <option value="PTS">North Sinai</option>
-                        <option value="PT">Port Said</option>
-                        <option value="SHG">Qalyubia</option>
-                        <option value="KN">Qena</option>
-                        <option value="BA">Red Sea</option>
-                        <option value="RH">Rural Giza</option>
-                        <option value="SHR">Sharqia</option>
-                        <option value="SIN">South Sinai</option>
-                        <option value="SU">Suez</option>
-                        <option value="LX">Luxor</option>
-                      </>
-                    )}
-                    {form.country === "OTHER" && (
-                      <>
-                        <option value="other">Other</option>
-                      </>
-                    )}
+                    <option value="" disabled>
+                      {loadingStates ? "Loading states..." : "Select state"}
+                    </option>
+                    {states.map((state) => (
+                      <option key={state.code} value={state.code}>
+                        {state.name}
+                      </option>
+                    ))}
                   </select>
                   <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
