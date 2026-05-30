@@ -106,6 +106,10 @@ svg {
   animation: fade-in-up 1s ease-out;
 }
 
+.animate-fade-in-up-delayed {
+  animation: fade-in-up 1s ease-out 5s both;
+}
+
 .animate-spin-slow {
   animation: spin-slow 20s linear infinite;
 }

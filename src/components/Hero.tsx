@@ -57,19 +57,15 @@ export default function Hero({ children }: { children: React.ReactNode }) {
                 </svg>
 
                 {/* Image container */}
-                <div className="absolute inset-6 sm:inset-8 flex items-center justify-center">
-                  <div className="relative w-[280px] h-[280px] sm:w-[280px] sm:h-[280px] md:w-[320px] md:h-[320px] lg:w-[380px] lg:h-[380px] xl:w-[420px] xl:h-[420px] animate-fade-in-up rounded-full">
-                    <div className="absolute -inset-2 bg-slate-950/5 blur-xl rounded-full" />
-                    <div className="absolute inset-0 bg-white/90 ring-1 ring-slate-200 shadow-[0_30px_90px_rgba(15,23,42,0.12)] rounded-full" />
-                    <div className="relative h-full w-full overflow-hidden rounded-full">
-                      <Image
-                        src="/myimage/rada.png"
-                        alt="Rada"
-                        fill
-                        className="object-contain"
-                        priority
-                      />
-                    </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative w-[90%] h-[90%] animate-fade-in-up-delayed rounded-full overflow-hidden">
+                    <Image
+                      src="https://res.cloudinary.com/djdbcoyot/image/upload/v1777316852/construction/about/eng3.png"
+                      alt="Enoch Chukwudi"
+                      fill
+                      className="object-contain"
+                      priority
+                    />
                   </div>
                 </div>
               </div>
