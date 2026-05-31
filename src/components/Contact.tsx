@@ -226,7 +226,24 @@ export default function Contact() {
 
         <div className="max-w-xl mx-auto text-center mb-8">
           <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-            Ready to start your fullstack development journey at <span className="text-green-300 font-semibold">Beyund systems labs</span>?
+            Ready to start your fullstack development journey at{" "}
+            <span className="inline-flex items-center align-middle">
+              <span className="relative flex items-center">
+                <img
+                  src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
+                  alt="Beyund systems labs logo"
+                  className="h-5 w-auto md:h-6 lg:h-7 shrink-0 inline-block"
+                  style={{
+                    maskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
+                    WebkitMaskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
+                  }}
+                />
+                <span className="flex items-baseline -ml-1 md:-ml-1.5 lg:-ml-2 mix-blend-screen select-none">
+                  <span className="text-green-300 text-sm md:text-base lg:text-lg font-light tracking-wide">eyund</span>
+                  <span className="text-green-300/80 text-xs md:text-sm lg:text-base font-mono ml-0.5" style={{ fontVariant: "small-caps" }}>𝙻𝚊𝚋𝚜.</span>
+                </span>
+              </span>
+            </span>?
           </p>
         </div>
 
