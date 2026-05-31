@@ -8,25 +8,35 @@ export default function WhatsAppButton() {
   const [suppressed, setSuppressed] = useState(false);
   const cycleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // IntersectionObserver to suppress tooltip when Contact or Footer is in view
+  // Scroll-based visibility check — hide WhatsApp when contact header or footer is on screen
   useEffect(() => {
-    const targets = [
-      document.getElementById("contact"),
-      document.getElementById("contact-header"),
-      document.querySelector("footer"),
-    ].filter(Boolean) as Element[];
-    if (targets.length === 0) return;
+    const checkVisibility = () => {
+      const header = document.getElementById("contact-header");
+      const contact = document.getElementById("contact");
+      const footer = document.querySelector("footer");
+      const vh = window.innerHeight;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const anyIntersecting = entries.some((e) => e.isIntersecting);
-        setSuppressed(anyIntersecting);
-      },
-      { threshold: 0.05 }
-    );
+      const isElementVisible = (el: Element | null | undefined): boolean => {
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return rect.top < vh && rect.bottom > 0;
+      };
 
-    targets.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+      setSuppressed(
+        isElementVisible(header) || isElementVisible(contact) || isElementVisible(footer)
+      );
+    };
+
+    // Run immediately on mount (handles refresh while on contact/footer)
+    checkVisibility();
+
+    window.addEventListener("scroll", checkVisibility, { passive: true });
+    window.addEventListener("resize", checkVisibility, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", checkVisibility);
+      window.removeEventListener("resize", checkVisibility);
+    };
   }, []);
 
   // Animation cycle
