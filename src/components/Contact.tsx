@@ -36,6 +36,20 @@ export default function Contact() {
   const [slideOffset, setSlideOffset] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Global Enter key handler to trigger Next/Submit from anywhere in the form
+  useEffect(() => {
+    if (submitted) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && !(e.target instanceof HTMLTextAreaElement)) {
+        e.preventDefault();
+        if (currentStep < 6) goNext();
+        else handleSubmit();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentStep, submitted]);
+
   useEffect(() => {
     const fetchCountries = async () => {
       try {
