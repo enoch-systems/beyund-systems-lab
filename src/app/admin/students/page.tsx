@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
-import type { Student } from "@/lib/types";
+import type { StudentRegistration } from "@/lib/types";
 
 const statusOptions = ["pending", "contacted", "enrolled", "rejected"] as const;
 
 export default function StudentsPage() {
-  const [students, setStudents] = useState<Student[]>([]);
+  const [students, setStudents] = useState<StudentRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -20,7 +20,7 @@ export default function StudentsPage() {
 
   async function fetchStudents() {
     const { data, error } = await supabase
-      .from("students")
+      .from("student_registrations")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -30,11 +30,11 @@ export default function StudentsPage() {
     setLoading(false);
   }
 
-  async function updateStatus(studentId: string, newStatus: Student["status"]) {
+  async function updateStatus(studentId: string, newStatus: StudentRegistration["status"]) {
     setUpdatingId(studentId);
     const { error } = await supabase
-      .from("students")
-      .update({ status: newStatus, updated_at: new Date().toISOString() })
+      .from("student_registrations")
+      .update({ status: newStatus })
       .eq("id", studentId);
 
     if (!error) {
@@ -48,10 +48,10 @@ export default function StudentsPage() {
   }
 
   async function deleteStudent(studentId: string) {
-    if (!confirm("Are you sure you want to delete this student record?")) return;
+    if (!confirm("Are you sure you want to delete this registration?")) return;
 
     const { error } = await supabase
-      .from("students")
+      .from("student_registrations")
       .delete()
       .eq("id", studentId);
 
@@ -64,10 +64,10 @@ export default function StudentsPage() {
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
       searchQuery === "" ||
-      student.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.phone.includes(searchQuery);
+      student.phone_whatsapp.includes(searchQuery) ||
+      student.country.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus =
       statusFilter === "all" || student.status === statusFilter;
@@ -103,7 +103,7 @@ export default function StudentsPage() {
           </svg>
           <input
             type="text"
-            placeholder="Search by name, email, or phone..."
+            placeholder="Search by name, email, phone, or country..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 text-sm"
@@ -125,7 +125,7 @@ export default function StudentsPage() {
 
       {/* Results count */}
       <p className="text-sm text-gray-400">
-        Showing {filteredStudents.length} of {students.length} students
+        Showing {filteredStudents.length} of {students.length} registrations
       </p>
 
       {/* Students Table */}
@@ -136,8 +136,8 @@ export default function StudentsPage() {
               <tr className="border-b border-gray-800 text-left text-gray-400">
                 <th className="px-6 py-3 font-medium">Student</th>
                 <th className="px-6 py-3 font-medium">Phone</th>
-                <th className="px-6 py-3 font-medium">Program</th>
-                <th className="px-6 py-3 font-medium">Experience</th>
+                <th className="px-6 py-3 font-medium">Country</th>
+                <th className="px-6 py-3 font-medium">Course</th>
                 <th className="px-6 py-3 font-medium">Status</th>
                 <th className="px-6 py-3 font-medium">Date</th>
                 <th className="px-6 py-3 font-medium">Actions</th>
@@ -147,7 +147,7 @@ export default function StudentsPage() {
               {filteredStudents.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
-                    No students found.
+                    No registrations found.
                   </td>
                 </tr>
               ) : (
@@ -156,12 +156,11 @@ export default function StudentsPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-xs font-medium shrink-0">
-                          {student.first_name.charAt(0)}
-                          {student.last_name.charAt(0)}
+                          {student.full_name.charAt(0)}
                         </div>
                         <div className="min-w-0">
                           <p className="font-medium truncate">
-                            {student.first_name} {student.last_name}
+                            {student.full_name}
                           </p>
                           <p className="text-xs text-gray-400 truncate">
                             {student.email}
@@ -170,19 +169,19 @@ export default function StudentsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-300 whitespace-nowrap">
-                      {student.phone}
+                      {student.phone_whatsapp}
                     </td>
                     <td className="px-6 py-4 text-gray-300 whitespace-nowrap">
-                      {student.program_interest}
+                      {student.country}
                     </td>
-                    <td className="px-6 py-4 text-gray-300 whitespace-nowrap capitalize">
-                      {student.experience_level}
+                    <td className="px-6 py-4 text-gray-300 whitespace-nowrap">
+                      {student.course_applying_for}
                     </td>
                     <td className="px-6 py-4">
                       <select
                         value={student.status}
                         onChange={(e) =>
-                          updateStatus(student.id, e.target.value as Student["status"])
+                          updateStatus(student.id, e.target.value as StudentRegistration["status"])
                         }
                         disabled={updatingId === student.id}
                         className={`px-2 py-1 rounded-full text-xs font-medium border-0 focus:ring-2 focus:ring-cyan-500 cursor-pointer ${
@@ -209,7 +208,7 @@ export default function StudentsPage() {
                       <button
                         onClick={() => deleteStudent(student.id)}
                         className="text-gray-400 hover:text-red-400 transition-colors p-1"
-                        title="Delete student"
+                        title="Delete registration"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

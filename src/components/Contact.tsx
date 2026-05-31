@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { personalData } from "@/lib/data";
+import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function Contact() {
+  const supabase = createSupabaseBrowserClient();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -23,6 +26,9 @@ export default function Contact() {
   const [states, setStates] = useState<{ code: string; name: string }[]>([]);
   const [loadingCountries, setLoadingCountries] = useState(true);
   const [loadingStates, setLoadingStates] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     // Fetch countries from REST Countries API
@@ -115,26 +121,106 @@ export default function Contact() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    // Clear error for this field when user starts typing
+    if (errors[e.target.name]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[e.target.name];
+        return next;
+      });
+    }
+    // Clear submit status when user makes changes
+    if (submitStatus) setSubmitStatus(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validate = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!form.name.trim()) newErrors.name = "Full name is required";
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    if (!form.mobile.trim()) {
+      newErrors.mobile = "Phone number is required";
+    } else if (form.mobile.replace(/\D/g, "").length < 7) {
+      newErrors.mobile = "Please enter a valid phone number";
+    }
+    if (!form.sex) newErrors.sex = "Please select your sex";
+    if (!form.country) newErrors.country = "Please select your country";
+    if (!form.course) newErrors.course = "Please select a course";
+    if (!form.employment) newErrors.employment = "Please select employment status";
+    if (!form.laptop) newErrors.laptop = "Please select an option";
+    if (!form.hearAboutUs) newErrors.hearAboutUs = "Please select an option";
+    if (!form.reason.trim()) newErrors.reason = "Please tell us why you want to learn this skill";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder — could integrate with a service later
-    alert("Registration submitted! We'll get back to you soon.");
-    setForm({
-      name: "",
-      email: "",
-      mobile: "",
-      sex: "",
-      country: "",
-      state: "",
-      course: "",
-      employment: "",
-      laptop: "",
-      scholarship: "",
-      hearAboutUs: "",
-      reason: ""
+    setSubmitStatus(null);
+
+    if (!validate()) return;
+
+    setSubmitting(true);
+
+    // Get the country code dial prefix from the select
+    const phoneSelect = document.querySelector('select[defaultValue="+234"]') as HTMLSelectElement;
+    const dialCode = phoneSelect ? phoneSelect.value : "+234";
+    const fullPhone = `${dialCode}${form.mobile}`;
+
+    // Look up the country name from the code
+    const countryName = countries.find((c) => c.code === form.country)?.name || form.country;
+
+    // Map course value to display label
+    const courseLabel = form.course === "fullstack" ? "Full Stack Development" : form.course;
+
+    const { error } = await supabase.from("student_registrations").insert({
+      full_name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      phone_whatsapp: fullPhone,
+      sex: form.sex,
+      country: countryName,
+      state: form.state || null,
+      course_applying_for: courseLabel,
+      employment_status: form.employment,
+      has_laptop: form.laptop,
+      heard_about_us: form.hearAboutUs,
+      learning_reason: form.reason.trim(),
     });
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+      setSubmitStatus({
+        type: "error",
+        message: "Registration failed. Please try again later.",
+      });
+    } else {
+      setSubmitStatus({
+        type: "success",
+        message: "Registration submitted successfully.",
+      });
+      setForm({
+        name: "",
+        email: "",
+        mobile: "",
+        sex: "",
+        country: "",
+        state: "",
+        course: "",
+        employment: "",
+        laptop: "",
+        scholarship: "",
+        hearAboutUs: "",
+        reason: ""
+      });
+      setStates([]);
+    }
+
+    setSubmitting(false);
   };
 
   return (
@@ -170,6 +256,17 @@ export default function Contact() {
             <p className="text-white/40 text-xs">All fields are required</p>
           </div>
 
+          {/* Submit Status Message */}
+          {submitStatus && (
+            <div className={`mb-6 p-4 rounded-xl text-left text-sm font-medium ${
+              submitStatus.type === "success"
+                ? "bg-green-500/10 border border-green-500/20 text-green-400"
+                : "bg-red-500/10 border border-red-500/20 text-red-400"
+            }`}>
+              {submitStatus.message}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-8 mb-12 text-left">
             {/* Personal Information */}
             <div className="p-6 rounded-xl border border-white/10 bg-white/[0.02]">
@@ -185,9 +282,11 @@ export default function Contact() {
                     placeholder="Enter your full name"
                     value={form.name}
                     onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
+                    className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
+                      errors.name ? "border-red-500/50" : "border-white/20"
+                    }`}
                   />
+                  {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                 </div>
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Email Address *</label>
@@ -197,9 +296,11 @@ export default function Contact() {
                     placeholder="Enter your email"
                     value={form.email}
                     onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
+                    className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
+                      errors.email ? "border-red-500/50" : "border-white/20"
+                    }`}
                   />
+                  {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                 </div>
               </div>
 
@@ -371,14 +472,24 @@ export default function Contact() {
                       onChange={(e) => {
                         const val = e.target.value.replace(/\D/g, "").slice(0, 25);
                         setForm({ ...form, mobile: val });
+                        if (errors.mobile) {
+                          setErrors((prev) => {
+                            const next = { ...prev };
+                            delete next.mobile;
+                            return next;
+                          });
+                        }
+                        if (submitStatus) setSubmitStatus(null);
                       }}
                       inputMode="numeric"
                       pattern="[0-9]*"
                       maxLength={25}
-                      required
-                      className="flex-1 px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200"
+                      className={`flex-1 px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
+                        errors.mobile ? "border-red-500/50" : "border-white/20"
+                      }`}
                     />
                   </div>
+                  {errors.mobile && <p className="text-red-400 text-xs mt-1">{errors.mobile}</p>}
                 </div>
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Sex *</label>
@@ -387,8 +498,9 @@ export default function Contact() {
                       name="sex"
                       value={form.sex || ""}
                       onChange={handleChange}
-                      required
-                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${
+                        errors.sex ? "border-red-500/50" : "border-white/20"
+                      }`}
                     >
                       <option value="" disabled>Select your sex</option>
                       <option value="male">Male</option>
@@ -398,6 +510,7 @@ export default function Contact() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
+                  {errors.sex && <p className="text-red-400 text-xs mt-1">{errors.sex}</p>}
                 </div>
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Country *</label>
@@ -406,8 +519,9 @@ export default function Contact() {
                       name="country"
                       value={form.country || ""}
                       onChange={handleChange}
-                      required
-                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${
+                        errors.country ? "border-red-500/50" : "border-white/20"
+                      }`}
                     >
                       <option value="" disabled>
                         {loadingCountries ? "Loading countries..." : "Select country"}
@@ -422,6 +536,7 @@ export default function Contact() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
+                  {errors.country && <p className="text-red-400 text-xs mt-1">{errors.country}</p>}
                 </div>
               </div>
 
@@ -446,7 +561,6 @@ export default function Contact() {
                         name="state"
                         value={form.state || ""}
                         onChange={handleChange}
-                        required
                         className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
                       >
                         <option value="" disabled>Select state</option>
@@ -482,11 +596,14 @@ export default function Contact() {
                     name="course"
                     value={form.course || ""}
                     onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                    className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${
+                      errors.course ? "border-red-500/50" : "border-white/20"
+                    }`}
                   >
+                    <option value="" disabled>Select course</option>
                     <option value="fullstack">Full Stack Development</option>
                   </select>
+                  {errors.course && <p className="text-red-400 text-xs mt-1">{errors.course}</p>}
                 </div>
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Employment Status *</label>
@@ -495,8 +612,9 @@ export default function Contact() {
                       name="employment"
                       value={form.employment || ""}
                       onChange={handleChange}
-                      required
-                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${
+                        errors.employment ? "border-red-500/50" : "border-white/20"
+                      }`}
                     >
                       <option value="" disabled>Select status</option>
                       <option value="employed">Employed</option>
@@ -508,6 +626,7 @@ export default function Contact() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
+                  {errors.employment && <p className="text-red-400 text-xs mt-1">{errors.employment}</p>}
                 </div>
               </div>
 
@@ -518,8 +637,9 @@ export default function Contact() {
                       name="laptop"
                       value={form.laptop || ""}
                       onChange={handleChange}
-                      required
-                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${
+                        errors.laptop ? "border-red-500/50" : "border-white/20"
+                      }`}
                     >
                       <option value="" disabled>Select option</option>
                       <option value="yes">Yes</option>
@@ -529,6 +649,7 @@ export default function Contact() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
+                  {errors.laptop && <p className="text-red-400 text-xs mt-1">{errors.laptop}</p>}
               </div>
             </div>
 
@@ -545,8 +666,9 @@ export default function Contact() {
                       name="hearAboutUs"
                       value={form.hearAboutUs || ""}
                       onChange={handleChange}
-                      required
-                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${
+                        errors.hearAboutUs ? "border-red-500/50" : "border-white/20"
+                      }`}
                     >
                       <option value="" disabled>Select an option</option>
                       <option value="social-media">Social Media</option>
@@ -559,6 +681,7 @@ export default function Contact() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
+                  {errors.hearAboutUs && <p className="text-red-400 text-xs mt-1">{errors.hearAboutUs}</p>}
                 </div>
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Why Do You Want To Learn This Skill? *</label>
@@ -568,18 +691,21 @@ export default function Contact() {
                     rows={4}
                     value={form.reason || ""}
                     onChange={handleChange}
-                    required
-                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 resize-none"
+                    className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/40 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 resize-none ${
+                      errors.reason ? "border-red-500/50" : "border-white/20"
+                    }`}
                   />
+                  {errors.reason && <p className="text-red-400 text-xs mt-1">{errors.reason}</p>}
                 </div>
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-4 rounded-xl bg-white text-black font-semibold text-sm tracking-[0.1em] uppercase hover:bg-white/90 transition-all duration-200 cursor-pointer"
+              disabled={submitting}
+              className="w-full py-4 rounded-xl bg-white text-black font-semibold text-sm tracking-[0.1em] uppercase hover:bg-white/90 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit Registration
+              {submitting ? "Submitting..." : "Submit Registration"}
             </button>
           </form>
 

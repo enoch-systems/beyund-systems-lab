@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
-import type { Student } from "@/lib/types";
+import type { StudentRegistration } from "@/lib/types";
 
 interface DashboardStats {
   totalStudents: number;
@@ -18,24 +18,23 @@ export default function AdminDashboardPage() {
     enrolledCount: 0,
     contactedCount: 0,
   });
-  const [recentStudents, setRecentStudents] = useState<Student[]>([]);
+  const [recentStudents, setRecentStudents] = useState<StudentRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
     async function fetchDashboardData() {
-      // Fetch all students
       const { data: students } = await supabase
-        .from("students")
+        .from("student_registrations")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (students) {
         setStats({
           totalStudents: students.length,
-          pendingCount: students.filter((s: Student) => s.status === "pending").length,
-          enrolledCount: students.filter((s: Student) => s.status === "enrolled").length,
-          contactedCount: students.filter((s: Student) => s.status === "contacted").length,
+          pendingCount: students.filter((s: StudentRegistration) => s.status === "pending").length,
+          enrolledCount: students.filter((s: StudentRegistration) => s.status === "enrolled").length,
+          contactedCount: students.filter((s: StudentRegistration) => s.status === "contacted").length,
         });
         setRecentStudents(students.slice(0, 5));
       }
@@ -57,28 +56,24 @@ export default function AdminDashboardPage() {
     {
       label: "Total Students",
       value: stats.totalStudents,
-      color: "from-cyan-500 to-blue-600",
       bgColor: "bg-cyan-500/10",
       textColor: "text-cyan-400",
     },
     {
       label: "Pending Review",
       value: stats.pendingCount,
-      color: "from-yellow-500 to-orange-600",
       bgColor: "bg-yellow-500/10",
       textColor: "text-yellow-400",
     },
     {
       label: "Contacted",
       value: stats.contactedCount,
-      color: "from-blue-500 to-indigo-600",
       bgColor: "bg-blue-500/10",
       textColor: "text-blue-400",
     },
     {
       label: "Enrolled",
       value: stats.enrolledCount,
-      color: "from-green-500 to-emerald-600",
       bgColor: "bg-green-500/10",
       textColor: "text-green-400",
     },
@@ -119,12 +114,11 @@ export default function AdminDashboardPage() {
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm font-medium shrink-0">
-                    {student.first_name.charAt(0)}
-                    {student.last_name.charAt(0)}
+                    {student.full_name.charAt(0)}
                   </div>
                   <div className="min-w-0">
                     <p className="font-medium truncate">
-                      {student.first_name} {student.last_name}
+                      {student.full_name}
                     </p>
                     <p className="text-sm text-gray-400 truncate">
                       {student.email}

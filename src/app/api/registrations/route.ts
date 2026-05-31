@@ -4,16 +4,16 @@ import { createClient } from "@supabase/supabase-js";
 /**
  * POST /api/registrations
  * Handles new student registration form submissions from the landing page.
- * Inserts the registration into the Supabase "students" table.
+ * Inserts the registration into the Supabase "student_registrations" table.
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { first_name, last_name, email, phone, program_interest, experience_level, message } = body;
+    const { full_name, email, phone_whatsapp, sex, country, state, course_applying_for, employment_status, has_laptop, heard_about_us, learning_reason } = body;
 
     // Validate required fields
-    if (!first_name || !last_name || !email || !phone || !program_interest || !experience_level) {
+    if (!full_name || !email || !phone_whatsapp || !sex || !country || !course_applying_for || !employment_status || !has_laptop || !heard_about_us || !learning_reason) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -35,18 +35,21 @@ export async function POST(request: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Insert into the students table
+    // Insert into the student_registrations table
     const { data, error } = await supabase
-      .from("students")
+      .from("student_registrations")
       .insert({
-        first_name: first_name.trim(),
-        last_name: last_name.trim(),
+        full_name: full_name.trim(),
         email: email.trim().toLowerCase(),
-        phone: phone.trim(),
-        program_interest: program_interest.trim(),
-        experience_level: experience_level.trim(),
-        message: message?.trim() || null,
-        status: "pending",
+        phone_whatsapp: phone_whatsapp.trim(),
+        sex,
+        country,
+        state: state || null,
+        course_applying_for,
+        employment_status,
+        has_laptop,
+        heard_about_us,
+        learning_reason: learning_reason.trim(),
       })
       .select()
       .single();
@@ -75,6 +78,7 @@ export async function POST(request: NextRequest) {
 /**
  * GET /api/registrations
  * Fetch all registrations. Protected by proxy (admin only).
+ * Ordered by newest first (created_at DESC).
  */
 export async function GET() {
   try {
@@ -84,7 +88,7 @@ export async function GET() {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const { data, error } = await supabase
-      .from("students")
+      .from("student_registrations")
       .select("*")
       .order("created_at", { ascending: false });
 

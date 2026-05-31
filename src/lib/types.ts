@@ -1,27 +1,18 @@
-export interface Registration {
+export interface StudentRegistration {
   id: string;
-  first_name: string;
-  last_name: string;
+  full_name: string;
   email: string;
-  phone: string;
-  program_interest: string;
-  experience_level: string;
-  message?: string;
-  created_at: string;
-}
-
-export interface Student {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  program_interest: string;
-  experience_level: string;
-  message?: string;
+  phone_whatsapp: string;
+  sex: string;
+  country: string;
+  state?: string;
+  course_applying_for: string;
+  employment_status: string;
+  has_laptop: string;
+  heard_about_us: string;
+  learning_reason: string;
   status: "pending" | "contacted" | "enrolled" | "rejected";
   created_at: string;
-  updated_at: string;
 }
 
 export interface AdminUser {

@@ -1,59 +1,60 @@
 -- ============================================================
--- Beyund Systems Labs - Students Table
+-- Beyund Systems Labs - Student Registrations Table
 -- Run this SQL in your Supabase SQL Editor:
--- https://supabase.com/dashboard/project/_/sql/new
+-- https://supabase.com/dashboard/project/xwjrlxrsmeryozvystwa/sql/new
 -- ============================================================
 
--- Create the students table
-CREATE TABLE IF NOT EXISTS students (
+-- Drop the old students table if it exists (replacing with new schema)
+DROP TABLE IF EXISTS students;
+
+-- Create the student_registrations table
+CREATE TABLE IF NOT EXISTS student_registrations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL,
+  full_name TEXT NOT NULL,
   email TEXT NOT NULL,
-  phone TEXT NOT NULL,
-  program_interest TEXT NOT NULL,
-  experience_level TEXT NOT NULL,
-  message TEXT,
+  phone_whatsapp TEXT NOT NULL,
+  sex TEXT NOT NULL,
+  country TEXT NOT NULL,
+  state TEXT,
+  course_applying_for TEXT NOT NULL,
+  employment_status TEXT NOT NULL,
+  has_laptop TEXT NOT NULL,
+  heard_about_us TEXT NOT NULL,
+  learning_reason TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'pending'
     CHECK (status IN ('pending', 'contacted', 'enrolled', 'rejected')),
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create an index on email for faster lookups
-CREATE INDEX IF NOT EXISTS idx_students_email ON students (email);
-
--- Create an index on status for filtering
-CREATE INDEX IF NOT EXISTS idx_students_status ON students (status);
-
--- Create an index on created_at for sorting
-CREATE INDEX IF NOT EXISTS idx_students_created_at ON students (created_at DESC);
+-- Create indexes for common queries
+CREATE INDEX IF NOT EXISTS idx_registrations_email ON student_registrations (email);
+CREATE INDEX IF NOT EXISTS idx_registrations_status ON student_registrations (status);
+CREATE INDEX IF NOT EXISTS idx_registrations_created_at ON student_registrations (created_at DESC);
 
 -- ============================================================
 -- Row Level Security (RLS) Policies
 -- ============================================================
 
--- Enable RLS on the students table
-ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+-- Enable RLS on the student_registrations table
+ALTER TABLE student_registrations ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Allow anonymous inserts (for the registration form on the landing page)
--- This lets anyone submit a registration without being logged in
 CREATE POLICY "Allow anonymous inserts"
-  ON students
+  ON student_registrations
   FOR INSERT
   TO anon
   WITH CHECK (true);
 
 -- Policy: Allow authenticated users full read access (for the admin dashboard)
 CREATE POLICY "Allow authenticated read"
-  ON students
+  ON student_registrations
   FOR SELECT
   TO authenticated
   USING (true);
 
 -- Policy: Allow authenticated users to update (for status changes in dashboard)
 CREATE POLICY "Allow authenticated update"
-  ON students
+  ON student_registrations
   FOR UPDATE
   TO authenticated
   USING (true)
@@ -61,16 +62,15 @@ CREATE POLICY "Allow authenticated update"
 
 -- Policy: Allow authenticated users to delete (for removing records in dashboard)
 CREATE POLICY "Allow authenticated delete"
-  ON students
+  ON student_registrations
   FOR DELETE
   TO authenticated
   USING (true);
 
 -- ============================================================
 -- Note: The API route uses the service_role key which bypasses
--- RLS entirely, so the POST /api/registrations route will work
--- regardless of these policies. The RLS policies above protect
--- direct client-side access to the Supabase database.
+-- RLS entirely. The RLS policies above protect direct
+-- client-side access to the Supabase database.
 -- ============================================================
 
 -- ============================================================
@@ -81,7 +81,4 @@ CREATE POLICY "Allow authenticated delete"
 -- 2. Click "Add user"
 -- 3. Enter email and password
 -- 4. The user will be able to log in at /admin/login
---
--- Alternatively, you can use the Supabase CLI:
--- supabase auth signup --email admin@beyund.com --password your-password
 -- ============================================================
