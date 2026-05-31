@@ -1,17 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function WhatsAppButton() {
   const [phase, setPhase] = useState<"hidden" | "entering" | "visible" | "exiting">("hidden");
   const [dismissed, setDismissed] = useState(false);
+  const [suppressed, setSuppressed] = useState(false);
+  const cycleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // IntersectionObserver to suppress tooltip when Contact or Footer is in view
   useEffect(() => {
-    if (dismissed) return;
+    const targets = [document.getElementById("contact"), document.querySelector("footer")].filter(Boolean) as Element[];
+    if (targets.length === 0) return;
 
-    const SHOW_DURATION = 2500;  // visible for 2.5s
-    const HIDE_DURATION = 3000;  // hidden for 3s
-    const TRANSITION_MS = 300;   // animation duration
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const anyIntersecting = entries.some((e) => e.isIntersecting);
+        setSuppressed(anyIntersecting);
+      },
+      { threshold: 0.15 }
+    );
+
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // Animation cycle
+  useEffect(() => {
+    if (dismissed || suppressed) {
+      // When suppressed or dismissed, force hide the tooltip
+      setPhase("hidden");
+      if (cycleTimerRef.current) {
+        clearTimeout(cycleTimerRef.current);
+        cycleTimerRef.current = null;
+      }
+      return;
+    }
+
+    const SHOW_DURATION = 2500;
+    const HIDE_DURATION = 3000;
+    const TRANSITION_MS = 300;
 
     let enterTimer: ReturnType<typeof setTimeout>;
     let showTimer: ReturnType<typeof setTimeout>;
@@ -19,31 +47,25 @@ export default function WhatsAppButton() {
     let hideTimer: ReturnType<typeof setTimeout>;
 
     function cycle() {
-      // Start entering (scale up)
       setPhase("entering");
 
-      // After transition, fully visible
       enterTimer = setTimeout(() => {
         setPhase("visible");
       }, TRANSITION_MS);
 
-      // After SHOW_DURATION, start exiting (scale down)
       showTimer = setTimeout(() => {
         setPhase("exiting");
       }, SHOW_DURATION + TRANSITION_MS);
 
-      // After exit transition, hidden state
       exitTimer = setTimeout(() => {
         setPhase("hidden");
       }, SHOW_DURATION + TRANSITION_MS * 2);
 
-      // After full hide period, restart cycle
       hideTimer = setTimeout(() => {
-        cycle();
+        cycleTimerRef.current = setTimeout(() => cycle(), 0);
       }, SHOW_DURATION + TRANSITION_MS * 2 + HIDE_DURATION);
     }
 
-    // Initial delay before first appearance
     const initTimer = setTimeout(() => {
       cycle();
     }, 1000);
@@ -54,8 +76,12 @@ export default function WhatsAppButton() {
       clearTimeout(showTimer);
       clearTimeout(exitTimer);
       clearTimeout(hideTimer);
+      if (cycleTimerRef.current) {
+        clearTimeout(cycleTimerRef.current);
+        cycleTimerRef.current = null;
+      }
     };
-  }, [dismissed]);
+  }, [dismissed, suppressed]);
 
   const isVisible = phase === "visible" || phase === "entering";
   const isEntering = phase === "entering";
@@ -66,7 +92,7 @@ export default function WhatsAppButton() {
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2.5 sm:bottom-6 sm:right-6">
       {/* Prompt tooltip */}
-      {!dismissed && (
+      {!dismissed && !suppressed && (
         <div
           className="relative"
           style={{
