@@ -277,7 +277,7 @@ export default function Contact() {
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Email Address *</label>
                   <div className="relative">
-                    <input type="email" placeholder="e.g. john@example.com" value={form.email} autoComplete="off"
+                    <input type="email" placeholder="Enter your email address" value={form.email} autoComplete="off"
                       onChange={(e) => updateForm("email", e.target.value)}
                       onFocus={() => setEmailFocused(true)}
                       onBlur={(e) => { setEmailFocused(false); checkEmailDuplicate(e.target.value); }}
