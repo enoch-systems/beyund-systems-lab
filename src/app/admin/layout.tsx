@@ -92,7 +92,9 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }: 
                 alt="Beyund Labs"
                 className="w-7 h-7 rounded-lg object-cover"
               />
-              <span className="text-sm font-semibold text-neutral-900 dark:text-white">Beyund 𝙻𝚊𝚋𝚜. LMS</span>
+              <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                Be<span className="text-amber-500">yund</span> 𝙻𝚊𝚋𝚜. LMS
+              </span>
             </div>
           )}
           {collapsed && (
