@@ -38,7 +38,15 @@ export default function AdminLayout({
   const pathname = usePathname();
   const supabase = createSupabaseBrowserClient();
 
+  const isLoginPage = pathname === "/admin/login";
+
   useEffect(() => {
+    // Skip auth check on the login page itself
+    if (isLoginPage) {
+      setLoading(false);
+      return;
+    }
+
     async function getUser() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -49,7 +57,7 @@ export default function AdminLayout({
       setLoading(false);
     }
     getUser();
-  }, [router, supabase]);
+  }, [router, supabase, isLoginPage]);
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -62,6 +70,11 @@ export default function AdminLayout({
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500" />
       </div>
     );
+  }
+
+  // On the login page, render children without the sidebar layout
+  if (isLoginPage) {
+    return <>{children}</>;
   }
 
   if (!user) return null;
