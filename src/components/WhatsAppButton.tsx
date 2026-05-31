@@ -90,7 +90,7 @@ export default function WhatsAppButton() {
   const whatsappUrl = `https://wa.me/2349162919586?text=${encodeURIComponent("Hi Enoch, I would like to connect with you regarding...")}`;
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2.5 sm:bottom-6 sm:right-6">
+    <div className={`fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2.5 sm:bottom-6 sm:right-6 transition-opacity duration-300 ${suppressed ? "pointer-events-none opacity-0" : ""}`}>
       {/* Prompt tooltip */}
       {!dismissed && !suppressed && (
         <div
