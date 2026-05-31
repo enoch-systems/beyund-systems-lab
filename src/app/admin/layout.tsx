@@ -86,15 +86,33 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }: 
       >
         <div className={`flex items-center h-14 border-b border-neutral-200 dark:border-neutral-800/80 ${collapsed ? "justify-center px-0" : "justify-between px-4"}`}>
           {!collapsed && (
-            <div className="flex items-center gap-2.5">
+            <div className="relative flex items-center group">
               <img
                 src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
                 alt="Beyund Labs"
-                className="w-7 h-7 rounded-lg object-cover"
+                className="w-7 h-7 shrink-0"
+                style={{
+                  maskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
+                }}
               />
-              <span className="text-sm font-semibold text-neutral-900 dark:text-white -ml-4">
-                <span className="text-amber-500">eyund</span> 𝙻𝚊<span className="text-amber-500">𝚋𝚜.</span> <span className="text-amber-500">LMS</span>
-              </span>
+              <div
+                className="flex items-baseline -ml-1.5 mix-blend-screen select-none"
+                style={{ textShadow: "0 0 20px rgba(255,255,255,0.08)" }}
+              >
+                <span className="text-white text-[13px] font-light tracking-wide group-hover:text-white transition-colors duration-300">
+                  eyund
+                </span>
+                <span
+                  className="text-slate-300/90 group-hover:text-slate-200 transition-colors duration-300 ml-0.5 text-[11px] font-mono"
+                  style={{ fontVariant: "small-caps" }}
+                >
+                  𝙻𝚊𝚋𝚜.
+                </span>
+                <span className="text-green-400/80 group-hover:text-green-300 transition-colors duration-300 ml-0.5 text-[9px] font-light tracking-widest uppercase">
+                  LMS
+                </span>
+              </div>
             </div>
           )}
           {collapsed && (
@@ -195,19 +213,16 @@ function AdminTopbar({ sidebarOpen, setSidebarOpen, collapsed }: {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search students, courses, assignments..."
-              className="w-64 px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 border-0 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-white/20"
+              className="w-64 lg:w-96 xl:w-[28rem] px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 border-0 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-white/20"
             />
             <button onClick={() => { setSearchOpen(false); setSearchQuery(""); }}>
               <X className="w-4 h-4 text-neutral-400" />
             </button>
           </div>
         ) : (
-          <button onClick={() => setSearchOpen(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 text-neutral-400 dark:text-neutral-500 text-sm">
-            <Search className="w-3.5 h-3.5" />
-            <span>Search</span>
-            <kbd className="ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400">
-              ⌘K
-            </kbd>
+          <button onClick={() => setSearchOpen(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 text-neutral-400 dark:text-neutral-500 text-sm w-64 lg:w-96 xl:w-[28rem]">
+            <Search className="w-3.5 h-3.5 shrink-0" />
+            <span>Search students, courses, assignments...</span>
           </button>
         )}
       </div>

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { verifyEmail } from "@/lib/email-verification";
 
 /**
  * POST /api/registrations
  * Handles new student registration form submissions from the landing page.
- * Inserts the registration into the Supabase "student_registrations" table.
+ * Runs professional email verification before inserting into Supabase.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -25,6 +26,15 @@ export async function POST(request: NextRequest) {
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    // Server-side professional email verification (Abstract API → SMTP fallback)
+    const emailResult = await verifyEmail(email.trim().toLowerCase());
+    if (!emailResult.deliverable) {
+      return NextResponse.json(
+        { error: `Email verification failed: ${emailResult.message}` },
         { status: 400 }
       );
     }

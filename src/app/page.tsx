@@ -36,7 +36,7 @@ export default function Home() {
         <MeetTheMentor />
         <Layers />
         <About />
-        <Contact />
+         <Contact />
         <Footer />
         <WhatsAppButton />
       </div>
