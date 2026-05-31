@@ -42,7 +42,16 @@ const assignmentData = [
   { label: "G11E", overdue: 5, pending: 9, submitted: 14 },
 ];
 
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+}
+
 export default function AdminDashboardPage() {
+  const [adminName, setAdminName] = useState("Admin");
+  const [searchQuery, setSearchQuery] = useState("");
   const [stats, setStats] = useState<DashboardStats>({
     totalStudents: 0,
     pendingCount: 0,
@@ -56,6 +65,13 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     async function fetchDashboardData() {
+      // Get admin name from session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        const prefix = session.user.email.split("@")[0];
+        setAdminName(prefix.charAt(0).toUpperCase() + prefix.slice(1));
+      }
+
       const { data: students } = await supabase
         .from("student_registrations")
         .select("*")
@@ -90,12 +106,12 @@ export default function AdminDashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div>
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">
             Academy Dashboard
           </h1>
           <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-            Good morning, Admin. Here's a quick overview of today's activity.
+            {getGreeting()}, {adminName}. Here's a quick overview of today's activity.
           </p>
         </div>
         <div className="flex items-center gap-2">

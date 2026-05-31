@@ -7,24 +7,13 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
 
 const navItems = [
-  {
-    label: "Dashboard",
-    href: "/admin",
-    icon: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1" />
-      </svg>
-    ),
-  },
-  {
-    label: "Students",
-    href: "/admin/students",
-    icon: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-      </svg>
-    ),
-  },
+  { label: "Dashboard", href: "/admin", icon: "📊" },
+  { label: "Students", href: "/admin/students", icon: "👥" },
+  { label: "Calendar", href: "/admin/calendar", icon: "📅" },
+  { label: "Assignments", href: "/admin/assignments", icon: "📝" },
+  { label: "Notifications", href: "/admin/notifications", icon: "🔔" },
+  { label: "Schedule", href: "/admin/schedule", icon: "🕐" },
+  { label: "Settings", href: "/admin/settings", icon: "⚙️" },
 ];
 
 function AdminSidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; setSidebarOpen: (v: boolean) => void }) {
@@ -32,20 +21,17 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; s
 
   return (
     <>
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
-
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-[260px] bg-white dark:bg-[#0a0a0a] border-r border-neutral-200 dark:border-neutral-800/80 flex flex-col transition-transform duration-200 lg:translate-x-0 lg:static lg:z-auto ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Logo */}
         <div className="flex items-center justify-between px-5 h-14 border-b border-neutral-200 dark:border-neutral-800/80">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
@@ -53,21 +39,15 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; s
             </div>
             <span className="text-sm font-semibold text-neutral-900 dark:text-white">Studio Admin</span>
           </div>
-          <button className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </button>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3">
           <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-600">
-            Dashboards
+            Navigation
           </p>
           <div className="space-y-0.5">
             {navItems.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.href}
@@ -79,40 +59,14 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; s
                       : "text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40"
                   }`}
                 >
-                  {item.icon}
+                  <span className="text-[15px] w-5 text-center">{item.icon}</span>
                   {item.label}
                 </Link>
               );
             })}
           </div>
-
-          <p className="px-3 mt-6 mb-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-600">
-            Pages
-          </p>
-          <div className="space-y-0.5">
-            {[
-              { label: "Calendar", icon: "📅", soon: true },
-              { label: "Assignments", icon: "📝", soon: true },
-              { label: "Gradebook", icon: "📊", soon: true },
-              { label: "Notifications", icon: "🔔", soon: true },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium text-neutral-400 dark:text-neutral-600 cursor-not-allowed"
-              >
-                <span className="text-[15px]">{item.icon}</span>
-                {item.label}
-                {item.soon && (
-                  <span className="ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-600">
-                    Soon
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
         </nav>
 
-        {/* User section */}
         <div className="px-3 py-3 border-t border-neutral-200 dark:border-neutral-800/80">
           <div className="flex items-center gap-3 px-3 py-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xs font-medium">
@@ -122,11 +76,6 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; s
               <p className="text-[13px] font-medium text-neutral-900 dark:text-white truncate">Admin</p>
               <p className="text-[11px] text-neutral-400 dark:text-neutral-600 truncate">admin@beyund.com</p>
             </div>
-            <button className="text-neutral-400 dark:text-neutral-600">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 5v.01M12 12v.01M12 19v.01" />
-              </svg>
-            </button>
           </div>
         </div>
       </aside>
@@ -181,18 +130,18 @@ function AdminTopbar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; se
             </svg>
           )}
         </button>
-        <button className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors relative">
+        <Link href="/admin/notifications" className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors relative">
           <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-        </button>
-        <button className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+        </Link>
+        <Link href="/admin/settings" className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
           <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-        </button>
+        </Link>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xs font-medium cursor-pointer ml-1">
           A
         </div>
