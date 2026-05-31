@@ -80,7 +80,7 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }: 
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 bg-white dark:bg-[#0a0a0a] border-r border-neutral-200 dark:border-neutral-800/80 flex flex-col transition-all duration-200 lg:static lg:z-auto ${
+        className={`fixed inset-y-0 left-0 z-40 bg-white dark:bg-[#0a0a0a] border-r border-neutral-200 dark:border-neutral-800/80 flex flex-col transition-all duration-200 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         } ${collapsed ? "w-[60px]" : "w-[240px]"}`}
       >
@@ -263,9 +263,9 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-[#0a0a0a] text-neutral-900 dark:text-white flex transition-colors">
+    <div className="min-h-screen bg-neutral-50 dark:bg-[#0a0a0a] text-neutral-900 dark:text-white transition-colors">
       <AdminSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} collapsed={collapsed} setCollapsed={setCollapsed} />
-      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-200`}>
+      <div className={`flex flex-col min-w-0 transition-all duration-200 ${collapsed ? "lg:ml-[60px]" : "lg:ml-[240px]"}`}>
         <AdminTopbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} collapsed={collapsed} />
         <main className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
       </div>
