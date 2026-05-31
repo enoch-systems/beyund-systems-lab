@@ -25,7 +25,7 @@ export default function Footer() {
                 />
                 {/* Text overlapping the faded edge for seamless blend */}
                 <div
-                  className="flex items-baseline -ml-2 md:-ml-5 lg:-ml-6 mix-blend-screen select-none"
+                  className="flex items-baseline -ml-2 md:-ml-2.5 lg:-ml-3 mix-blend-screen select-none"
                   style={{ textShadow: "0 0 30px rgba(255,255,255,0.08)" }}
                 >
                   <span className="text-white text-base md:text-xl lg:text-2xl font-light tracking-wide group-hover:text-white transition-colors duration-300">
