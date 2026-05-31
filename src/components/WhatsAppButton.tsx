@@ -10,7 +10,11 @@ export default function WhatsAppButton() {
 
   // IntersectionObserver to suppress tooltip when Contact or Footer is in view
   useEffect(() => {
-    const targets = [document.getElementById("contact"), document.querySelector("footer")].filter(Boolean) as Element[];
+    const targets = [
+      document.getElementById("contact"),
+      document.getElementById("contact-header"),
+      document.querySelector("footer"),
+    ].filter(Boolean) as Element[];
     if (targets.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -18,7 +22,7 @@ export default function WhatsAppButton() {
         const anyIntersecting = entries.some((e) => e.isIntersecting);
         setSuppressed(anyIntersecting);
       },
-      { threshold: 0.15 }
+      { threshold: 0.05 }
     );
 
     targets.forEach((el) => observer.observe(el));

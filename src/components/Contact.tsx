@@ -215,7 +215,7 @@ export default function Contact() {
     <section id="contact" className="py-24 relative overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Title */}
-        <div className="flex items-start gap-4 md:gap-6 mb-10 md:mb-14 max-w-2xl mx-auto">
+        <div id="contact-header" className="flex items-start gap-4 md:gap-6 mb-10 md:mb-14 max-w-2xl mx-auto">
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">embrace clarity</p>
