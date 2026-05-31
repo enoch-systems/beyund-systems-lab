@@ -65,7 +65,7 @@ export default function MeetTheMentor() {
             </div>
             {/* Quote instantly below image */}
             <div className="text-center mt-6">
-              <p className="text-sm md:text-base text-white/60 italic leading-relaxed">
+              <p className="text-sm md:text-base text-white/60 leading-relaxed">
                 &ldquo;The insight almost never comes from inside your own world. Friction between domains is where vision lives.&rdquo;
                 <br />
                 <span className="not-italic text-white/40">_ Enoch</span>
