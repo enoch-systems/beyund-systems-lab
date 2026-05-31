@@ -217,7 +217,15 @@ export default function Contact() {
         </div>
 
         {/* Wizard Card */}
-        <div ref={cardRef} className="max-w-xl mx-auto" style={{ transform: `translateY(${slideOffset}px)`, transition: "transform 0.3s ease-out" }}>
+        <div ref={cardRef} className="max-w-xl mx-auto" style={{ transform: `translateY(${slideOffset}px)`, transition: "transform 0.3s ease-out" }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && e.target instanceof HTMLElement && e.target.tagName !== "TEXTAREA") {
+              e.preventDefault();
+              if (currentStep < 6) goNext();
+              else handleSubmit();
+            }
+          }}
+        >
           {/* Progress bar */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
