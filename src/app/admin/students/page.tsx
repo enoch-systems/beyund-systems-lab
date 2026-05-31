@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import type { StudentRegistration } from "@/lib/types";
+import StudentDetailDrawer from "@/components/admin/StudentDetailDrawer";
 
 const statusOptions = ["pending", "contacted", "enrolled", "rejected"] as const;
 
@@ -12,6 +13,7 @@ export default function StudentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<StudentRegistration | null>(null);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -43,13 +45,15 @@ export default function StudentsPage() {
           s.id === studentId ? { ...s, status: newStatus } : s
         )
       );
+      // Update selected student if it's the same one
+      setSelectedStudent((prev) =>
+        prev?.id === studentId ? { ...prev, status: newStatus } : prev
+      );
     }
     setUpdatingId(null);
   }
 
   async function deleteStudent(studentId: string) {
-    if (!confirm("Are you sure you want to delete this registration?")) return;
-
     const { error } = await supabase
       .from("student_registrations")
       .delete()
@@ -57,6 +61,7 @@ export default function StudentsPage() {
 
     if (!error) {
       setStudents((prev) => prev.filter((s) => s.id !== studentId));
+      setSelectedStudent(null);
     }
   }
 
@@ -142,10 +147,10 @@ export default function StudentsPage() {
                 <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                   Student
                 </th>
-                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider hidden sm:table-cell">
                   Phone
                 </th>
-                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider hidden md:table-cell">
                   Country
                 </th>
                 <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
@@ -154,10 +159,10 @@ export default function StudentsPage() {
                 <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider hidden lg:table-cell">
                   Date
                 </th>
-                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-5 py-3 text-right text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -181,16 +186,16 @@ export default function StudentsPage() {
                           <p className="text-[13px] font-medium text-neutral-900 dark:text-white truncate">
                             {student.full_name}
                           </p>
-                          <p className="text-[11px] text-neutral-400 dark:text-neutral-600 truncate">
+                          <p className="text-[11px] text-neutral-400 dark:text-neutral-600 truncate sm:hidden">
                             {student.email}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden sm:table-cell">
                       {student.phone_whatsapp}
                     </td>
-                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden md:table-cell">
                       {student.country}
                     </td>
                     <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
@@ -220,22 +225,23 @@ export default function StudentsPage() {
                         ))}
                       </select>
                     </td>
-                    <td className="px-5 py-3.5 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap hidden lg:table-cell">
                       {new Date(student.created_at).toLocaleDateString("en-US", {
                         day: "numeric",
                         month: "short",
                         year: "numeric",
                       })}
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-5 py-3.5 text-right">
                       <button
-                        onClick={() => deleteStudent(student.id)}
-                        className="text-neutral-400 dark:text-neutral-600 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1 rounded hover:bg-red-50 dark:hover:bg-red-500/10"
-                        title="Delete"
+                        onClick={() => setSelectedStudent(student)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 text-[12px] font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
+                        <span className="hidden sm:inline">View Details</span>
                       </button>
                     </td>
                   </tr>
@@ -245,6 +251,14 @@ export default function StudentsPage() {
           </table>
         </div>
       </div>
+
+      {/* Student Detail Drawer */}
+      <StudentDetailDrawer
+        student={selectedStudent}
+        onClose={() => setSelectedStudent(null)}
+        onDelete={deleteStudent}
+        onStatusUpdate={updateStatus}
+      />
     </div>
   );
 }
