@@ -87,16 +87,20 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }: 
         <div className={`flex items-center h-14 border-b border-neutral-200 dark:border-neutral-800/80 ${collapsed ? "justify-center px-0" : "justify-between px-4"}`}>
           {!collapsed && (
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
-                <span className="text-white text-xs font-bold">B</span>
-              </div>
-              <span className="text-sm font-semibold text-neutral-900 dark:text-white">Beyund LMS</span>
+              <img
+                src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
+                alt="Beyund Labs"
+                className="w-7 h-7 rounded-lg object-cover"
+              />
+              <span className="text-sm font-semibold text-neutral-900 dark:text-white">Beyund Labs</span>
             </div>
           )}
           {collapsed && (
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
-              <span className="text-white text-xs font-bold">B</span>
-            </div>
+            <img
+              src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
+              alt="Beyund Labs"
+              className="w-7 h-7 rounded-lg object-cover"
+            />
           )}
           <button
             onClick={() => setCollapsed(!collapsed)}
