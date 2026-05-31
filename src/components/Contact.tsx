@@ -238,9 +238,9 @@ export default function Contact() {
                     WebkitMaskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
                   }}
                 />
-                <span className="flex items-baseline -ml-1 md:-ml-1.5 lg:-ml-2 mix-blend-screen select-none">
-                  <span className="text-green-300 text-sm md:text-base lg:text-lg font-light tracking-wide">eyund</span>
-                  <span className="text-green-300/80 text-xs md:text-sm lg:text-base font-mono ml-0.5" style={{ fontVariant: "small-caps" }}>𝙻𝚊𝚋𝚜.</span>
+                <span className="flex items-baseline -ml-1 md:-ml-1.5 lg:-ml-2 mix-blend-screen select-none" style={{ textShadow: "0 0 30px rgba(255,255,255,0.08)" }}>
+                  <span className="text-white text-sm md:text-base lg:text-lg font-light tracking-wide">eyund</span>
+                  <span className="text-slate-300/90 text-xs md:text-sm lg:text-base font-mono ml-0.5" style={{ fontVariant: "small-caps" }}>𝙻𝚊𝚋𝚜.</span>
                   <span className="ml-1 font-light tracking-widest uppercase flex items-baseline">
                     <span className="text-green-400/80 text-sm md:text-base lg:text-lg font-normal">A</span>
                     <span className="text-green-300/80 text-xs md:text-sm lg:text-base">cademy</span>
