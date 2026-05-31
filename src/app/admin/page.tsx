@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import type { StudentRegistration } from "@/lib/types";
+import { Bell, ClipboardList } from "lucide-react";
 import StatCard from "@/components/admin/StatCard";
 
 interface DashboardStats {
@@ -115,15 +116,12 @@ export default function AdminDashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors flex items-center gap-2">
-            <span>📢</span> New Announcement
-          </button>
-          <button className="px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors flex items-center gap-2">
-            <span>📊</span> Gradebook
-          </button>
-          <button className="px-3 py-2 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors flex items-center gap-2">
-            <span>+</span> Add Assignment
-          </button>
+          <a href="/admin/messages" className="px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors flex items-center gap-2">
+            <Bell className="w-4 h-4" /> New Announcement
+          </a>
+          <a href="/admin/assignments" className="px-3 py-2 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors flex items-center gap-2">
+            <ClipboardList className="w-4 h-4" /> Add Assignment
+          </a>
         </div>
       </div>
 
