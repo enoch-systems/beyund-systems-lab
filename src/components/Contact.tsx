@@ -263,7 +263,7 @@ export default function Contact() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Full Name *</label>
-                  <input type="text" placeholder="e.g. John Doe" value={form.name} autoFocus
+                  <input type="text" placeholder="e.g. Enoch Chukwudi" value={form.name} autoFocus
                     onChange={(e) => updateForm("name", e.target.value.replace(/[0-9]/g, ""))}
                     className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${errors.name ? "border-red-500/50" : "border-white/20"}`} />
                   {errors.name && <p id="err-name" className="text-red-400 text-xs mt-1">{errors.name}</p>}
