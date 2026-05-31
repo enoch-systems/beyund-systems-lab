@@ -8,23 +8,29 @@ export default function WhatsAppButton() {
   const [suppressed, setSuppressed] = useState(false);
   const cycleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Scroll-based visibility check — hide WhatsApp when contact header or footer is on screen
+  // Scroll-position-based visibility check — hide WhatsApp whenever the contact zone or footer is in view
   useEffect(() => {
     const checkVisibility = () => {
-      const header = document.getElementById("contact-header");
       const contact = document.getElementById("contact");
       const footer = document.querySelector("footer");
+      if (!contact) return;
+
+      const scrollY = window.scrollY || window.pageYOffset;
       const vh = window.innerHeight;
 
-      const isElementVisible = (el: Element | null | undefined): boolean => {
-        if (!el) return false;
-        const rect = el.getBoundingClientRect();
-        return rect.top < vh && rect.bottom > 0;
-      };
+      // Contact zone: viewport overlaps with the contact section (with small buffer)
+      const contactTop = contact.offsetTop;
+      const contactEnd = contactTop + contact.offsetHeight;
+      const inContactZone = scrollY < contactEnd - 40 && scrollY + vh > contactTop + 40;
 
-      setSuppressed(
-        isElementVisible(header) || isElementVisible(contact) || isElementVisible(footer)
-      );
+      // Footer zone: viewport bottom has reached the footer
+      let inFooterZone = false;
+      if (footer) {
+        const footerTop = footer.offsetTop;
+        inFooterZone = scrollY + vh > footerTop;
+      }
+
+      setSuppressed(inContactZone || inFooterZone);
     };
 
     // Run immediately on mount (handles refresh while on contact/footer)
