@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:is(.dark *));
+
 @theme {
   --animate-slide-in-left: slide-in-left 0.9s ease-out;
   --animate-slide-in-right: slide-in-right 0.9s ease-out;
@@ -9,7 +11,7 @@
 }
 
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
 }
 
 html {
@@ -23,20 +25,9 @@ html::-webkit-scrollbar {
 }
 
 body {
-  @apply min-h-full bg-white text-slate-950 antialiased;
+  @apply min-h-full bg-white dark:bg-[#0a0a0a] text-slate-950 dark:text-white antialiased;
   background-image: none;
   background-attachment: fixed;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image: radial-gradient(#ffffff 1px, transparent 1px);
-  background-size: 22px 22px;
-  opacity: 0.16;
-  z-index: -1;
 }
 
 * {
