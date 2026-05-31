@@ -241,6 +241,10 @@ export default function Contact() {
                 <span className="flex items-baseline -ml-1 md:-ml-1.5 lg:-ml-2 mix-blend-screen select-none">
                   <span className="text-green-300 text-sm md:text-base lg:text-lg font-light tracking-wide">eyund</span>
                   <span className="text-green-300/80 text-xs md:text-sm lg:text-base font-mono ml-0.5" style={{ fontVariant: "small-caps" }}>𝙻𝚊𝚋𝚜.</span>
+                  <span className="ml-1 font-light tracking-widest uppercase flex items-baseline">
+                    <span className="text-green-400/80 text-sm md:text-base lg:text-lg font-normal">A</span>
+                    <span className="text-green-300/80 text-xs md:text-sm lg:text-base">cademy</span>
+                  </span>
                 </span>
               </span>
             </span>?
