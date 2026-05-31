@@ -213,26 +213,3 @@ export const projects: any[] = [];
 
 export const caseStudies: CaseStudy[] = [];
 
-export const testimonials = [
-  {
-    id: 1,
-    quote: "Enoch delivered exceptional work on our e-commerce platform. His attention to detail and technical expertise exceeded our expectations. The platform has been running smoothly since launch.",
-    name: "Sarah Johnson",
-    company: "TechStart Inc.",
-    role: "CEO",
-  },
-  {
-    id: 2,
-    quote: "Working with Enoch was a pleasure. He understood our requirements perfectly and delivered a solution that transformed how our team collaborates. Highly recommended!",
-    name: "Michael Chen",
-    company: "Digital Solutions",
-    role: "CTO",
-  },
-  {
-    id: 3,
-    quote: "Enoch's ability to combine design and development skills is rare. He created a beautiful healthcare dashboard that our staff loves using. Professional and efficient.",
-    name: "Dr. Amanda Williams",
-    company: "MedCare Clinic",
-    role: "Medical Director",
-  },
-];
