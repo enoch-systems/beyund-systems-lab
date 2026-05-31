@@ -93,7 +93,7 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }: 
                 className="w-7 h-7 rounded-lg object-cover"
               />
               <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                Be<span className="text-amber-500">yund</span> 𝙻𝚊<span className="text-amber-500">𝚋𝚜.</span> <span className="text-amber-500">LMS</span>
+                <span className="text-amber-500">eyund</span> 𝙻𝚊<span className="text-amber-500">𝚋𝚜.</span> <span className="text-amber-500">LMS</span>
               </span>
             </div>
           )}
