@@ -60,7 +60,6 @@ export default function StudentsPage() {
     }
   }
 
-  // Filter students
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
       searchQuery === "" ||
@@ -78,41 +77,46 @@ export default function StudentsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-cyan-500" />
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-neutral-200 dark:border-neutral-700 border-t-neutral-900 dark:border-t-white" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">
+          Student Registrations
+        </h1>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+          {filteredStudents.length} registrations found with plan, status, and signup activity.
+        </p>
+      </div>
+
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
             type="text"
-            placeholder="Search by name, email, phone, or country..."
+            placeholder="Search students..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 text-sm"
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10 focus:border-neutral-300 dark:focus:border-neutral-700 transition-all"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2.5 rounded-lg bg-gray-900 border border-gray-700 text-white text-sm focus:outline-none focus:border-cyan-500"
+          className="px-3 py-2.5 rounded-lg bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10 transition-all cursor-pointer"
         >
           <option value="all">All Status</option>
           {statusOptions.map((status) => (
@@ -121,77 +125,92 @@ export default function StudentsPage() {
             </option>
           ))}
         </select>
+        <button className="px-4 py-2.5 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors flex items-center gap-2">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export
+        </button>
       </div>
 
-      {/* Results count */}
-      <p className="text-sm text-gray-400">
-        Showing {filteredStudents.length} of {students.length} registrations
-      </p>
-
-      {/* Students Table */}
-      <div className="rounded-xl border border-gray-800 bg-gray-900/50 overflow-hidden">
+      {/* Table */}
+      <div className="rounded-xl border border-neutral-200 dark:border-neutral-800/80 bg-white dark:bg-neutral-900/50 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-800 text-left text-gray-400">
-                <th className="px-6 py-3 font-medium">Student</th>
-                <th className="px-6 py-3 font-medium">Phone</th>
-                <th className="px-6 py-3 font-medium">Country</th>
-                <th className="px-6 py-3 font-medium">Course</th>
-                <th className="px-6 py-3 font-medium">Status</th>
-                <th className="px-6 py-3 font-medium">Date</th>
-                <th className="px-6 py-3 font-medium">Actions</th>
+              <tr className="border-b border-neutral-200 dark:border-neutral-800/80">
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Student
+                </th>
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Phone
+                </th>
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Country
+                </th>
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Course
+                </th>
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-5 py-3 text-left text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800/50">
               {filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={7} className="px-5 py-16 text-center text-neutral-400 dark:text-neutral-600">
                     No registrations found.
                   </td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-gray-800/30 transition-colors">
-                    <td className="px-6 py-4">
+                  <tr key={student.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/20 transition-colors">
+                    <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-xs font-medium shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500/20 to-indigo-500/20 dark:from-violet-500/10 dark:to-indigo-500/10 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-xs font-medium text-neutral-700 dark:text-neutral-300 shrink-0">
                           {student.full_name.charAt(0)}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium truncate">
+                          <p className="text-[13px] font-medium text-neutral-900 dark:text-white truncate">
                             {student.full_name}
                           </p>
-                          <p className="text-xs text-gray-400 truncate">
+                          <p className="text-[11px] text-neutral-400 dark:text-neutral-600 truncate">
                             {student.email}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-300 whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
                       {student.phone_whatsapp}
                     </td>
-                    <td className="px-6 py-4 text-gray-300 whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
                       {student.country}
                     </td>
-                    <td className="px-6 py-4 text-gray-300 whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
                       {student.course_applying_for}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <select
                         value={student.status}
                         onChange={(e) =>
                           updateStatus(student.id, e.target.value as StudentRegistration["status"])
                         }
                         disabled={updatingId === student.id}
-                        className={`px-2 py-1 rounded-full text-xs font-medium border-0 focus:ring-2 focus:ring-cyan-500 cursor-pointer ${
+                        className={`text-[11px] font-medium px-2 py-1 rounded border-0 cursor-pointer focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10 ${
                           student.status === "enrolled"
-                            ? "bg-green-500/10 text-green-400"
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                             : student.status === "contacted"
-                              ? "bg-blue-500/10 text-blue-400"
+                              ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
                               : student.status === "rejected"
-                                ? "bg-red-500/10 text-red-400"
-                                : "bg-yellow-500/10 text-yellow-400"
+                                ? "bg-red-500/10 text-red-600 dark:text-red-400"
+                                : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
                         }`}
                       >
                         {statusOptions.map((status) => (
@@ -201,17 +220,21 @@ export default function StudentsPage() {
                         ))}
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 whitespace-nowrap">
-                      {new Date(student.created_at).toLocaleDateString()}
+                    <td className="px-5 py-3.5 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap">
+                      {new Date(student.created_at).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <button
                         onClick={() => deleteStudent(student.id)}
-                        className="text-gray-400 hover:text-red-400 transition-colors p-1"
-                        title="Delete registration"
+                        className="text-neutral-400 dark:text-neutral-600 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1 rounded hover:bg-red-50 dark:hover:bg-red-500/10"
+                        title="Delete"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
                     </td>

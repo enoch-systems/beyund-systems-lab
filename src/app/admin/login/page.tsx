@@ -32,35 +32,32 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-neutral-50 dark:bg-[#0a0a0a] flex items-center justify-center px-4 transition-colors">
+      <div className="w-full max-w-sm">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-lg">
-            B
+        <div className="flex items-center justify-center gap-2.5 mb-10">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
+            <span className="text-white text-sm font-bold">B</span>
           </div>
-          <div>
-            <h1 className="font-bold text-white">Beyund Systems</h1>
-            <p className="text-xs text-gray-400">Admin Dashboard</p>
-          </div>
+          <span className="text-base font-semibold text-neutral-900 dark:text-white">Beyund Systems</span>
         </div>
 
         {/* Login Card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
-          <h2 className="text-xl font-bold text-white mb-1">Welcome back</h2>
-          <p className="text-sm text-gray-400 mb-6">
+        <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 p-6">
+          <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-1">Welcome back</h2>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
             Sign in to access the admin dashboard
           </p>
 
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-500/5 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1.5">
+              <label htmlFor="email" className="block text-[13px] font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
                 Email
               </label>
               <input
@@ -70,11 +67,11 @@ export default function AdminLoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="admin@beyund.com"
-                className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 text-sm"
+                className="w-full px-3 py-2.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10 focus:border-neutral-300 dark:focus:border-neutral-600 transition-all"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1.5">
+              <label htmlFor="password" className="block text-[13px] font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
                 Password
               </label>
               <input
@@ -84,21 +81,21 @@ export default function AdminLoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
-                className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 text-sm"
+                className="w-full px-3 py-2.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10 focus:border-neutral-300 dark:focus:border-neutral-600 transition-all"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium text-sm hover:from-cyan-600 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2.5 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium text-sm hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-xs text-gray-500 mt-6">
-          <a href="/" className="hover:text-gray-400 transition-colors">
+        <p className="text-center text-xs text-neutral-400 dark:text-neutral-600 mt-6">
+          <a href="/" className="hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors">
             ← Back to landing page
           </a>
         </p>

@@ -4,11 +4,20 @@
 -- https://supabase.com/dashboard/project/xwjrlxrsmeryozvystwa/sql/new
 -- ============================================================
 
--- Drop the old students table if it exists (replacing with new schema)
+-- Drop existing policies if they exist (safe to re-run)
+DROP POLICY IF EXISTS "Allow anonymous inserts" ON student_registrations;
+DROP POLICY IF EXISTS "Allow authenticated read" ON student_registrations;
+DROP POLICY IF EXISTS "Allow authenticated update" ON student_registrations;
+DROP POLICY IF EXISTS "Allow authenticated delete" ON student_registrations;
+
+-- Drop old tables if they exist
 DROP TABLE IF EXISTS students;
 
+-- Drop and recreate the student_registrations table (fresh start)
+DROP TABLE IF EXISTS student_registrations;
+
 -- Create the student_registrations table
-CREATE TABLE IF NOT EXISTS student_registrations (
+CREATE TABLE student_registrations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
@@ -68,9 +77,8 @@ CREATE POLICY "Allow authenticated delete"
   USING (true);
 
 -- ============================================================
--- Note: The API route uses the service_role key which bypasses
--- RLS entirely. The RLS policies above protect direct
--- client-side access to the Supabase database.
+-- Note: The form uses the anon key + RLS policies for inserts.
+-- The admin dashboard uses authenticated user session for reads.
 -- ============================================================
 
 -- ============================================================

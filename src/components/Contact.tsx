@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { personalData } from "@/lib/data";
-import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function Contact() {
-  const supabase = createSupabaseBrowserClient();
 
   const [form, setForm] = useState({
     name: "",
@@ -69,7 +67,7 @@ export default function Contact() {
         setLoadingCountries(false);
       }
     };
-
+  
     fetchCountries();
   }, []);
 
@@ -178,49 +176,63 @@ export default function Contact() {
     // Map course value to display label
     const courseLabel = form.course === "fullstack" ? "Full Stack Development" : form.course;
 
-    const { error } = await supabase.from("student_registrations").insert({
-      full_name: form.name.trim(),
-      email: form.email.trim().toLowerCase(),
-      phone_whatsapp: fullPhone,
-      sex: form.sex,
-      country: countryName,
-      state: form.state || null,
-      course_applying_for: courseLabel,
-      employment_status: form.employment,
-      has_laptop: form.laptop,
-      heard_about_us: form.hearAboutUs,
-      learning_reason: form.reason.trim(),
-    });
+    try {
+      const response = await fetch("/api/registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: form.name.trim(),
+          email: form.email.trim().toLowerCase(),
+          phone_whatsapp: fullPhone,
+          sex: form.sex,
+          country: countryName,
+          state: form.state || null,
+          course_applying_for: courseLabel,
+          employment_status: form.employment,
+          has_laptop: form.laptop,
+          heard_about_us: form.hearAboutUs,
+          learning_reason: form.reason.trim(),
+        }),
+      });
 
-    if (error) {
-      console.error("Supabase insert error:", error);
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("Registration error:", result.error);
+        setSubmitStatus({
+          type: "error",
+          message: `Registration failed: ${result.error}. Please try again later.`,
+        });
+      } else {
+        setSubmitStatus({
+          type: "success",
+          message: "Registration submitted successfully.",
+        });
+        setForm({
+          name: "",
+          email: "",
+          mobile: "",
+          sex: "",
+          country: "",
+          state: "",
+          course: "",
+          employment: "",
+          laptop: "",
+          scholarship: "",
+          hearAboutUs: "",
+          reason: ""
+        });
+        setStates([]);
+      }
+      setSubmitting(false);
+    } catch (err) {
+      console.error("Network error:", err);
       setSubmitStatus({
         type: "error",
-        message: "Registration failed. Please try again later.",
+        message: "Registration failed. Please check your connection and try again.",
       });
-    } else {
-      setSubmitStatus({
-        type: "success",
-        message: "Registration submitted successfully.",
-      });
-      setForm({
-        name: "",
-        email: "",
-        mobile: "",
-        sex: "",
-        country: "",
-        state: "",
-        course: "",
-        employment: "",
-        laptop: "",
-        scholarship: "",
-        hearAboutUs: "",
-        reason: ""
-      });
-      setStates([]);
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
   };
 
   return (
@@ -256,16 +268,6 @@ export default function Contact() {
             <p className="text-white/40 text-xs">All fields are required</p>
           </div>
 
-          {/* Submit Status Message */}
-          {submitStatus && (
-            <div className={`mb-6 p-4 rounded-xl text-left text-sm font-medium ${
-              submitStatus.type === "success"
-                ? "bg-green-500/10 border border-green-500/20 text-green-400"
-                : "bg-red-500/10 border border-red-500/20 text-red-400"
-            }`}>
-              {submitStatus.message}
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-8 mb-12 text-left">
             {/* Personal Information */}
@@ -763,6 +765,57 @@ export default function Contact() {
           </div>
         </div>
       </div>
+      {/* Centered Modal Overlay */}
+      {submitStatus && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setSubmitStatus(null)} />
+          <div className={`relative max-w-md w-full p-8 rounded-2xl border text-center backdrop-blur-xl bg-white/[0.05] ${
+            submitStatus.type === "success"
+              ? "border-green-400/20"
+              : "border-red-400/20"
+          }`}>
+            {submitStatus.type === "success" ? (
+              <div className="w-16 h-16 mx-auto mb-5 rounded-full border border-green-400/20 bg-green-400/5 flex items-center justify-center">
+                <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            ) : (
+              <div className="w-16 h-16 mx-auto mb-5 rounded-full border border-red-400/20 bg-red-400/5 flex items-center justify-center">
+                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+            )}
+            <h3 className={`text-xl font-bold tracking-tight mb-3 ${
+              submitStatus.type === "success" ? "text-white" : "text-red-300"
+            }`}>
+              {submitStatus.type === "success" ? "Enrollment Submitted!" : "Error"}
+            </h3>
+            {submitStatus.type === "success" ? (
+              <div className="space-y-3 mb-8">
+                <p className="text-white/60 text-sm leading-relaxed">
+                  Your enrollment form has been submitted successfully.
+                </p>
+                <p className="text-white/60 text-sm leading-relaxed">
+                  We will contact you via <span className="text-white font-medium">email</span> and <span className="text-white font-medium">WhatsApp</span> using the details you provided.
+                </p>
+                <p className="text-white/30 text-xs italic">
+                  Please check your inbox and WhatsApp messages regularly for updates.
+                </p>
+              </div>
+            ) : (
+              <p className="text-white/60 text-sm mb-8 leading-relaxed">{submitStatus.message}</p>
+            )}
+            <button
+              onClick={() => setSubmitStatus(null)}
+              className="px-8 py-3 rounded-xl bg-white/10 border border-white/20 text-white font-medium text-sm hover:bg-white/20 transition-all duration-200"
+            >
+              {submitStatus.type === "success" ? "Done" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
