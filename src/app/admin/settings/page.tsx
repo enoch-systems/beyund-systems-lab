@@ -11,7 +11,7 @@ import {
   Loader2,
   Check,
   Mail,
-  Send,
+  RotateCcw,
   Shield,
   Palette,
   Camera,
@@ -70,9 +70,7 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-[1080px] space-y-8">
-      {/* ═══════════════════════════════════════
-         PAGE HEADER
-         ═══════════════════════════════════════ */}
+      {/* PAGE HEADER */}
       <div>
         <h1 className="text-[28px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.02em]">
           Settings
@@ -82,9 +80,7 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      {/* ═══════════════════════════════════════
-         GRID — 2 columns on desktop, stacked on mobile
-         ═══════════════════════════════════════ */}
+      {/* GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
         {/* ── Admin Profile Card ── */}
@@ -100,7 +96,7 @@ export default function SettingsPage() {
 
           {/* Profile Image */}
           <div className="flex items-center gap-4 mb-6">
-            <div className="relative w-16 h-16 shrink-0">
+            <div className="relative w-16 h-16 shrink-0 cursor-pointer">
               <div className="w-16 h-16 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] border-2 border-[#e5e5ea] dark:border-[#38383a] flex items-center justify-center overflow-hidden">
                 <Camera className="w-6 h-6 text-[#86868b] dark:text-[#98989d]" />
               </div>
@@ -155,7 +151,7 @@ export default function SettingsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-2 h-[40px] px-5 rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all disabled:opacity-50 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 h-[40px] px-5 rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all disabled:opacity-50 active:scale-[0.98] cursor-pointer"
             >
               {saving ? (
                 <>
@@ -194,7 +190,7 @@ export default function SettingsPage() {
           </p>
           <button
             onClick={() => setShowResetModal(true)}
-            className="inline-flex items-center gap-2 h-[38px] px-4 rounded-[10px] border border-[#e5e5ea] dark:border-[#38383a] text-[13px] font-medium text-[#1d1d1f] dark:text-white hover:bg-[#f2f2f7] dark:hover:bg-[#2c2c2e] transition-all"
+            className="inline-flex items-center gap-2 h-[38px] px-4 rounded-[10px] border border-[#e5e5ea] dark:border-[#38383a] text-[13px] font-medium text-[#1d1d1f] dark:text-white hover:bg-[#f2f2f7] dark:hover:bg-[#2c2c2e] transition-all cursor-pointer"
           >
             <Shield className="w-4 h-4" />
             Reset Password
@@ -235,7 +231,7 @@ export default function SettingsPage() {
             </div>
             <button
               onClick={toggleTheme}
-              className="relative w-12 h-7 rounded-full bg-[#e5e5ea] dark:bg-[#4a4a4c] transition-colors"
+              className="relative w-12 h-7 rounded-full bg-[#e5e5ea] dark:bg-[#4a4a4c] transition-colors cursor-pointer"
             >
               <div
                 className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white dark:bg-[#1d1d1f] shadow transition-transform duration-200 ${
@@ -263,7 +259,7 @@ export default function SettingsPage() {
             </p>
             <button
               onClick={() => setShowSignOutModal(true)}
-              className="inline-flex items-center gap-2 h-[38px] px-4 rounded-[10px] border border-[#ff453a]/20 text-[13px] font-medium text-[#ff453a] hover:bg-[#ff453a]/8 transition-all"
+              className="inline-flex items-center gap-2 h-[38px] px-4 rounded-[10px] border border-[#ff453a]/20 text-[13px] font-medium text-[#ff453a] hover:bg-[#ff453a]/8 transition-all cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               Sign Out
@@ -272,23 +268,18 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════
-         PASSWORD RESET CONFIRMATION MODAL
-         ═══════════════════════════════════════ */}
+      {/* PASSWORD RESET MODAL */}
       {showResetModal && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-in fade-in duration-200"
             onClick={() => setShowResetModal(false)}
           />
-          {/* Modal */}
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
               className="w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Icon + Content */}
               <div className="p-6 pb-0 flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-[#ff9f0a]/10 flex items-center justify-center mb-4">
                   <AlertTriangle className="w-6 h-6 text-[#ff9f0a]" />
@@ -302,28 +293,26 @@ export default function SettingsPage() {
                   You will need to use the new password to sign back in.
                 </p>
               </div>
-
-              {/* Actions */}
               <div className="flex items-center gap-2.5 p-6 pt-5">
                 <button
                   onClick={() => setShowResetModal(false)}
-                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors"
+                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handlePasswordReset}
-                  disabled={saving}
-                  className="flex-1 inline-flex items-center justify-center gap-2 h-[40px] rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] disabled:opacity-50"
+                  disabled={resetting}
+                  className="flex-1 inline-flex items-center justify-center gap-2 h-[40px] rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
                 >
-                  {saving ? (
+                  {resetting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
                       Sending...
                     </>
                   ) : (
                     <>
-                      <Send className="w-4 h-4" />
+                      <RotateCcw className="w-4 h-4" />
                       Send Reset Link
                     </>
                   )}
@@ -334,23 +323,18 @@ export default function SettingsPage() {
         </>
       )}
 
-      {/* ═══════════════════════════════════════
-         SIGN OUT CONFIRMATION MODAL
-         ═══════════════════════════════════════ */}
+      {/* SIGN OUT MODAL */}
       {showSignOutModal && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-in fade-in duration-200"
             onClick={() => setShowSignOutModal(false)}
           />
-          {/* Modal */}
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
               className="w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Icon + Content */}
               <div className="p-6 pb-0 flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-[#ff453a]/10 flex items-center justify-center mb-4">
                   <LogOut className="w-6 h-6 text-[#ff453a]" />
@@ -362,19 +346,17 @@ export default function SettingsPage() {
                   You will be signed out of your admin account. You will need to sign in again to access the dashboard.
                 </p>
               </div>
-
-              {/* Actions */}
               <div className="flex items-center gap-2.5 p-6 pt-5">
                 <button
                   onClick={() => setShowSignOutModal(false)}
-                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors"
+                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSignOut}
                   disabled={signingOut}
-                  className="flex-1 inline-flex items-center justify-center gap-2 h-[40px] rounded-[10px] bg-[#ff453a] text-white text-[13px] font-semibold hover:bg-[#e53e36] transition-all active:scale-[0.98] disabled:opacity-50"
+                  className="flex-1 inline-flex items-center justify-center gap-2 h-[40px] rounded-[10px] bg-[#ff453a] text-white text-[13px] font-semibold hover:bg-[#e53e36] transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
                 >
                   {signingOut ? (
                     <>
