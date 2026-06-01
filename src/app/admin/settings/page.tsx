@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme-context";
 import {
-  Settings as SettingsIcon,
-  User,
   Lock,
   Sun,
   Moon,
@@ -15,6 +13,7 @@ import {
   Mail,
   Shield,
   Palette,
+  Camera,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -81,15 +80,27 @@ export default function SettingsPage() {
         {/* ── Admin Profile Card ── */}
         <div className="rounded-[16px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-6 lg:row-span-2">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center">
-              <User className="w-5 h-5 text-[#8940fa]" />
-            </div>
             <div>
               <h2 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-white">
                 Admin Profile
               </h2>
               <p className="text-[12px] text-[#86868b] dark:text-[#98989d]">
                 Your account information
+              </p>
+            </div>
+          </div>
+
+          {/* Profile Image */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-16 h-16 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] border-2 border-[#e5e5ea] dark:border-[#38383a] flex items-center justify-center overflow-hidden shrink-0">
+              <Camera className="w-6 h-6 text-[#86868b] dark:text-[#98989d]" />
+            </div>
+            <div>
+              <p className="text-[13px] font-medium text-[#1d1d1f] dark:text-white">
+                Profile Photo
+              </p>
+              <p className="text-[11px] text-[#86868b] dark:text-[#98989d] mt-0.5">
+                Click to upload a profile photo
               </p>
             </div>
           </div>
@@ -224,18 +235,13 @@ export default function SettingsPage() {
 
         {/* ── Account Card ── */}
         <div className="rounded-[16px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-6 lg:col-span-1">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center">
-              <LogOut className="w-5 h-5 text-[#ff453a]" />
-            </div>
-            <div>
-              <h2 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-white">
-                Account
-              </h2>
-              <p className="text-[12px] text-[#86868b] dark:text-[#98989d]">
-                Sign out from your admin account
-              </p>
-            </div>
+          <div className="mb-4">
+            <h2 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-white">
+              Account
+            </h2>
+            <p className="text-[12px] text-[#86868b] dark:text-[#98989d]">
+              Sign out from your admin account
+            </p>
           </div>
 
           <div className="p-3.5 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e]">
