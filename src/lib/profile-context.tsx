@@ -25,7 +25,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         .from("admin_settings")
         .select("value")
         .eq("key", "profile_image")
-        .single();
+        .maybeSingle();
 
       if (settings?.value) {
         setProfileImage(settings.value);
@@ -39,15 +39,18 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!loaded) return;
 
-    const supabase = createSupabaseBrowserClient();
-    if (profileImage) {
-      supabase.from("admin_settings").upsert(
-        { key: "profile_image", value: profileImage },
-        { onConflict: "key" }
-      );
-    } else {
-      supabase.from("admin_settings").delete().eq("key", "profile_image");
+    async function save() {
+      const supabase = createSupabaseBrowserClient();
+      if (profileImage) {
+        await supabase.from("admin_settings").upsert(
+          { key: "profile_image", value: profileImage, updated_at: new Date().toISOString() },
+          { onConflict: "key" }
+        );
+      } else {
+        await supabase.from("admin_settings").delete().eq("key", "profile_image");
+      }
     }
+    save();
   }, [profileImage, loaded]);
 
   return (
