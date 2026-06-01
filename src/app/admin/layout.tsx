@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
-import { cn } from "@/lib/admin-design-system";
+import { apple } from "@/lib/admin-design-system";
 
 /* ═══════════════════════════════════════
    Types

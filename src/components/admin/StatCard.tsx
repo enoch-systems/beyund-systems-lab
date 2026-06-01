@@ -1,5 +1,7 @@
 "use client";
 
+import { apple } from "@/lib/admin-design-system";
+
 interface StatCardProps {
   title: string;
   value: string | number;
@@ -18,35 +20,35 @@ export default function StatCard({
   icon,
 }: StatCardProps) {
   return (
-    <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 p-5 transition-colors">
+    <div className={`${apple.radius.card} ${apple.surface.card} ${apple.border} ${apple.shadow.sm} p-5 transition-all duration-300 hover:${apple.shadow.md}`}>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+        <span className={`${apple.text.micro} uppercase tracking-[0.04em]`}>
           {title}
         </span>
-        <div className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+        <div className="w-8 h-8 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center text-[#86868b] dark:text-[#98989d]">
           {icon}
         </div>
       </div>
       <div className="flex items-baseline gap-2 mb-1">
-        <span className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">
+        <span className="text-[28px] sm:text-[32px] font-semibold tracking-[-0.02em] text-[#1d1d1f] dark:text-white leading-none">
           {value}
         </span>
         {change && (
           <span
-            className={`text-xs font-medium px-1.5 py-0.5 rounded ${
+            className={`inline-flex items-center gap-0.5 text-[13px] font-medium px-1.5 py-0.5 rounded-[6px] ${
               changeType === "positive"
-                ? "bg-emerald-500/10 text-emerald-500"
+                ? "bg-[#30b94e]/10 text-[#30b94e] dark:bg-[#30d158]/15 dark:text-[#30d158]"
                 : changeType === "negative"
-                  ? "bg-red-500/10 text-red-500"
-                  : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500"
+                  ? "bg-[#d6453e]/10 text-[#d6453e] dark:bg-[#ff453a]/15 dark:text-[#ff453a]"
+                  : "bg-[#f2f2f7] dark:bg-[#2c2c2e] text-[#86868b] dark:text-[#98989d]"
             }`}
           >
-            {changeType === "positive" ? "↗" : changeType === "negative" ? "↘" : "~"} {change}
+            {changeType === "positive" ? "↑" : changeType === "negative" ? "↓" : "→"} {change}
           </span>
         )}
       </div>
       {subtitle && (
-        <p className="text-xs text-neutral-500 dark:text-neutral-500">{subtitle}</p>
+        <p className={`${apple.text.micro} mt-0.5`}>{subtitle}</p>
       )}
     </div>
   );
