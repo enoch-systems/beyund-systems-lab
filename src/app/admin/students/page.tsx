@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import type { StudentRegistration } from "@/lib/types";
 import StudentDetailDrawer from "@/components/admin/StudentDetailDrawer";
-import { Search, ChevronDown, CheckSquare } from "lucide-react";
+import ExportReportModal from "@/components/admin/ExportReportModal";
+import { Search, ChevronDown, CheckSquare, Download } from "lucide-react";
 
 const statusOptions = ["pending", "contacted", "enrolled", "rejected"] as const;
 
@@ -15,10 +16,20 @@ export default function StudentsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [selectedStudent, setSelectedStudent] = useState<StudentRegistration | null>(null);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [adminName, setAdminName] = useState("Admin");
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
     fetchStudents();
+    // Fetch admin name
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        const prefix = session.user.email.split("@")[0];
+        setAdminName(prefix.charAt(0).toUpperCase() + prefix.slice(1));
+      }
+    })();
   }, []);
 
   async function fetchStudents() {
@@ -125,11 +136,12 @@ export default function StudentsPage() {
             </option>
           ))}
         </select>
-        <button className="px-4 py-2.5 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors flex items-center gap-2">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          Export
+        <button
+          onClick={() => setShowExportModal(true)}
+          className="px-4 py-2.5 rounded-lg bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-sm font-medium hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-colors flex items-center gap-2 shadow-sm"
+        >
+          <Download className="w-4 h-4" />
+          Export PDF
         </button>
       </div>
 
@@ -254,6 +266,14 @@ export default function StudentsPage() {
         onClose={() => setSelectedStudent(null)}
         onDelete={deleteStudent}
         onStatusUpdate={updateStatus}
+      />
+
+      {/* Export Report Modal */}
+      <ExportReportModal
+        open={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        students={filteredStudents}
+        exportedBy={adminName}
       />
     </div>
   );
