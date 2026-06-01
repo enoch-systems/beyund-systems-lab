@@ -88,7 +88,7 @@ export default function Layers() {
               LAYERS
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              acquire building skills
+              relating how we teach
             </p>
           </div>
         </div>
