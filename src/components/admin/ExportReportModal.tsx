@@ -72,12 +72,16 @@ export default function ExportReportModal({ open, onClose, students, exportedBy 
   async function loadHistory() {
     setLoadingHistory(true);
     const supabase = createSupabaseBrowserClient();
-    const { data } = await supabase
-      .from("export_reports")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(50);
-    if (data) setHistory(data);
+    try {
+      const { data, error } = await supabase
+        .from("export_reports")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (!error && data) setHistory(data);
+    } catch {
+      // Table doesn't exist yet — show empty history
+    }
     setLoadingHistory(false);
   }
 
@@ -86,45 +90,44 @@ export default function ExportReportModal({ open, onClose, students, exportedBy 
     setSuccess(null);
     
     try {
-      const { blob, fileName } = downloadPDF(students, exportedBy);
+      const { blob, fileName, dateStr } = downloadPDF(students, exportedBy);
       const supabase = createSupabaseBrowserClient();
+      let fileUrl = "";
 
-      // Upload to Supabase Storage
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("reports")
-        .upload(`exports/${fileName}`, blob, {
-          contentType: "application/pdf",
-          cacheControl: "3600",
-        });
-
-      if (uploadError) {
-        console.error("Storage upload error:", uploadError);
-        // Fallback: just download locally
-        downloadBlob(blob, fileName);
-        setSuccess("PDF downloaded locally (storage unavailable)");
-      } else {
-        // Get public URL
-        const { data: urlData } = supabase.storage
+      // Try Supabase Storage (skip gracefully if bucket doesn't exist)
+      try {
+        const { error: uploadError } = await supabase.storage
           .from("reports")
-          .getPublicUrl(`exports/${fileName}`);
+          .upload(`exports/${fileName}`, blob, {
+            contentType: "application/pdf",
+            cacheControl: "3600",
+          });
 
-        const fileUrl = urlData?.publicUrl || "";
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage
+            .from("reports")
+            .getPublicUrl(`exports/${fileName}`);
+          fileUrl = urlData?.publicUrl || "";
 
-        // Save metadata to database
-        await supabase.from("export_reports").insert({
-          file_name: fileName,
-          file_url: fileUrl,
-          exported_by: exportedBy,
-          student_count: students.length,
-        });
-
-        downloadBlob(blob, fileName);
-        setSuccess("PDF exported successfully");
-        setView("history");
+          // Save metadata to database
+          await supabase.from("export_reports").insert({
+            file_name: fileName,
+            file_url: fileUrl,
+            exported_by: exportedBy,
+            student_count: students.length,
+          });
+        }
+      } catch (storageErr) {
+        // Storage not configured — continue with local download only
+        console.warn("Storage unavailable, using local download:", storageErr);
       }
+
+      // Always download locally
+      downloadBlob(blob, fileName);
+      setSuccess(fileUrl ? "PDF exported and saved successfully" : "PDF downloaded successfully");
+      setView("history");
     } catch (err) {
       console.error("Export error:", err);
-      // Fallback: local download
       try {
         const { blob, fileName } = downloadPDF(students, exportedBy);
         downloadBlob(blob, fileName);
