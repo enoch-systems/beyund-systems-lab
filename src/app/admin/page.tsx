@@ -21,6 +21,7 @@ import {
   Activity,
 } from "lucide-react";
 import StatCard from "@/components/admin/StatCard";
+import { cn } from "@/lib/admin-design-system";
 
 interface DashboardStats {
   totalStudents: number;

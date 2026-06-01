@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -22,144 +22,254 @@ import {
   Search,
   Menu,
   X,
+  LogOut,
+  Sparkles,
 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
+import { cn } from "@/lib/admin-design-system";
 
+/* ═══════════════════════════════════════
+   Types
+   ═══════════════════════════════════════ */
 interface NavItem {
   label: string;
   href: string;
   icon: React.ReactNode;
+  badge?: number;
 }
 
 const navGroups: { label: string; items: NavItem[] }[] = [
   {
     label: "Core",
     items: [
-      { label: "Dashboard", href: "/admin", icon: <LayoutDashboard className="w-[18px] h-[18px]" /> },
-      { label: "Students", href: "/admin/students", icon: <Users className="w-[18px] h-[18px]" /> },
+      { label: "Dashboard", href: "/admin", icon: <LayoutDashboard className="w-4 h-4" /> },
+      { label: "Students", href: "/admin/students", icon: <Users className="w-4 h-4" /> },
     ],
   },
   {
     label: "Academic",
     items: [
-      { label: "Courses", href: "/admin/courses", icon: <BookOpen className="w-[18px] h-[18px]" /> },
-      { label: "Assignments", href: "/admin/assignments", icon: <ClipboardList className="w-[18px] h-[18px]" /> },
-      { label: "Schedule", href: "/admin/schedule", icon: <Clock className="w-[18px] h-[18px]" /> },
-      { label: "Attendance", href: "/admin/attendance", icon: <CheckSquare className="w-[18px] h-[18px]" /> },
-      { label: "Calendar", href: "/admin/calendar", icon: <CalendarDays className="w-[18px] h-[18px]" /> },
+      { label: "Courses", href: "/admin/courses", icon: <BookOpen className="w-4 h-4" /> },
+      { label: "Assignments", href: "/admin/assignments", icon: <ClipboardList className="w-4 h-4" /> },
+      { label: "Schedule", href: "/admin/schedule", icon: <Clock className="w-4 h-4" /> },
+      { label: "Attendance", href: "/admin/attendance", icon: <CheckSquare className="w-4 h-4" /> },
+      { label: "Calendar", href: "/admin/calendar", icon: <CalendarDays className="w-4 h-4" /> },
     ],
   },
   {
     label: "Operations",
     items: [
-      { label: "Payments", href: "/admin/payments", icon: <CreditCard className="w-[18px] h-[18px]" /> },
-      { label: "Notifications", href: "/admin/notifications", icon: <Bell className="w-[18px] h-[18px]" /> },
-      { label: "Messages", href: "/admin/messages", icon: <MessageSquare className="w-[18px] h-[18px]" /> },
+      { label: "Payments", href: "/admin/payments", icon: <CreditCard className="w-4 h-4" /> },
+      { label: "Notifications", href: "/admin/notifications", icon: <Bell className="w-4 h-4" /> },
+      { label: "Messages", href: "/admin/messages", icon: <MessageSquare className="w-4 h-4" /> },
     ],
   },
   {
     label: "System",
     items: [
-      { label: "Analytics", href: "/admin/analytics", icon: <BarChart3 className="w-[18px] h-[18px]" /> },
-      { label: "Certificates", href: "/admin/certificates", icon: <Award className="w-[18px] h-[18px]" /> },
-      { label: "Settings", href: "/admin/settings", icon: <Settings className="w-[18px] h-[18px]" /> },
+      { label: "Analytics", href: "/admin/analytics", icon: <BarChart3 className="w-4 h-4" /> },
+      { label: "Certificates", href: "/admin/certificates", icon: <Award className="w-4 h-4" /> },
+      { label: "Settings", href: "/admin/settings", icon: <Settings className="w-4 h-4" /> },
     ],
   },
 ];
 
-function AdminSidebar({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }: {
-  sidebarOpen: boolean; setSidebarOpen: (v: boolean) => void;
-  collapsed: boolean; setCollapsed: (v: boolean) => void;
-}) {
+const allNavItems = navGroups.flatMap((g) => g.items);
+
+/* ═══════════════════════════════════════
+   Shared
+   ═══════════════════════════════════════ */
+function useActiveRoute() {
   const pathname = usePathname();
+  return (href: string) => {
+    if (href === "/admin") return pathname === "/admin";
+    return pathname.startsWith(href);
+  };
+}
+
+/* ═══════════════════════════════════════
+   Desktop Sidebar
+   ═══════════════════════════════════════ */
+function DesktopSidebar({
+  collapsed,
+  setCollapsed,
+  onNavigate,
+}: {
+  collapsed: boolean;
+  setCollapsed: (v: boolean) => void;
+  onNavigate: () => void;
+}) {
+  const isActive = useActiveRoute();
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <aside
+      className={`hidden lg:flex flex-col fixed inset-y-0 left-0 z-30 bg-white dark:bg-[#0a0a0a] border-r border-neutral-200/70 dark:border-neutral-800/70 transition-all duration-300 ease-out ${
+        collapsed ? "w-[64px]" : "w-[240px]"
+      }`}
+    >
+      {/* ── Logo ── */}
+      <div className={`flex items-center h-14 border-b border-neutral-200/70 dark:border-neutral-800/70 ${collapsed ? "justify-center px-0" : "justify-between px-4"}`}>
+        {!collapsed ? (
+          <Link href="/admin" className="flex items-center gap-2 group">
+            <div className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-white flex items-center justify-center shrink-0">
+              <Sparkles className="w-3.5 h-3.5 text-white dark:text-neutral-900" />
+            </div>
+            <div className="flex items-baseline gap-0.5">
+              <span className="text-sm font-semibold text-neutral-900 dark:text-white tracking-tight">Academy</span>
+              <span className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">LMS</span>
+            </div>
+          </Link>
+        ) : (
+          <Link href="/admin" className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-white flex items-center justify-center">
+            <Sparkles className="w-3.5 h-3.5 text-white dark:text-neutral-900" />
+          </Link>
+        )}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="w-6 h-6 rounded-md flex items-center justify-center text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+        >
+          {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
+        </button>
+      </div>
+
+      {/* ── Navigation ── */}
+      <nav className="flex-1 overflow-y-auto py-4 px-2.5 space-y-5">
+        {navGroups.map((group) => (
+          <div key={group.label}>
+            {!collapsed && (
+              <p className="px-2.5 mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-600">
+                {group.label}
+              </p>
+            )}
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onNavigate}
+                    className={`flex items-center rounded-lg text-sm font-medium transition-all duration-150 ${
+                      collapsed ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3 py-2"
+                    } ${
+                      active
+                        ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white"
+                        : "text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40"
+                    }`}
+                    title={collapsed ? item.label : undefined}
+                  >
+                    <span className="shrink-0">{item.icon}</span>
+                    {!collapsed && (
+                      <span className="flex-1 truncate">{item.label}</span>
+                    )}
+                    {!collapsed && item.badge && (
+                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300">
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      {/* ── Footer ── */}
+      <div className="px-2.5 py-3 border-t border-neutral-200/70 dark:border-neutral-800/70">
+        <Link
+          href="/admin/settings"
+          onClick={onNavigate}
+          className={`flex items-center rounded-lg text-sm font-medium transition-all duration-150 text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40 ${
+            collapsed ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3 py-2"
+          }`}
+          title={collapsed ? "Settings" : undefined}
+        >
+          <Settings className="w-4 h-4 shrink-0" />
+          {!collapsed && <span>Settings</span>}
+        </Link>
+      </div>
+    </aside>
+  );
+}
+
+/* ═══════════════════════════════════════
+   Mobile Drawer
+   ═══════════════════════════════════════ */
+function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const isActive = useActiveRoute();
+  const router = useRouter();
+
+  const handleNav = (href: string) => {
+    router.push(href);
+    onClose();
+  };
 
   return (
     <>
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
+      {/* Backdrop */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 lg:hidden animate-in fade-in duration-200"
+          onClick={onClose}
+        />
       )}
-      <aside
-        className={`fixed inset-y-0 left-0 z-40 bg-white dark:bg-[#0a0a0a] border-r border-neutral-200 dark:border-neutral-800/80 flex flex-col transition-all duration-200 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        } ${collapsed ? "w-[60px]" : "w-[240px]"}`}
+
+      {/* Drawer */}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-[280px] bg-white dark:bg-[#0a0a0a] border-r border-neutral-200/70 dark:border-neutral-800/70 transform transition-all duration-300 ease-out lg:hidden ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
-        <div className={`flex items-center h-14 border-b border-neutral-200 dark:border-neutral-800/80 ${collapsed ? "justify-center px-0" : "justify-between px-4"}`}>
-          {!collapsed && (
-            <div className="relative flex items-center group">
-              <img
-                src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
-                alt="Beyund Labs"
-                className="w-7 h-7 shrink-0"
-                style={{
-                  maskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
-                  WebkitMaskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
-                }}
-              />
-              <div
-                className="flex items-baseline -ml-1.5 mix-blend-screen select-none"
-                style={{ textShadow: "0 0 20px rgba(255,255,255,0.08)" }}
-              >
-                <span className="text-white text-[13px] font-light tracking-wide group-hover:text-white transition-colors duration-300">
-                  eyund
-                </span>
-                <span
-                  className="text-slate-300/90 group-hover:text-slate-200 transition-colors duration-300 ml-0.5 text-[11px] font-mono"
-                  style={{ fontVariant: "small-caps" }}
-                >
-                  𝙻𝚊𝚋𝚜.
-                </span>
-                <span className="text-green-400/80 group-hover:text-green-300 transition-colors duration-300 ml-0.5 text-[9px] font-light tracking-widest uppercase">
-                  LMS
-                </span>
-              </div>
+        {/* Header */}
+        <div className="flex items-center justify-between h-14 px-4 border-b border-neutral-200/70 dark:border-neutral-800/70">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-white flex items-center justify-center">
+              <Sparkles className="w-3.5 h-3.5 text-white dark:text-neutral-900" />
             </div>
-          )}
-          {collapsed && (
-            <img
-              src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
-              alt="Beyund Labs"
-              className="w-7 h-7 rounded-lg object-cover"
-            />
-          )}
+            <div className="flex items-baseline gap-1">
+              <span className="text-sm font-semibold text-neutral-900 dark:text-white">Academy</span>
+              <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">LMS</span>
+            </div>
+          </div>
           <button
-            onClick={() => setCollapsed(!collapsed)}
-            className={`hidden lg:flex w-6 h-6 rounded-md items-center justify-center text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors ${collapsed ? "mx-auto" : ""}`}
+            onClick={onClose}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
           >
-            {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-3 px-2">
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-5">
           {navGroups.map((group) => (
-            <div key={group.label} className="mb-4">
-              {!collapsed && (
-                <p className="px-2 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-600">
-                  {group.label}
-                </p>
-              )}
+            <div key={group.label}>
+              <p className="px-2 mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-500">
+                {group.label}
+              </p>
               <div className="space-y-0.5">
                 {group.items.map((item) => {
-                  const isActive = item.href === "/admin"
-                    ? pathname === "/admin"
-                    : pathname.startsWith(item.href);
+                  const active = isActive(item.href);
                   return (
-                    <Link
+                    <button
                       key={item.href}
-                      href={item.href}
-                      onClick={() => setSidebarOpen(false)}
-                      className={`flex items-center rounded-lg text-[13px] font-medium transition-colors ${
-                        collapsed ? "justify-center px-0 py-2 mx-auto w-10 h-10" : "gap-3 px-3 py-2"
-                      } ${
-                        isActive
-                          ? "bg-neutral-100 dark:bg-neutral-800/80 text-neutral-900 dark:text-white"
+                      onClick={() => handleNav(item.href)}
+                      className={`flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 min-h-[44px] ${
+                        active
+                          ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white"
                           : "text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40"
                       }`}
-                      title={collapsed ? item.label : undefined}
                     >
-                      {item.icon}
-                      {!collapsed && <span>{item.label}</span>}
-                    </Link>
+                      <span className="shrink-0">{item.icon}</span>
+                      <span className="flex-1 text-left truncate">{item.label}</span>
+                      {item.badge && (
+                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300">
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
                   );
                 })}
               </div>
@@ -167,29 +277,73 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }: 
           ))}
         </nav>
 
-        <div className="px-3 py-3 border-t border-neutral-200 dark:border-neutral-800/80">
-          <Link
-            href="/admin/settings"
-            className={`flex items-center rounded-lg text-[13px] font-medium transition-colors text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40 ${
-              collapsed ? "justify-center p-2" : "gap-3 px-3 py-2"
-            }`}
+        {/* Footer */}
+        <div className="px-3 py-3 border-t border-neutral-200/70 dark:border-neutral-800/70">
+          <button
+            onClick={() => handleNav("/admin/settings")}
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition-all duration-150 min-h-[44px]"
           >
-            <Users className="w-[18px] h-[18px]" />
-            {!collapsed && (
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-neutral-900 dark:text-white truncate">Admin</p>
-                <p className="text-[11px] text-neutral-400 dark:text-neutral-500 truncate">admin@beyund.com</p>
-              </div>
-            )}
-          </Link>
+            <Settings className="w-4 h-4 shrink-0" />
+            <span>Settings</span>
+          </button>
         </div>
-      </aside>
+      </div>
     </>
   );
 }
 
-function AdminTopbar({ sidebarOpen, setSidebarOpen, collapsed }: {
-  sidebarOpen: boolean; setSidebarOpen: (v: boolean) => void;
+/* ═══════════════════════════════════════
+   Mobile Bottom Tab Bar
+   ═══════════════════════════════════════ */
+function MobileTabBar({ onMenuOpen }: { onMenuOpen: () => void }) {
+  const isActive = useActiveRoute();
+
+  // Show the first 5 nav items as tabs
+  const tabs = allNavItems.slice(0, 5);
+
+  return (
+    <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-xl border-t border-neutral-200/70 dark:border-neutral-800/70 safe-area-bottom">
+      <div className="flex items-center justify-around h-full px-2">
+        {tabs.map((item) => {
+          const active = isActive(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg min-w-[48px] min-h-[44px] transition-colors duration-150 ${
+                active
+                  ? "text-neutral-900 dark:text-white"
+                  : "text-neutral-400 dark:text-neutral-500"
+              }`}
+            >
+              <span className="shrink-0">{item.icon}</span>
+              <span className="text-[10px] font-medium leading-none truncate max-w-[48px] text-center">
+                {item.label}
+              </span>
+              {active && <span className="absolute bottom-1 w-4 h-0.5 rounded-full bg-neutral-900 dark:bg-white" />}
+            </Link>
+          );
+        })}
+        <button
+          onClick={onMenuOpen}
+          className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg min-w-[48px] min-h-[44px] text-neutral-400 dark:text-neutral-500 transition-colors duration-150"
+        >
+          <Menu className="w-4 h-4" />
+          <span className="text-[10px] font-medium">More</span>
+        </button>
+      </div>
+    </nav>
+  );
+}
+
+/* ═══════════════════════════════════════
+   Top Bar
+   ═══════════════════════════════════════ */
+function AdminTopbar({
+  onMobileMenuOpen,
+  collapsed,
+}: {
+  onMobileMenuOpen: () => void;
   collapsed: boolean;
 }) {
   const { theme, toggleTheme } = useTheme();
@@ -197,66 +351,97 @@ function AdminTopbar({ sidebarOpen, setSidebarOpen, collapsed }: {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <header className="sticky top-0 z-30 h-14 border-b border-neutral-200 dark:border-neutral-800/80 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl flex items-center justify-between px-4 lg:px-6">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-        {searchOpen ? (
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              autoFocus
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search students, courses, assignments..."
-              className="w-64 lg:w-96 xl:w-[28rem] px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 border-0 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-white/20"
-            />
-            <button onClick={() => { setSearchOpen(false); setSearchQuery(""); }}>
-              <X className="w-4 h-4 text-neutral-400" />
-            </button>
-          </div>
-        ) : (
-          <button onClick={() => setSearchOpen(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 text-neutral-400 dark:text-neutral-500 text-sm w-64 lg:w-96 xl:w-[28rem]">
-            <Search className="w-3.5 h-3.5 shrink-0" />
-            <span>Search students, courses, assignments...</span>
+    <header className="sticky top-0 z-20 h-14 lg:h-14 border-b border-neutral-200/70 dark:border-neutral-800/70 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl">
+      <div className="flex items-center justify-between h-full px-4 lg:px-6">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {/* Mobile hamburger */}
+          <button
+            onClick={onMobileMenuOpen}
+            className="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors min-w-[44px] min-h-[44px]"
+            aria-label="Open menu"
+          >
+            <Menu className="w-5 h-5" />
           </button>
-        )}
-      </div>
-      <div className="flex items-center gap-1">
-        <button onClick={toggleTheme} className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" title="Toggle theme">
-          {theme === "dark" ? (
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
+
+          {/* Search */}
+          {searchOpen ? (
+            <div className="flex items-center gap-2 flex-1 max-w-md">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
+                <input
+                  type="text"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search..."
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 border-0 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900/20 dark:focus:ring-white/20"
+                />
+              </div>
+              <button
+                onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
+                className="text-sm text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              >
+                Cancel
+              </button>
+            </div>
           ) : (
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 text-neutral-400 dark:text-neutral-500 text-sm w-full max-w-[280px] lg:max-w-[360px] hover:bg-neutral-200/70 dark:hover:bg-neutral-800 transition-colors"
+            >
+              <Search className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Search students, courses...</span>
+              <kbd className="ml-auto text-[10px] font-mono text-neutral-400 dark:text-neutral-600 bg-neutral-200/50 dark:bg-neutral-700/50 px-1.5 py-0.5 rounded hidden lg:inline">
+                ⌘K
+              </kbd>
+            </button>
           )}
-        </button>
-        <Link href="/admin/notifications" className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors relative">
-          <Bell className="w-[18px] h-[18px]" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-        </Link>
-        <Link href="/admin/settings" className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-          <Settings className="w-[18px] h-[18px]" />
-        </Link>
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xs font-medium cursor-pointer ml-1">
-          A
+        </div>
+
+        {/* Right actions */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          <button
+            onClick={toggleTheme}
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors min-w-[44px] min-h-[44px]"
+            title="Toggle theme"
+          >
+            {theme === "dark" ? (
+              <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            ) : (
+              <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            )}
+          </button>
+
+          <Link
+            href="/admin/notifications"
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors relative min-w-[44px] min-h-[44px]"
+          >
+            <Bell className="w-[18px] h-[18px]" />
+            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#0a0a0a]" />
+          </Link>
+
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold cursor-pointer shadow-sm min-w-[36px]">
+            <span className="hidden sm:inline">A</span>
+            <span className="sm:hidden text-xs">A</span>
+          </div>
         </div>
       </div>
     </header>
   );
 }
 
+/* ═══════════════════════════════════════
+   Layout Shell
+   ═══════════════════════════════════════ */
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<{ email: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -275,9 +460,15 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     getUser();
   }, [router, supabase, isLoginPage]);
 
+  // Close mobile drawer on route change
+  useEffect(() => { setDrawerOpen(false); }, [pathname]);
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#0a0a0a]">
-      <div className="animate-spin rounded-full h-8 w-8 border-2 border-neutral-200 dark:border-neutral-700 border-t-neutral-900 dark:border-t-white" />
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 rounded-full border-2 border-neutral-200 dark:border-neutral-700 border-t-neutral-900 dark:border-t-white animate-spin" />
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">Loading dashboard...</p>
+      </div>
     </div>
   );
   if (isLoginPage) return <>{children}</>;
@@ -285,15 +476,39 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-[#0a0a0a] text-neutral-900 dark:text-white transition-colors">
-      <AdminSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} collapsed={collapsed} setCollapsed={setCollapsed} />
-      <div className={`flex flex-col min-w-0 transition-all duration-200 ${collapsed ? "lg:ml-[60px]" : "lg:ml-[240px]"}`}>
-        <AdminTopbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} collapsed={collapsed} />
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
+      {/* Desktop sidebar */}
+      <DesktopSidebar
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        onNavigate={() => {}}
+      />
+
+      {/* Mobile drawer */}
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+
+      {/* Main content area */}
+      <div className={`flex flex-col min-w-0 transition-all duration-300 ease-out pb-16 lg:pb-0 ${
+        collapsed ? "lg:ml-[64px]" : "lg:ml-[240px]"
+      }`}>
+        <AdminTopbar
+          onMobileMenuOpen={() => setDrawerOpen(true)}
+          collapsed={collapsed}
+        />
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto max-w-[1600px] mx-auto w-full">
+          {children}
+        </main>
       </div>
+
+      {/* Mobile bottom tab bar */}
+      <MobileTabBar onMenuOpen={() => setDrawerOpen(true)} />
     </div>
   );
 }
 
+/* ═══════════════════════════════════════
+   Export
+   ═══════════════════════════════════════ */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
