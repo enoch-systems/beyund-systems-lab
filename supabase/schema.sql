@@ -138,7 +138,7 @@ CREATE POLICY "auth_update_weeks" ON course_weeks FOR UPDATE TO authenticated US
 CREATE POLICY "auth_delete_weeks" ON course_weeks FOR DELETE TO authenticated USING (true);
 
 -- ============================================================
--- [ASSIGNMENTS MODULE] — Assignment Distribution & Tracking
+-- [ASSIGNMENTS MODULE] — Weekly Assignment Distribution
 -- ============================================================
 
 DROP TABLE IF EXISTS assignments;
@@ -146,9 +146,9 @@ DROP TABLE IF EXISTS assignments;
 CREATE TABLE assignments (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
-  file_url TEXT DEFAULT '',
-  file_name TEXT DEFAULT '',
-  due_date TIMESTAMPTZ NOT NULL,
+  week_number INTEGER NOT NULL CHECK (week_number >= 1),
+  file_url TEXT NOT NULL DEFAULT '',
+  file_name TEXT NOT NULL DEFAULT '',
   status TEXT NOT NULL DEFAULT 'active'
     CHECK (status IN ('active', 'submitted', 'overdue')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -156,7 +156,7 @@ CREATE TABLE assignments (
 );
 
 CREATE INDEX IF NOT EXISTS idx_assignments_status ON assignments (status);
-CREATE INDEX IF NOT EXISTS idx_assignments_due_date ON assignments (due_date DESC);
+CREATE INDEX IF NOT EXISTS idx_assignments_week ON assignments (week_number);
 CREATE INDEX IF NOT EXISTS idx_assignments_created_at ON assignments (created_at DESC);
 
 ALTER TABLE assignments ENABLE ROW LEVEL SECURITY;

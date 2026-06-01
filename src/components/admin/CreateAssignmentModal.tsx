@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
-import { X, Upload, FileText, Loader2, AlertCircle, Calendar, Clock } from "lucide-react";
+import { X, Upload, FileText, Loader2, AlertCircle, Hash } from "lucide-react";
 
 interface CreateAssignmentModalProps {
   open: boolean;
@@ -10,14 +10,23 @@ interface CreateAssignmentModalProps {
   onCreated: () => void;
 }
 
+const EXAMPLE_TITLES = [
+  "Design a responsive registration form using React",
+  "Build a login page with form validation",
+  "Create a student dashboard using Next.js",
+  "Implement CRUD operations with Supabase",
+  "Build a course management API using Express",
+];
+
+const WEEK_OPTIONS = Array.from({ length: 12 }, (_, i) => i + 1);
+
 export default function CreateAssignmentModal({
   open,
   onClose,
   onCreated,
 }: CreateAssignmentModalProps) {
   const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [dueTime, setDueTime] = useState("23:59");
+  const [weekNumber, setWeekNumber] = useState<number>(1);
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -30,17 +39,16 @@ export default function CreateAssignmentModal({
     e.preventDefault();
     setError("");
 
-    // Validation
     if (!title.trim()) {
       setError("Assignment title is required");
       return;
     }
-    if (!dueDate) {
-      setError("Due date is required");
+    if (!weekNumber || weekNumber < 1) {
+      setError("Please select a valid week number");
       return;
     }
     if (!file) {
-      setError("Please upload an assignment file");
+      setError("Please upload an assignment document before continuing.");
       return;
     }
 
@@ -48,7 +56,6 @@ export default function CreateAssignmentModal({
 
     try {
       // 1. Upload file to Supabase Storage
-      const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
       const filePath = `assignments/${fileName}`;
 
@@ -60,9 +67,7 @@ export default function CreateAssignmentModal({
         });
 
       if (uploadError) {
-        // If bucket doesn't exist, try to create it or store without file
         console.warn("Storage upload failed:", uploadError.message);
-        // Still proceed to create assignment record without file URL
       }
 
       // 2. Get public URL
@@ -72,17 +77,14 @@ export default function CreateAssignmentModal({
 
       const fileUrl = urlData?.publicUrl || "";
 
-      // 3. Combine date + time into ISO string
-      const dueISO = new Date(`${dueDate}T${dueTime}:00`).toISOString();
-
-      // 4. Insert assignment record
+      // 3. Insert assignment record (no due_date — timestamps are automatic)
       const { error: insertError } = await supabase
         .from("assignments")
         .insert({
           title: title.trim(),
+          week_number: weekNumber,
           file_url: fileUrl,
           file_name: file.name,
-          due_date: dueISO,
           status: "active",
         });
 
@@ -92,7 +94,6 @@ export default function CreateAssignmentModal({
         return;
       }
 
-      // 5. Reset and notify parent
       resetForm();
       onCreated();
       onClose();
@@ -105,8 +106,7 @@ export default function CreateAssignmentModal({
 
   function resetForm() {
     setTitle("");
-    setDueDate("");
-    setDueTime("23:59");
+    setWeekNumber(1);
     setFile(null);
     setError("");
   }
@@ -143,7 +143,7 @@ export default function CreateAssignmentModal({
                 New Assignment
               </h2>
               <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-0.5">
-                Create and upload a new assignment
+                Create a weekly assignment with an uploaded document
               </p>
             </div>
             <button
@@ -165,35 +165,37 @@ export default function CreateAssignmentModal({
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Build a REST API"
+                placeholder={EXAMPLE_TITLES[Math.floor(Math.random() * EXAMPLE_TITLES.length)]}
                 className="w-full h-[42px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[14px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
               />
             </div>
 
-            {/* Due Date */}
+            {/* Week Number */}
             <div>
               <label className="block text-[13px] font-medium text-[#1d1d1f] dark:text-white mb-1.5">
-                Due Date <span className="text-[#ff453a]">*</span>
+                Assignment Week <span className="text-[#ff453a]">*</span>
               </label>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] pointer-events-none" />
-                  <input
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className="w-full h-[42px] pl-10 pr-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[14px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all [color-scheme:light] dark:[color-scheme:dark]"
-                  />
-                </div>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] pointer-events-none" />
-                  <input
-                    type="time"
-                    value={dueTime}
-                    onChange={(e) => setDueTime(e.target.value)}
-                    className="w-full h-[42px] pl-10 pr-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[14px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all [color-scheme:light] dark:[color-scheme:dark]"
-                  />
-                </div>
+              <div className="relative">
+                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] pointer-events-none" />
+                <select
+                  value={weekNumber}
+                  onChange={(e) => setWeekNumber(Number(e.target.value))}
+                  className="w-full h-[42px] pl-10 pr-10 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[14px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all appearance-none cursor-pointer"
+                >
+                  {WEEK_OPTIONS.map((week) => (
+                    <option key={week} value={week} className="bg-white dark:bg-[#1c1c1e] text-[#1d1d1f] dark:text-white">
+                      Week {week}
+                    </option>
+                  ))}
+                </select>
+                <svg
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 9l6 6 6-6" />
+                </svg>
               </div>
             </div>
 

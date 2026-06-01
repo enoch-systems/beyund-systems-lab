@@ -6,8 +6,8 @@ import {
   ArrowLeft,
   Download,
   Share2,
-  Clock,
   FileText,
+  Hash,
   Calendar,
   Trash2,
   Loader2,
@@ -22,7 +22,7 @@ interface Assignment {
   title: string;
   file_url: string;
   file_name: string;
-  due_date: string;
+  week_number: number;
   status: "active" | "submitted" | "overdue";
   created_at: string;
 }
@@ -84,35 +84,9 @@ export default function AssignmentDetailView({
     setDeleting(false);
   }
 
-  function getCountdown(dueDate: string): { text: string; overdue: boolean } {
-    const now = new Date();
-    const due = new Date(dueDate);
-    const diffMs = due.getTime() - now.getTime();
-    const overdue = diffMs < 0;
-    const absMs = Math.abs(diffMs);
-    const days = Math.floor(absMs / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((absMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-    if (days > 0) {
-      return {
-        text: overdue
-          ? `Overdue by ${days} day${days > 1 ? "s" : ""}`
-          : `Due in ${days} day${days > 1 ? "s" : ""}`,
-        overdue,
-      };
-    }
-    if (hours > 0) {
-      return {
-        text: overdue
-          ? `Overdue by ${hours} hour${hours > 1 ? "s" : ""}`
-          : `Due in ${hours} hour${hours > 1 ? "s" : ""}`,
-        overdue,
-      };
-    }
-    return {
-      text: overdue ? "Overdue" : "Due soon",
-      overdue,
-    };
+  function getFileExtension(filename: string): string {
+    const ext = filename.split(".").pop()?.toUpperCase() || "FILE";
+    return ext;
   }
 
   function getStatusIcon() {
@@ -147,13 +121,7 @@ export default function AssignmentDetailView({
 
   function shareViaWhatsApp() {
     if (!assignment) return;
-    const due = new Date(assignment.due_date).toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    const message = `📚 *New Assignment: ${assignment.title}*\n\n📅 Due: ${due}\n📎 File: ${assignment.file_url || "No file attached"}\n\nComplete and submit before the deadline.`;
+    const message = `📚 *Assignment: ${assignment.title}*\n\n📆 Week ${assignment.week_number}\n📎 File: ${assignment.file_url || "No file attached"}\n\nComplete and submit your work.`;
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/?text=${encoded}`, "_blank");
     setShareMenuOpen(false);
@@ -178,8 +146,6 @@ export default function AssignmentDetailView({
     );
   }
 
-  const countdown = getCountdown(assignment.due_date);
-
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Back button */}
@@ -197,7 +163,7 @@ export default function AssignmentDetailView({
         <div className="p-6 pb-4 border-b border-[#f2f2f7] dark:border-[#2c2c2e]">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2.5 mb-2.5">
+              <div className="flex items-center gap-2.5 mb-3">
                 <div className="w-10 h-10 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center">
                   <FileText className="w-5 h-5 text-[#8940fa]" />
                 </div>
@@ -206,7 +172,7 @@ export default function AssignmentDetailView({
                     {assignment.title}
                   </h1>
                   <p className="text-[12px] text-[#86868b] dark:text-[#98989d] mt-0.5">
-                    Created {new Date(assignment.created_at).toLocaleDateString("en-US", {
+                    Week {assignment.week_number} · Created {new Date(assignment.created_at).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
@@ -215,37 +181,36 @@ export default function AssignmentDetailView({
                 </div>
               </div>
               {/* Status pill */}
-              <div className="flex items-center gap-2">
-                <span
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] text-[11px] font-medium ${getStatusColor()}`}
-                >
-                  {getStatusIcon()}
-                  <span className="capitalize">{assignment.status}</span>
-                </span>
-                <span
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] text-[11px] font-medium ${
-                    countdown.overdue
-                      ? "bg-[#ff453a]/10 text-[#ff453a]"
-                      : "bg-[#ff9f0a]/10 text-[#ff9f0a]"
-                  }`}
-                >
-                  <Clock className="w-3.5 h-3.5" />
-                  {countdown.text}
-                </span>
-              </div>
+              <span
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] text-[11px] font-medium ${getStatusColor()}`}
+              >
+                {getStatusIcon()}
+                <span className="capitalize">{assignment.status}</span>
+              </span>
             </div>
           </div>
         </div>
 
         {/* Details */}
         <div className="p-6 space-y-5">
-          {/* Due date */}
+          {/* Week number */}
+          <div className="flex items-center gap-3 p-3.5 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e]">
+            <Hash className="w-5 h-5 text-[#8940fa]" />
+            <div>
+              <p className="text-[12px] text-[#86868b] dark:text-[#98989d]">Assignment Week</p>
+              <p className="text-[14px] font-medium text-[#1d1d1f] dark:text-white">
+                Week {assignment.week_number}
+              </p>
+            </div>
+          </div>
+
+          {/* Created date */}
           <div className="flex items-center gap-3 p-3.5 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e]">
             <Calendar className="w-5 h-5 text-[#8940fa]" />
             <div>
-              <p className="text-[12px] text-[#86868b] dark:text-[#98989d]">Due Date</p>
+              <p className="text-[12px] text-[#86868b] dark:text-[#98989d]">Created</p>
               <p className="text-[14px] font-medium text-[#1d1d1f] dark:text-white">
-                {new Date(assignment.due_date).toLocaleDateString("en-US", {
+                {new Date(assignment.created_at).toLocaleDateString("en-US", {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
@@ -266,7 +231,7 @@ export default function AssignmentDetailView({
                   {assignment.file_name || "Assignment File"}
                 </p>
                 <p className="text-[11px] text-[#86868b] dark:text-[#98989d]">
-                  Click to download
+                  {getFileExtension(assignment.file_name)} file — click to download
                 </p>
               </div>
               <a
