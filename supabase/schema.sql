@@ -130,54 +130,56 @@ CREATE POLICY "Allow authenticated delete exports"
   USING (true);
 
 -- ============================================================
+-- Courses Table (with week-based curriculum)
+-- ============================================================
+
+DROP TABLE IF EXISTS course_weeks;
+DROP TABLE IF EXISTS courses;
+
+CREATE TABLE courses (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  total_weeks INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'draft', 'archived')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE course_weeks (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+  week_number INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  scheme_of_work TEXT DEFAULT '',
+  resources TEXT DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'not_started' CHECK (status IN ('not_started', 'in_progress', 'completed')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(course_id, week_number)
+);
+
+CREATE INDEX IF NOT EXISTS idx_course_weeks_course ON course_weeks (course_id);
+CREATE INDEX IF NOT EXISTS idx_courses_created_at ON courses (created_at DESC);
+
+ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE course_weeks ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow authenticated read courses" ON courses FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Allow authenticated insert courses" ON courses FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Allow authenticated update courses" ON courses FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Allow authenticated delete courses" ON courses FOR DELETE TO authenticated USING (true);
+
+CREATE POLICY "Allow authenticated read weeks" ON course_weeks FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Allow authenticated insert weeks" ON course_weeks FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Allow authenticated update weeks" ON course_weeks FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Allow authenticated delete weeks" ON course_weeks FOR DELETE TO authenticated USING (true);
+
+-- ============================================================
 -- Supabase Storage Bucket for Reports
 -- ============================================================
 -- NOTE: Storage buckets must be created via the Supabase Dashboard.
--- To set up the "reports" bucket:
---
--- 1. Go to Storage in your Supabase Dashboard
--- 2. Click "New bucket"
--- 3. Name: reports
--- 4. Make it: Public (or configure policies below)
--- 5. File size limit: 50MB
--- 6. Allowed MIME types: application/pdf
---
--- Storage RLS Policies (run after bucket is created):
---
--- -- Allow authenticated uploads
--- CREATE POLICY "Allow authenticated uploads"
---   ON storage.objects
---   FOR INSERT
---   TO authenticated
---   WITH CHECK (bucket_id = 'reports');
---
--- -- Allow authenticated reads
--- CREATE POLICY "Allow authenticated reads"
---   ON storage.objects
---   FOR SELECT
---   TO authenticated
---   USING (bucket_id = 'reports');
---
--- -- Allow authenticated deletes
--- CREATE POLICY "Allow authenticated deletes"
---   ON storage.objects
---   FOR DELETE
---   TO authenticated
---   USING (bucket_id = 'reports');
---
--- -- Allow public reads (optional, for shareable links)
--- CREATE POLICY "Allow public reads"
---   ON storage.objects
---   FOR SELECT
---   TO public
---   USING (bucket_id = 'reports');
 -- ============================================================
 
 -- ============================================================
 -- Admin User Setup
 -- ============================================================
--- To create an admin user, use the Supabase Dashboard:
--- 1. Go to Authentication > Users
--- 2. Click "Add user"
--- 3. Enter email and password
--- 4. The user will be able to log in at /admin/login
