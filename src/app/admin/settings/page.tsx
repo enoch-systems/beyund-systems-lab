@@ -14,6 +14,7 @@ import {
   Shield,
   Palette,
   Camera,
+  Pencil,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -92,8 +93,13 @@ export default function SettingsPage() {
 
           {/* Profile Image */}
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] border-2 border-[#e5e5ea] dark:border-[#38383a] flex items-center justify-center overflow-hidden shrink-0">
-              <Camera className="w-6 h-6 text-[#86868b] dark:text-[#98989d]" />
+            <div className="relative w-16 h-16 shrink-0">
+              <div className="w-16 h-16 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] border-2 border-[#e5e5ea] dark:border-[#38383a] flex items-center justify-center overflow-hidden">
+                <Camera className="w-6 h-6 text-[#86868b] dark:text-[#98989d]" />
+              </div>
+              <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-[#1d1d1f] dark:bg-white flex items-center justify-center border-2 border-white dark:border-[#1c1c1e] shadow-sm">
+                <Pencil className="w-3 h-3 text-white dark:text-[#1d1d1f]" />
+              </div>
             </div>
             <div>
               <p className="text-[13px] font-medium text-[#1d1d1f] dark:text-white">
