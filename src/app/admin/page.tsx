@@ -101,10 +101,23 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function fetchData() {
       const { data: { session } } = await supabase.auth.getSession();
+
+      // Load admin name from saved settings first, fallback to email prefix
       if (session?.user?.email) {
-        const prefix = session.user.email.split("@")[0];
-        setAdminName(prefix.charAt(0).toUpperCase() + prefix.slice(1));
+        const { data: settings } = await supabase
+          .from("admin_settings")
+          .select("value")
+          .eq("key", "admin_name")
+          .single();
+
+        if (settings?.value) {
+          setAdminName(settings.value);
+        } else {
+          const prefix = session.user.email.split("@")[0];
+          setAdminName(prefix.charAt(0).toUpperCase() + prefix.slice(1));
+        }
       }
+
       const { data: students } = await supabase
         .from("student_registrations")
         .select("*")
