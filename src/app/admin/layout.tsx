@@ -442,11 +442,19 @@ function HeaderAvatar() {
       />
     );
   }
+  // Faceless human silhouette fallback (no letter, no initial)
   return (
-    <>
-      <span className="hidden sm:inline">A</span>
-      <span className="sm:hidden text-xs">A</span>
-    </>
+    <svg
+      className="w-5 h-5 text-white"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-label="Default admin avatar"
+    >
+      {/* Head */}
+      <circle cx="12" cy="8" r="4" />
+      {/* Shoulders / body */}
+      <path d="M12 13c-4.418 0-8 2.686-8 6v1h16v-1c0-3.314-3.582-6-8-6z" />
+    </svg>
   );
 }
 
