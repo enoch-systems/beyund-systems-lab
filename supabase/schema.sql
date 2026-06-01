@@ -82,6 +82,98 @@ CREATE POLICY "Allow authenticated delete"
 -- ============================================================
 
 -- ============================================================
+-- Export Reports Table (for PDF export history)
+-- ============================================================
+
+-- Drop existing policies if they exist (safe to re-run)
+DROP POLICY IF EXISTS "Allow authenticated read exports" ON export_reports;
+DROP POLICY IF EXISTS "Allow authenticated insert exports" ON export_reports;
+DROP POLICY IF EXISTS "Allow authenticated delete exports" ON export_reports;
+
+-- Drop and recreate export_reports table
+DROP TABLE IF EXISTS export_reports;
+
+CREATE TABLE export_reports (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  file_name TEXT NOT NULL,
+  file_url TEXT DEFAULT '',
+  exported_by TEXT NOT NULL DEFAULT 'Admin',
+  student_count INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create index for fast history lookups
+CREATE INDEX IF NOT EXISTS idx_export_reports_created_at ON export_reports (created_at DESC);
+
+-- Enable RLS
+ALTER TABLE export_reports ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Allow authenticated users full read access
+CREATE POLICY "Allow authenticated read exports"
+  ON export_reports
+  FOR SELECT
+  TO authenticated
+  USING (true);
+
+-- Policy: Allow authenticated users to insert
+CREATE POLICY "Allow authenticated insert exports"
+  ON export_reports
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+-- Policy: Allow authenticated users to delete
+CREATE POLICY "Allow authenticated delete exports"
+  ON export_reports
+  FOR DELETE
+  TO authenticated
+  USING (true);
+
+-- ============================================================
+-- Supabase Storage Bucket for Reports
+-- ============================================================
+-- NOTE: Storage buckets must be created via the Supabase Dashboard.
+-- To set up the "reports" bucket:
+--
+-- 1. Go to Storage in your Supabase Dashboard
+-- 2. Click "New bucket"
+-- 3. Name: reports
+-- 4. Make it: Public (or configure policies below)
+-- 5. File size limit: 50MB
+-- 6. Allowed MIME types: application/pdf
+--
+-- Storage RLS Policies (run after bucket is created):
+--
+-- -- Allow authenticated uploads
+-- CREATE POLICY "Allow authenticated uploads"
+--   ON storage.objects
+--   FOR INSERT
+--   TO authenticated
+--   WITH CHECK (bucket_id = 'reports');
+--
+-- -- Allow authenticated reads
+-- CREATE POLICY "Allow authenticated reads"
+--   ON storage.objects
+--   FOR SELECT
+--   TO authenticated
+--   USING (bucket_id = 'reports');
+--
+-- -- Allow authenticated deletes
+-- CREATE POLICY "Allow authenticated deletes"
+--   ON storage.objects
+--   FOR DELETE
+--   TO authenticated
+--   USING (bucket_id = 'reports');
+--
+-- -- Allow public reads (optional, for shareable links)
+-- CREATE POLICY "Allow public reads"
+--   ON storage.objects
+--   FOR SELECT
+--   TO public
+--   USING (bucket_id = 'reports');
+-- ============================================================
+
+-- ============================================================
 -- Admin User Setup
 -- ============================================================
 -- To create an admin user, use the Supabase Dashboard:
@@ -89,4 +181,3 @@ CREATE POLICY "Allow authenticated delete"
 -- 2. Click "Add user"
 -- 3. Enter email and password
 -- 4. The user will be able to log in at /admin/login
--- ============================================================
