@@ -51,7 +51,6 @@ const navGroups: { label: string; items: NavItem[] }[] = [
     label: "Academic",
     items: [
       { label: "Courses", href: "/admin/courses", icon: <BookOpen className="w-4 h-4" /> },
-      { label: "Assignments", href: "/admin/assignments", icon: <ClipboardList className="w-4 h-4" /> },
       { label: "Schedule", href: "/admin/schedule", icon: <Clock className="w-4 h-4" /> },
       { label: "Attendance", href: "/admin/attendance", icon: <CheckSquare className="w-4 h-4" /> },
       { label: "Calendar", href: "/admin/calendar", icon: <CalendarDays className="w-4 h-4" /> },
