@@ -138,6 +138,35 @@ CREATE POLICY "auth_update_weeks" ON course_weeks FOR UPDATE TO authenticated US
 CREATE POLICY "auth_delete_weeks" ON course_weeks FOR DELETE TO authenticated USING (true);
 
 -- ============================================================
+-- [ASSIGNMENTS MODULE] — Assignment Distribution & Tracking
+-- ============================================================
+
+DROP TABLE IF EXISTS assignments;
+
+CREATE TABLE assignments (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  file_url TEXT DEFAULT '',
+  file_name TEXT DEFAULT '',
+  due_date TIMESTAMPTZ NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active'
+    CHECK (status IN ('active', 'submitted', 'overdue')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_assignments_status ON assignments (status);
+CREATE INDEX IF NOT EXISTS idx_assignments_due_date ON assignments (due_date DESC);
+CREATE INDEX IF NOT EXISTS idx_assignments_created_at ON assignments (created_at DESC);
+
+ALTER TABLE assignments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "auth_read_assignments"   ON assignments FOR SELECT TO authenticated USING (true);
+CREATE POLICY "auth_insert_assignments" ON assignments FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "auth_update_assignments" ON assignments FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "auth_delete_assignments" ON assignments FOR DELETE TO authenticated USING (true);
+
+-- ============================================================
 -- [FUTURE SCHEMA TEMPLATES] — Design Only, NOT YET ACTIVE
 -- ============================================================
 -- These schemas are prepared for future LMS modules.
@@ -193,40 +222,10 @@ CREATE POLICY "auth_delete_weeks" ON course_weeks FOR DELETE TO authenticated US
 -- -- Policies: authenticated full CRUD
 
 -- ═══════════════════════════════════════════════════════════════
--- FUTURE: ASSIGNMENTS MODULE
+-- FUTURE: ASSIGNMENTS MODULE (old template — replaced above)
 -- ═══════════════════════════════════════════════════════════════
---
--- CREATE TABLE assignments (
---   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
---   title TEXT NOT NULL,
---   description TEXT DEFAULT '',
---   due_date DATE NOT NULL,
---   total_points INTEGER DEFAULT 100,
---   cohort TEXT DEFAULT '',
---   created_at TIMESTAMPTZ DEFAULT NOW()
--- );
---
--- CREATE TABLE assignment_submissions (
---   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
---   assignment_id UUID NOT NULL REFERENCES assignments(id) ON DELETE CASCADE,
---   student_id UUID NOT NULL REFERENCES student_registrations(id) ON DELETE CASCADE,
---   submitted_at TIMESTAMPTZ DEFAULT NOW(),
---   file_url TEXT DEFAULT '',
---   score INTEGER,
---   feedback TEXT DEFAULT '',
---   status TEXT NOT NULL DEFAULT 'pending'
---     CHECK (status IN ('pending', 'submitted', 'graded', 'resubmit')),
---   UNIQUE(assignment_id, student_id)
--- );
---
--- CREATE INDEX idx_assignments_course  ON assignments (course_id);
--- CREATE INDEX idx_assignments_due     ON assignments (due_date);
--- CREATE INDEX idx_submissions_assign  ON assignment_submissions (assignment_id);
--- CREATE INDEX idx_submissions_student ON assignment_submissions (student_id);
---
--- ALTER TABLE assignments ENABLE ROW LEVEL SECURITY;
--- ALTER TABLE assignment_submissions ENABLE ROW LEVEL SECURITY;
--- -- Policies: authenticated full CRUD
+-- The live assignments table now lives above. This section is
+-- retained as a reference for future student submission tracking.
 
 -- ============================================================
 -- MIGRATION NOTES
@@ -236,6 +235,11 @@ CREATE POLICY "auth_delete_weeks" ON course_weeks FOR DELETE TO authenticated US
 --   - Registration module (student_registrations)
 --   - Reports module (export_reports)
 --   - Future templates (attendance, calendar, assignments)
+--
+-- 2026-06-01: Added assignments table
+--   - Module for assignment distribution & tracking
+--   - title, file_url, file_name, due_date, status
+--   - RLS: authenticated full CRUD
 --
 -- ============================================================
 
