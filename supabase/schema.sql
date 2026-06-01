@@ -1,22 +1,29 @@
 -- ============================================================
--- Beyund Systems Labs - Student Registrations Table
--- Run this SQL in your Supabase SQL Editor:
+-- BEYUND LABS ACADEMY — PRODUCTION DATABASE SCHEMA
+-- ============================================================
+-- Run in Supabase SQL Editor:
 -- https://supabase.com/dashboard/project/xwjrlxrsmeryozvystwa/sql/new
+--
+-- Architecture:
+--   Single public schema with modular table prefixes
+--   (Supabase best practice — custom schemas require
+--    multi-client setup which complicates RLS + realtime)
+--
+-- Naming Convention:
+--   Module prefix: [module]_[table]
+--   Examples:
+--     reg_students     → Registration module
+--     courses_courses  → Courses module
+--     courses_weeks    → Courses module (weeks)
+--     report_exports   → Reports module
 -- ============================================================
 
--- Drop existing policies if they exist (safe to re-run)
-DROP POLICY IF EXISTS "Allow anonymous inserts" ON student_registrations;
-DROP POLICY IF EXISTS "Allow authenticated read" ON student_registrations;
-DROP POLICY IF EXISTS "Allow authenticated update" ON student_registrations;
-DROP POLICY IF EXISTS "Allow authenticated delete" ON student_registrations;
+-- ============================================================
+-- [REGISTRATION MODULE] — Student Applications & Enrollments
+-- ============================================================
 
--- Drop old tables if they exist
-DROP TABLE IF EXISTS students;
-
--- Drop and recreate the student_registrations table (fresh start)
 DROP TABLE IF EXISTS student_registrations;
 
--- Create the student_registrations table
 CREATE TABLE student_registrations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   full_name TEXT NOT NULL,
@@ -35,62 +42,30 @@ CREATE TABLE student_registrations (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create indexes for common queries
-CREATE INDEX IF NOT EXISTS idx_registrations_email ON student_registrations (email);
-CREATE INDEX IF NOT EXISTS idx_registrations_status ON student_registrations (status);
-CREATE INDEX IF NOT EXISTS idx_registrations_created_at ON student_registrations (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_reg_email ON student_registrations (email);
+CREATE INDEX IF NOT EXISTS idx_reg_status ON student_registrations (status);
+CREATE INDEX IF NOT EXISTS idx_reg_created_at ON student_registrations (created_at DESC);
 
--- ============================================================
--- Row Level Security (RLS) Policies
--- ============================================================
-
--- Enable RLS on the student_registrations table
 ALTER TABLE student_registrations ENABLE ROW LEVEL SECURITY;
 
--- Policy: Allow anonymous inserts (for the registration form on the landing page)
-CREATE POLICY "Allow anonymous inserts"
-  ON student_registrations
-  FOR INSERT
-  TO anon
-  WITH CHECK (true);
+-- Anonymous: can insert (registration form)
+CREATE POLICY "allow_anon_insert"
+  ON student_registrations FOR INSERT TO anon WITH CHECK (true);
 
--- Policy: Allow authenticated users full read access (for the admin dashboard)
-CREATE POLICY "Allow authenticated read"
-  ON student_registrations
-  FOR SELECT
-  TO authenticated
-  USING (true);
+-- Authenticated: full CRUD (admin dashboard)
+CREATE POLICY "allow_auth_read"   ON student_registrations FOR SELECT TO authenticated USING (true);
+CREATE POLICY "allow_auth_update" ON student_registrations FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "allow_auth_delete" ON student_registrations FOR DELETE TO authenticated USING (true);
 
--- Policy: Allow authenticated users to update (for status changes in dashboard)
-CREATE POLICY "Allow authenticated update"
-  ON student_registrations
-  FOR UPDATE
-  TO authenticated
-  USING (true)
-  WITH CHECK (true);
-
--- Policy: Allow authenticated users to delete (for removing records in dashboard)
-CREATE POLICY "Allow authenticated delete"
-  ON student_registrations
-  FOR DELETE
-  TO authenticated
-  USING (true);
+DROP POLICY IF EXISTS "Allow anonymous inserts" ON student_registrations;
+DROP POLICY IF EXISTS "Allow authenticated read" ON student_registrations;
+DROP POLICY IF EXISTS "Allow authenticated update" ON student_registrations;
+DROP POLICY IF EXISTS "Allow authenticated delete" ON student_registrations;
 
 -- ============================================================
--- Note: The form uses the anon key + RLS policies for inserts.
--- The admin dashboard uses authenticated user session for reads.
+-- [REPORTS MODULE] — PDF Export History
 -- ============================================================
 
--- ============================================================
--- Export Reports Table (for PDF export history)
--- ============================================================
-
--- Drop existing policies if they exist (safe to re-run)
-DROP POLICY IF EXISTS "Allow authenticated read exports" ON export_reports;
-DROP POLICY IF EXISTS "Allow authenticated insert exports" ON export_reports;
-DROP POLICY IF EXISTS "Allow authenticated delete exports" ON export_reports;
-
--- Drop and recreate export_reports table
 DROP TABLE IF EXISTS export_reports;
 
 CREATE TABLE export_reports (
@@ -102,84 +77,180 @@ CREATE TABLE export_reports (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create index for fast history lookups
-CREATE INDEX IF NOT EXISTS idx_export_reports_created_at ON export_reports (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_export_created_at ON export_reports (created_at DESC);
 
--- Enable RLS
 ALTER TABLE export_reports ENABLE ROW LEVEL SECURITY;
 
--- Policy: Allow authenticated users full read access
-CREATE POLICY "Allow authenticated read exports"
-  ON export_reports
-  FOR SELECT
-  TO authenticated
-  USING (true);
-
--- Policy: Allow authenticated users to insert
-CREATE POLICY "Allow authenticated insert exports"
-  ON export_reports
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (true);
-
--- Policy: Allow authenticated users to delete
-CREATE POLICY "Allow authenticated delete exports"
-  ON export_reports
-  FOR DELETE
-  TO authenticated
-  USING (true);
+CREATE POLICY "allow_auth_read_exports"   ON export_reports FOR SELECT TO authenticated USING (true);
+CREATE POLICY "allow_auth_insert_exports" ON export_reports FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "allow_auth_delete_exports" ON export_reports FOR DELETE TO authenticated USING (true);
 
 -- ============================================================
--- Courses Table (with week-based curriculum)
+-- [COURSES MODULE] — Course & Curriculum Management
+-- ============================================================
+-- Tables: courses_courses, courses_weeks
+-- Foreign Key: courses_weeks.course_id → courses_courses.id
 -- ============================================================
 
-DROP TABLE IF EXISTS course_weeks;
-DROP TABLE IF EXISTS courses;
+-- ── COURSES ──
+DROP TABLE IF EXISTS courses_weeks;
+DROP TABLE IF EXISTS courses_courses;
 
-CREATE TABLE courses (
+CREATE TABLE courses_courses (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
   total_weeks INTEGER NOT NULL DEFAULT 0,
-  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'draft', 'archived')),
+  status TEXT NOT NULL DEFAULT 'active'
+    CHECK (status IN ('active', 'draft', 'archived')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE course_weeks (
+CREATE INDEX IF NOT EXISTS idx_courses_created_at ON courses_courses (created_at DESC);
+
+-- ── COURSE WEEKS ──
+CREATE TABLE courses_weeks (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+  course_id UUID NOT NULL REFERENCES courses_courses(id) ON DELETE CASCADE,
   week_number INTEGER NOT NULL,
   title TEXT NOT NULL,
   scheme_of_work TEXT DEFAULT '',
   resources TEXT DEFAULT '',
-  status TEXT NOT NULL DEFAULT 'not_started' CHECK (status IN ('not_started', 'in_progress', 'completed')),
+  status TEXT NOT NULL DEFAULT 'not_started'
+    CHECK (status IN ('not_started', 'in_progress', 'completed')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(course_id, week_number)
 );
 
-CREATE INDEX IF NOT EXISTS idx_course_weeks_course ON course_weeks (course_id);
-CREATE INDEX IF NOT EXISTS idx_courses_created_at ON courses (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_weeks_course ON courses_weeks (course_id);
+CREATE INDEX IF NOT EXISTS idx_weeks_number ON courses_weeks (course_id, week_number);
 
-ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE course_weeks ENABLE ROW LEVEL SECURITY;
+-- ── RLS Policies ──
+ALTER TABLE courses_courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE courses_weeks ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow authenticated read courses" ON courses FOR SELECT TO authenticated USING (true);
-CREATE POLICY "Allow authenticated insert courses" ON courses FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "Allow authenticated update courses" ON courses FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY "Allow authenticated delete courses" ON courses FOR DELETE TO authenticated USING (true);
+CREATE POLICY "auth_read_courses"   ON courses_courses FOR SELECT TO authenticated USING (true);
+CREATE POLICY "auth_insert_courses" ON courses_courses FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "auth_update_courses" ON courses_courses FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "auth_delete_courses" ON courses_courses FOR DELETE TO authenticated USING (true);
 
-CREATE POLICY "Allow authenticated read weeks" ON course_weeks FOR SELECT TO authenticated USING (true);
-CREATE POLICY "Allow authenticated insert weeks" ON course_weeks FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "Allow authenticated update weeks" ON course_weeks FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY "Allow authenticated delete weeks" ON course_weeks FOR DELETE TO authenticated USING (true);
-
--- ============================================================
--- Supabase Storage Bucket for Reports
--- ============================================================
--- NOTE: Storage buckets must be created via the Supabase Dashboard.
--- ============================================================
+CREATE POLICY "auth_read_weeks"   ON courses_weeks FOR SELECT TO authenticated USING (true);
+CREATE POLICY "auth_insert_weeks" ON courses_weeks FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "auth_update_weeks" ON courses_weeks FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "auth_delete_weeks" ON courses_weeks FOR DELETE TO authenticated USING (true);
 
 -- ============================================================
--- Admin User Setup
+-- [FUTURE SCHEMA TEMPLATES] — Design Only, NOT YET ACTIVE
+-- ============================================================
+-- These schemas are prepared for future LMS modules.
+-- Do NOT execute until the corresponding feature is implemented.
+-- ============================================================
+
+-- ═══════════════════════════════════════════════════════════════
+-- FUTURE: ATTENDANCE MODULE
+-- ═══════════════════════════════════════════════════════════════
+--
+-- CREATE TABLE attendance_records (
+--   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+--   student_id UUID NOT NULL REFERENCES student_registrations(id) ON DELETE CASCADE,
+--   course_id UUID NOT NULL REFERENCES courses_courses(id) ON DELETE CASCADE,
+--   week_number INTEGER,
+--   date DATE NOT NULL,
+--   status TEXT NOT NULL CHECK (status IN ('present', 'absent', 'late', 'excused')),
+--   notes TEXT DEFAULT '',
+--   created_at TIMESTAMPTZ DEFAULT NOW(),
+--   UNIQUE(student_id, course_id, date)
+-- );
+--
+-- CREATE INDEX idx_attendance_student ON attendance_records (student_id);
+-- CREATE INDEX idx_attendance_course  ON attendance_records (course_id);
+-- CREATE INDEX idx_attendance_date    ON attendance_records (date DESC);
+--
+-- ALTER TABLE attendance_records ENABLE ROW LEVEL SECURITY;
+-- -- Policies: authenticated full CRUD
+
+-- ═══════════════════════════════════════════════════════════════
+-- FUTURE: CALENDAR / SCHEDULE MODULE
+-- ═══════════════════════════════════════════════════════════════
+--
+-- CREATE TYPE event_type AS ENUM ('class', 'exam', 'workshop', 'holiday', 'meeting');
+--
+-- CREATE TABLE schedule_events (
+--   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+--   title TEXT NOT NULL,
+--   description TEXT DEFAULT '',
+--   event_type event_type NOT NULL DEFAULT 'class',
+--   course_id UUID REFERENCES courses_courses(id) ON DELETE SET NULL,
+--   start_time TIMESTAMPTZ NOT NULL,
+--   end_time TIMESTAMPTZ NOT NULL,
+--   location TEXT DEFAULT '',
+--   cohort TEXT DEFAULT '',
+--   created_at TIMESTAMPTZ DEFAULT NOW(),
+--   CONSTRAINT valid_time_range CHECK (end_time > start_time)
+-- );
+--
+-- CREATE INDEX idx_schedule_date    ON schedule_events (start_time);
+-- CREATE INDEX idx_schedule_course  ON schedule_events (course_id);
+-- CREATE INDEX idx_schedule_type    ON schedule_events (event_type);
+--
+-- ALTER TABLE schedule_events ENABLE ROW LEVEL SECURITY;
+-- -- Policies: authenticated full CRUD
+
+-- ═══════════════════════════════════════════════════════════════
+-- FUTURE: ASSIGNMENTS MODULE
+-- ═══════════════════════════════════════════════════════════════
+--
+-- CREATE TABLE assignments (
+--   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+--   title TEXT NOT NULL,
+--   description TEXT DEFAULT '',
+--   course_id UUID NOT NULL REFERENCES courses_courses(id) ON DELETE CASCADE,
+--   due_date DATE NOT NULL,
+--   total_points INTEGER DEFAULT 100,
+--   cohort TEXT DEFAULT '',
+--   created_at TIMESTAMPTZ DEFAULT NOW()
+-- );
+--
+-- CREATE TABLE assignment_submissions (
+--   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+--   assignment_id UUID NOT NULL REFERENCES assignments(id) ON DELETE CASCADE,
+--   student_id UUID NOT NULL REFERENCES student_registrations(id) ON DELETE CASCADE,
+--   submitted_at TIMESTAMPTZ DEFAULT NOW(),
+--   file_url TEXT DEFAULT '',
+--   score INTEGER,
+--   feedback TEXT DEFAULT '',
+--   status TEXT NOT NULL DEFAULT 'pending'
+--     CHECK (status IN ('pending', 'submitted', 'graded', 'resubmit')),
+--   UNIQUE(assignment_id, student_id)
+-- );
+--
+-- CREATE INDEX idx_assignments_course  ON assignments (course_id);
+-- CREATE INDEX idx_assignments_due     ON assignments (due_date);
+-- CREATE INDEX idx_submissions_assign  ON assignment_submissions (assignment_id);
+-- CREATE INDEX idx_submissions_student ON assignment_submissions (student_id);
+--
+-- ALTER TABLE assignments ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE assignment_submissions ENABLE ROW LEVEL SECURITY;
+-- -- Policies: authenticated full CRUD
+
+-- ============================================================
+-- MIGRATION NOTES
+-- ============================================================
+-- 
+-- 2026-06-01: Initial structured schema
+--   - Registration module (student_registrations)
+--   - Reports module (export_reports)
+--   - Courses module (courses_courses, courses_weeks)
+--   - Future templates (attendance, calendar, assignments)
+--
+-- ============================================================
+
+-- ============================================================
+-- ADMIN USER SETUP
+-- ============================================================
+-- Create admin user via Supabase Dashboard:
+-- 1. Go to Authentication → Users
+-- 2. Click "Add user" → enter email + password
+-- 3. Admin can log in at /admin/login
 -- ============================================================
