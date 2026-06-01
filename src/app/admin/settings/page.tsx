@@ -29,6 +29,7 @@ export default function SettingsPage() {
   const [resetting, setResetting] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -60,6 +61,21 @@ export default function SettingsPage() {
     setResetting(false);
     setShowResetModal(false);
     alert("Password reset email sent. Check your inbox.");
+  };
+
+  const handleImageClick = () => {
+    document.getElementById("profile-image-input")?.click();
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setProfileImage(ev.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSignOut = async () => {
@@ -95,11 +111,32 @@ export default function SettingsPage() {
           </div>
 
           {/* Profile Image */}
+          <input
+            id="profile-image-input"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
           <div className="flex items-center gap-4 mb-6">
-            <div className="relative w-16 h-16 shrink-0 cursor-pointer">
-              <div className="w-16 h-16 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] border-2 border-[#e5e5ea] dark:border-[#38383a] flex items-center justify-center overflow-hidden">
-                <Camera className="w-6 h-6 text-[#86868b] dark:text-[#98989d]" />
-              </div>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={handleImageClick}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleImageClick(); }}
+              className="relative w-16 h-16 shrink-0 cursor-pointer"
+            >
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-[#e5e5ea] dark:border-[#38383a]"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] border-2 border-[#e5e5ea] dark:border-[#38383a] flex items-center justify-center overflow-hidden">
+                  <Camera className="w-6 h-6 text-[#86868b] dark:text-[#98989d]" />
+                </div>
+              )}
               <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-[#1d1d1f] dark:bg-white flex items-center justify-center border-2 border-white dark:border-[#1c1c1e] shadow-sm">
                 <Pencil className="w-3 h-3 text-white dark:text-[#1d1d1f]" />
               </div>
