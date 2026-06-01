@@ -1,4 +1,4 @@
-ico"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
