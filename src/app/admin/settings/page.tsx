@@ -15,6 +15,7 @@ import {
   Palette,
   Camera,
   Pencil,
+  AlertTriangle,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -23,6 +24,8 @@ export default function SettingsPage() {
   const [adminEmail, setAdminEmail] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -47,13 +50,12 @@ export default function SettingsPage() {
 
   const handlePasswordReset = async () => {
     if (!adminEmail) return;
-    const confirmed = window.confirm(
-      `A password reset link will be sent to ${adminEmail}. You will be signed out and need to use the new password to log back in. Continue?`
-    );
-    if (!confirmed) return;
+    setResetting(true);
     await supabase.auth.resetPasswordForEmail(adminEmail, {
       redirectTo: `${window.location.origin}/admin/login`,
     });
+    setResetting(false);
+    setShowResetModal(false);
     alert("Password reset email sent. Check your inbox.");
   };
 
@@ -83,15 +85,13 @@ export default function SettingsPage() {
 
         {/* ── Admin Profile Card ── */}
         <div className="rounded-[16px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-6 lg:row-span-2">
-          <div className="flex items-center gap-3 mb-6">
-            <div>
-              <h2 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-white">
-                Admin Profile
-              </h2>
-              <p className="text-[12px] text-[#86868b] dark:text-[#98989d]">
-                Your account information
-              </p>
-            </div>
+          <div className="mb-6">
+            <h2 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-white">
+              Admin Profile
+            </h2>
+            <p className="text-[12px] text-[#86868b] dark:text-[#98989d]">
+              Your account information
+            </p>
           </div>
 
           {/* Profile Image */}
@@ -189,7 +189,7 @@ export default function SettingsPage() {
             A password reset link will be sent to your email address.
           </p>
           <button
-            onClick={handlePasswordReset}
+            onClick={() => setShowResetModal(true)}
             className="inline-flex items-center gap-2 h-[38px] px-4 rounded-[10px] border border-[#e5e5ea] dark:border-[#38383a] text-[13px] font-medium text-[#1d1d1f] dark:text-white hover:bg-[#f2f2f7] dark:hover:bg-[#2c2c2e] transition-all"
           >
             <Shield className="w-4 h-4" />
@@ -267,6 +267,68 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      {/* ═══════════════════════════════════════
+         PASSWORD RESET CONFIRMATION MODAL
+         ═══════════════════════════════════════ */}
+      {showResetModal && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+            onClick={() => setShowResetModal(false)}
+          />
+          {/* Modal */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+              className="w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Icon + Content */}
+              <div className="p-6 pb-0 flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-[#ff9f0a]/10 flex items-center justify-center mb-4">
+                  <AlertTriangle className="w-6 h-6 text-[#ff9f0a]" />
+                </div>
+                <h3 className="text-[17px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.01em]">
+                  Reset Password?
+                </h3>
+                <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-2 max-w-[280px]">
+                  A reset link will be sent to{" "}
+                  <span className="font-medium text-[#1d1d1f] dark:text-white">{adminEmail}</span>.
+                  You will need to use the new password to sign back in.
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-2.5 p-6 pt-5">
+                <button
+                  onClick={() => setShowResetModal(false)}
+                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handlePasswordReset}
+                  disabled={saving}
+                  className="flex-1 inline-flex items-center justify-center gap-2 h-[40px] rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] disabled:opacity-50"
+                >
+                  {saving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-4 h-4" />
+                      Send Reset Link
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
