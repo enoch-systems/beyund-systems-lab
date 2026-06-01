@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# admin section (excluded from build)
+/src/app/admin/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
