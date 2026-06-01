@@ -64,7 +64,6 @@ export default function NotificationsPage() {
     loadData();
   }, [loadData]);
 
-  // Real-time
   useEffect(() => {
     const channel = supabase
       .channel("notifications-live")
@@ -96,14 +95,16 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="max-w-[900px] space-y-5">
+    <div className="space-y-6 sm:space-y-8">
       <div>
         <h1 className="text-[28px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
           Notifications
         </h1>
+        <p className="text-[15px] text-neutral-500 dark:text-neutral-400 mt-1">
+          Stay updated with student registrations and payments.
+        </p>
       </div>
 
-      {/* Filter pills */}
       <div className="flex items-center gap-1.5 p-1 bg-neutral-100 dark:bg-neutral-800/50 rounded-[10px] w-fit">
         {(["all", "student", "payment"] as const).map((f) => (
           <button
@@ -120,10 +121,13 @@ export default function NotificationsPage() {
         ))}
       </div>
 
-      {/* List */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e]">
-          <p className="text-sm text-neutral-400">No notifications yet</p>
+          <div className="w-14 h-14 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-3">
+            <CreditCard className="w-7 h-7 text-neutral-400" />
+          </div>
+          <p className="text-[15px] font-medium text-neutral-500 dark:text-neutral-400">No notifications yet</p>
+          <p className="text-[13px] text-neutral-400 dark:text-neutral-500 mt-1">New notifications will appear here</p>
         </div>
       ) : (
         <div className="space-y-2">
