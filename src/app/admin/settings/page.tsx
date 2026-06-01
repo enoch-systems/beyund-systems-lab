@@ -64,7 +64,7 @@ export default function SettingsPage() {
       }
     }
     loadSettings();
-  }, [supabase, setProfileImage]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save settings to Supabase
   const handleSave = async () => {
