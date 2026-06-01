@@ -174,7 +174,7 @@ export default function SettingsPage() {
         <div className="rounded-[16px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center">
-              <Lock className="w-5 h-5 text-[#0a84ff]" />
+              <Lock className="w-5 h-5 text-[#86868b] dark:text-[#98989d]" />
             </div>
             <div>
               <h2 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-white">
