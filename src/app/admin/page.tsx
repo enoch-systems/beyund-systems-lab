@@ -66,9 +66,12 @@ const assignmentData = [
 ];
 
 function getGreeting(): string {
-  const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
+  // Use Nigeria timezone (UTC+1)
+  const now = new Date();
+  const nigeriaTime = new Date(now.toLocaleString("en-US", { timeZone: "Africa/Lagos" }));
+  const h = nigeriaTime.getHours();
+  if (h >= 4 && h < 12) return "Good morning";
+  if (h >= 12 && h < 16) return "Good afternoon";
   return "Good evening";
 }
 
