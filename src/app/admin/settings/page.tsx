@@ -46,12 +46,15 @@ export default function SettingsPage() {
   };
 
   const handlePasswordReset = async () => {
-    if (adminEmail) {
-      await supabase.auth.resetPasswordForEmail(adminEmail, {
-        redirectTo: `${window.location.origin}/admin/login`,
-      });
-      alert("Password reset email sent. Check your inbox.");
-    }
+    if (!adminEmail) return;
+    const confirmed = window.confirm(
+      `A password reset link will be sent to ${adminEmail}. You will be signed out and need to use the new password to log back in. Continue?`
+    );
+    if (!confirmed) return;
+    await supabase.auth.resetPasswordForEmail(adminEmail, {
+      redirectTo: `${window.location.origin}/admin/login`,
+    });
+    alert("Password reset email sent. Check your inbox.");
   };
 
   const handleSignOut = async () => {
