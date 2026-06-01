@@ -6,16 +6,18 @@ import { Search, CheckCircle, XCircle, AlertCircle, Clock } from "lucide-react";
 const studentNames = ["Sarah Johnson", "Michael Chen", "Amanda Williams", "David Okafor", "Chioma Nwosu", "Emeka Obi", "Folake Adeyemi", "Tunde Balogun", "Ngozi Eze", "Kofi Mensah"];
 const courses = ["Full Stack Fundamentals", "React & Next.js", "Database Design"];
 
-const initialAttendance = studentNames.map((name, i) => ({
+type AttendanceStatus = "present" | "absent" | "late" | "excused";
+
+const initialAttendance: { id: number; name: string; email: string; status: AttendanceStatus; course: string }[] = studentNames.map((name, i) => ({
   id: i + 1,
   name,
   email: name.toLowerCase().replace(/\s/g, ".") + "@example.com",
-  status: "present" as const,
+  status: "present" as AttendanceStatus,
   course: courses[i % 3],
 }));
 
 export default function AttendancePage() {
-  const [records, setRecords] = useState(initialAttendance);
+  const [records, setRecords] = useState<{ id: number; name: string; email: string; status: AttendanceStatus; course: string }[]>(initialAttendance);
   const [courseFilter, setCourseFilter] = useState("all");
   const [search, setSearch] = useState("");
 
