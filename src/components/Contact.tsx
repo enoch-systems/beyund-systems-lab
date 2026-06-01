@@ -226,12 +226,12 @@ export default function Contact() {
 
         <div className="max-w-xl mx-auto text-center mb-8">
           <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-            Ready to start your fullstack development journey at{" "}
+            Ready to acquire building skills in software fullstack development at{" "}
             <span className="inline-flex items-center align-middle">
               <span className="relative flex items-center">
                 <img
                   src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
-                  alt="Beyund systems labs logo"
+                  alt="Beyund Labs Academy logo"
                   className="h-5 w-auto md:h-6 lg:h-7 shrink-0 inline-block"
                   style={{
                     maskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",

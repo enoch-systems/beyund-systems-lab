@@ -70,7 +70,7 @@ export default function About() {
               }`}
             >
               <p className="text-white/70 leading-relaxed">
-                Learn fullstack development with us at Beyund systems labs, a structured learning program focused on building real world operational systems using modern web technologies.
+                Acquire building skills in software fullstack development at Beyund Labs Academy, a structured learning program focused on mastering frontend, backend, APIs, databases, and system architecture through hands-on projects.
               </p>
               
               <p className="text-white/70 leading-relaxed">

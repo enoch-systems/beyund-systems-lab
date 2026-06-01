@@ -81,13 +81,13 @@ export default function MeetTheMentor() {
           >
             <h3 className="text-2xl md:text-3xl font-semibold text-white">
               Engineering Mentor at{" "}
-              <span className="text-green-300 font-light">Beyund systems labs</span>
+              <span className="text-green-300 font-light">Beyund Labs Academy</span>
             </h3>
             <p className="text-base md:text-lg text-white/70 leading-relaxed">
               Enoch Chukwudi is a fullstack developer and engineer who has architected and shipped
               production systems across fintech, logistics, identity, and enterprise domains.
-              At Beyund systems labs, he translates that real world experience into a structured
-              curriculum designed to take you from foundational concepts to production ready skills.
+              At Beyund Labs Academy, he translates that real world experience into a structured
+              curriculum designed to help you acquire building skills from foundational concepts to production ready mastery.
             </p>
             <p className="text-base md:text-lg text-white/70 leading-relaxed">
               His teaching methodology is rooted in <strong className="text-white/90">layered architecture</strong>

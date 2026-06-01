@@ -13,23 +13,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Beyund systems labs - Learn Fullstack Development",
-  description: "Learn fullstack development at Beyund systems labs. Build real-world operational systems using modern web technologies.",
-  keywords: ["Fullstack Development", "Software Engineering", "Web Development", "Learn to Code", "Next.js", "TypeScript", "Beyund systems labs"],
+  title: "Beyund Labs Academy - Acquire Building Skills in Software Fullstack Development",
+  description: "Acquire real-world building skills in software fullstack development at Beyund Labs Academy. Master frontend, backend, APIs, databases, and system architecture through hands-on projects.",
+  keywords: ["Fullstack Development", "Software Engineering", "Web Development", "Learn to Code", "Building Skills", "Next.js", "TypeScript", "Beyund Labs Academy"],
   authors: [{ name: "Enoch Chukwudi" }],
-  creator: "Beyund systems labs",
+  creator: "Beyund Labs Academy",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://beyund-systems-lab.vercel.app",
-    title: "Beyund systems labs - Learn Fullstack Development",
-    description: "Learn fullstack development at Beyund systems labs. Build real-world operational systems using modern web technologies.",
-    siteName: "Beyund systems labs",
+    title: "Beyund Labs Academy - Acquire Building Skills in Software Fullstack Development",
+    description: "Acquire real-world building skills in software fullstack development at Beyund Labs Academy. Master frontend, backend, APIs, databases, and system architecture through hands-on projects.",
+    siteName: "Beyund Labs Academy",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Beyund systems labs - Learn Fullstack Development",
-    description: "Learn fullstack development at Beyund systems labs. Build real-world operational systems using modern web technologies.",
+    title: "Beyund Labs Academy - Acquire Building Skills in Software Fullstack Development",
+    description: "Acquire real-world building skills in software fullstack development at Beyund Labs Academy. Master frontend, backend, APIs, databases, and system architecture through hands-on projects.",
     creator: "@enochchukwudi",
   },
   icons: {

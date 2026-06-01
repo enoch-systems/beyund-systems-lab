@@ -26,7 +26,7 @@ export default function Navbar() {
             {/* Logo image with gradient mask to seamlessly fade into text */}
             <img
               src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
-              alt="Beyund systems labs logo"
+              alt="Beyund Labs Academy logo"
               className="h-7 w-auto md:h-9 lg:h-11 shrink-0"
               style={{
                 maskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
