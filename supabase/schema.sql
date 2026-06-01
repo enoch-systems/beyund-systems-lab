@@ -175,6 +175,122 @@ CREATE POLICY "Allow authenticated update weeks" ON course_weeks FOR UPDATE TO a
 CREATE POLICY "Allow authenticated delete weeks" ON course_weeks FOR DELETE TO authenticated USING (true);
 
 -- ============================================================
+-- Admin Settings Table (key-value store for app settings)
+-- ============================================================
+-- This table stores all admin preferences and app configuration
+-- that needs to persist across sessions and devices.
+-- ============================================================
+
+-- Drop existing table and policies (safe to re-run)
+DROP POLICY IF EXISTS "Allow authenticated read settings" ON admin_settings;
+DROP POLICY IF EXISTS "Allow authenticated upsert settings" ON admin_settings;
+DROP POLICY IF EXISTS "Allow authenticated delete settings" ON admin_settings;
+
+DROP TABLE IF EXISTS admin_settings;
+
+CREATE TABLE admin_settings (
+  key TEXT PRIMARY KEY,
+  value JSONB NOT NULL DEFAULT '{}',
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_by UUID REFERENCES auth.users(id) ON DELETE SET NULL
+);
+
+-- Enable RLS
+ALTER TABLE admin_settings ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Allow authenticated users to read all settings
+CREATE POLICY "Allow authenticated read settings"
+  ON admin_settings
+  FOR SELECT
+  TO authenticated
+  USING (true);
+
+-- Policy: Allow authenticated users to insert/update settings
+CREATE POLICY "Allow authenticated upsert settings"
+  ON admin_settings
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+-- Allow authenticated users to upsert (update)
+CREATE POLICY "Allow authenticated update settings"
+  ON admin_settings
+  FOR UPDATE
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Policy: Allow authenticated users to delete settings
+CREATE POLICY "Allow authenticated delete settings"
+  ON admin_settings
+  FOR DELETE
+  TO authenticated
+  USING (true);
+
+-- Create index for faster lookups
+CREATE INDEX IF NOT EXISTS idx_admin_settings_updated_at ON admin_settings (updated_at DESC);
+
+-- ============================================================
+-- Saved SQL Scripts Table (for SQL Editor)
+-- ============================================================
+-- This table stores saved SQL queries from the admin SQL Editor.
+-- ============================================================
+
+-- Drop existing table and policies (safe to re-run)
+DROP POLICY IF EXISTS "Allow authenticated read saved_sql" ON saved_sql_scripts;
+DROP POLICY IF EXISTS "Allow authenticated insert saved_sql" ON saved_sql_scripts;
+DROP POLICY IF EXISTS "Allow authenticated update saved_sql" ON saved_sql_scripts;
+DROP POLICY IF EXISTS "Allow authenticated delete saved_sql" ON saved_sql_scripts;
+
+DROP TABLE IF EXISTS saved_sql_scripts;
+
+CREATE TABLE saved_sql_scripts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  sql_query TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL
+);
+
+-- Enable RLS
+ALTER TABLE saved_sql_scripts ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Allow authenticated users to read saved scripts
+CREATE POLICY "Allow authenticated read saved_sql"
+  ON saved_sql_scripts
+  FOR SELECT
+  TO authenticated
+  USING (true);
+
+-- Policy: Allow authenticated users to insert saved scripts
+CREATE POLICY "Allow authenticated insert saved_sql"
+  ON saved_sql_scripts
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+-- Policy: Allow authenticated users to update saved scripts
+CREATE POLICY "Allow authenticated update saved_sql"
+  ON saved_sql_scripts
+  FOR UPDATE
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Policy: Allow authenticated users to delete saved scripts
+CREATE POLICY "Allow authenticated delete saved_sql"
+  ON saved_sql_scripts
+  FOR DELETE
+  TO authenticated
+  USING (true);
+
+-- Create index for faster lookups
+CREATE INDEX IF NOT EXISTS idx_saved_sql_scripts_updated_at ON saved_sql_scripts (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_saved_sql_scripts_created_by ON saved_sql_scripts (created_by);
+
+-- ============================================================
 -- Supabase Storage Bucket for Reports
 -- ============================================================
 -- NOTE: Storage buckets must be created via the Supabase Dashboard.

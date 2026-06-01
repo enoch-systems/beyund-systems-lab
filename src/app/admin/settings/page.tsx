@@ -33,21 +33,58 @@ export default function SettingsPage() {
   const { profileImage, setProfileImage } = useProfile();
   const supabase = createSupabaseBrowserClient();
 
+  // Load settings from Supabase
   useEffect(() => {
-    async function getProfile() {
+    async function loadSettings() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setAdminEmail(session.user.email ?? "");
+      if (!session) return;
+
+      setAdminEmail(session.user.email ?? "");
+
+      // Load saved settings
+      const { data: settings } = await supabase
+        .from("admin_settings")
+        .select("key, value");
+
+      if (settings) {
+        const settingsMap = Object.fromEntries(
+          settings.map((s) => [s.key, s.value])
+        );
+
+        if (settingsMap.admin_name) setAdminName(settingsMap.admin_name);
+        else {
+          const emailPrefix = session.user.email?.split("@")[0] ?? "Admin";
+          setAdminName(emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1));
+        }
+
+        if (settingsMap.profile_image) setProfileImage(settingsMap.profile_image);
+      } else {
         const emailPrefix = session.user.email?.split("@")[0] ?? "Admin";
         setAdminName(emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1));
       }
     }
-    getProfile();
-  }, [supabase]);
+    loadSettings();
+  }, [supabase, setProfileImage]);
 
+  // Save settings to Supabase
   const handleSave = async () => {
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 800));
+
+    const userId = (await supabase.auth.getSession()).data.session?.user?.id;
+    const now = new Date().toISOString();
+
+    const settingsToSave = [
+      { key: "admin_name", value: adminName, updated_at: now, updated_by: userId },
+    ];
+
+    if (profileImage) {
+      settingsToSave.push({ key: "profile_image", value: profileImage, updated_at: now, updated_by: userId });
+    }
+
+    for (const setting of settingsToSave) {
+      await supabase.from("admin_settings").upsert(setting, { onConflict: "key" });
+    }
+
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
