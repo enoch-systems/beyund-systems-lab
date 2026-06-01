@@ -51,7 +51,8 @@ export default function AttendancePage() {
             className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10" />
         </div>
         <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value)}
-          className="px-3 py-2.5 rounded-lg bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10">
+          className="px-3 py-2.5 rounded-lg bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10"
+          style={{ colorScheme: "dark" }}>
           <option value="all">All Courses</option>
           {courses.map((c) => (<option key={c} value={c}>{c}</option>))}
         </select>

@@ -86,29 +86,32 @@ export default function MessagesPage() {
               <div>
                 <label className="block text-[12px] font-medium text-neutral-500 mb-1.5">Type</label>
                 <select value={type} onChange={(e) => setType(e.target.value as any)}
-                  className="px-3 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900">
-                  <option value="system">System</option>
-                  <option value="academic">Academic</option>
-                  <option value="admin">Admin</option>
+                  className="px-3 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                  style={{ colorScheme: "dark" }}>
+                  <option value="admin" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">Admin</option>
+                  <option value="system" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">System</option>
+                  <option value="academic" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">Academic</option>
                 </select>
               </div>
               <div>
                 <label className="block text-[12px] font-medium text-neutral-500 mb-1.5">Priority</label>
                 <select value={priority} onChange={(e) => setPriority(e.target.value as any)}
-                  className="px-3 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900">
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="urgent">Urgent</option>
+                  className="px-3 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                  style={{ colorScheme: "dark" }}>
+                  <option value="low" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">Low</option>
+                  <option value="medium" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">Medium</option>
+                  <option value="high" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">High</option>
+                  <option value="urgent" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">Urgent</option>
                 </select>
               </div>
               <div>
                 <label className="block text-[12px] font-medium text-neutral-500 mb-1.5">Target</label>
-                <select className="px-3 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900">
-                  <option value="all">All Students</option>
-                  <option value="cohortA">Cohort A</option>
-                  <option value="cohortB">Cohort B</option>
-                  <option value="cohortC">Cohort C</option>
+                <select className="px-3 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                  style={{ colorScheme: "dark" }}>
+                  <option value="all" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">All Students</option>
+                  <option value="cohortA" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">Cohort A</option>
+                  <option value="cohortB" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">Cohort B</option>
+                  <option value="cohortC" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">Cohort C</option>
                 </select>
               </div>
             </div>
