@@ -116,10 +116,11 @@ export default function StudentsPage() {
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           className="px-3 py-2.5 rounded-lg bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white/10 transition-all cursor-pointer"
+          style={{ colorScheme: "dark" }}
         >
-          <option value="all">All Status</option>
+          <option value="all" className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">All Status</option>
           {statusOptions.map((status) => (
-            <option key={status} value={status}>
+            <option key={status} value={status} className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </option>
           ))}
@@ -211,9 +212,10 @@ export default function StudentsPage() {
                                 ? "bg-red-500/10 text-red-600 dark:text-red-400"
                                 : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
                         }`}
+                        style={{ colorScheme: "dark" }}
                       >
                         {statusOptions.map((status) => (
-                          <option key={status} value={status}>
+                          <option key={status} value={status} className="bg-white dark:bg-[#1c1c1e] text-neutral-900 dark:text-white">
                             {status.charAt(0).toUpperCase() + status.slice(1)}
                           </option>
                         ))}
