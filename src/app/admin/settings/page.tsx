@@ -27,6 +27,8 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -61,6 +63,7 @@ export default function SettingsPage() {
   };
 
   const handleSignOut = async () => {
+    setSigningOut(true);
     await supabase.auth.signOut();
     window.location.href = "/admin/login";
   };
@@ -259,7 +262,7 @@ export default function SettingsPage() {
               Sign out from your admin account. You will need to sign in again.
             </p>
             <button
-              onClick={handleSignOut}
+              onClick={() => setShowSignOutModal(true)}
               className="inline-flex items-center gap-2 h-[38px] px-4 rounded-[10px] border border-[#ff453a]/20 text-[13px] font-medium text-[#ff453a] hover:bg-[#ff453a]/8 transition-all"
             >
               <LogOut className="w-4 h-4" />
@@ -322,6 +325,66 @@ export default function SettingsPage() {
                     <>
                       <Send className="w-4 h-4" />
                       Send Reset Link
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ═══════════════════════════════════════
+         SIGN OUT CONFIRMATION MODAL
+         ═══════════════════════════════════════ */}
+      {showSignOutModal && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+            onClick={() => setShowSignOutModal(false)}
+          />
+          {/* Modal */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+              className="w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Icon + Content */}
+              <div className="p-6 pb-0 flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-[#ff453a]/10 flex items-center justify-center mb-4">
+                  <LogOut className="w-6 h-6 text-[#ff453a]" />
+                </div>
+                <h3 className="text-[17px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.01em]">
+                  Sign Out?
+                </h3>
+                <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-2 max-w-[280px]">
+                  You will be signed out of your admin account. You will need to sign in again to access the dashboard.
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-2.5 p-6 pt-5">
+                <button
+                  onClick={() => setShowSignOutModal(false)}
+                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSignOut}
+                  disabled={signingOut}
+                  className="flex-1 inline-flex items-center justify-center gap-2 h-[40px] rounded-[10px] bg-[#ff453a] text-white text-[13px] font-semibold hover:bg-[#e53e36] transition-all active:scale-[0.98] disabled:opacity-50"
+                >
+                  {signingOut ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Signing out...
+                    </>
+                  ) : (
+                    <>
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
                     </>
                   )}
                 </button>
