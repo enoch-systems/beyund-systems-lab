@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { createSupabaseBrowserClient } from "./supabase";
 
 type ProfileContextType = {
   profileImage: string | null;
@@ -14,23 +15,40 @@ const ProfileContext = createContext<ProfileContextType>({
 
 export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
+  // Load from Supabase on mount
   useEffect(() => {
-    const stored = localStorage.getItem("admin-profile-image");
-    if (stored) setProfileImage(stored);
-    setMounted(true);
+    async function load() {
+      const supabase = createSupabaseBrowserClient();
+      const { data: settings } = await supabase
+        .from("admin_settings")
+        .select("value")
+        .eq("key", "profile_image")
+        .single();
+
+      if (settings?.value) {
+        setProfileImage(settings.value);
+      }
+      setLoaded(true);
+    }
+    load();
   }, []);
 
+  // Save to Supabase whenever profileImage changes (after initial load)
   useEffect(() => {
-    if (mounted) {
-      if (profileImage) {
-        localStorage.setItem("admin-profile-image", profileImage);
-      } else {
-        localStorage.removeItem("admin-profile-image");
-      }
+    if (!loaded) return;
+
+    const supabase = createSupabaseBrowserClient();
+    if (profileImage) {
+      supabase.from("admin_settings").upsert(
+        { key: "profile_image", value: profileImage },
+        { onConflict: "key" }
+      );
+    } else {
+      supabase.from("admin_settings").delete().eq("key", "profile_image");
     }
-  }, [profileImage, mounted]);
+  }, [profileImage, loaded]);
 
   return (
     <ProfileContext.Provider value={{ profileImage, setProfileImage }}>
