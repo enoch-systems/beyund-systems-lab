@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
+import { ProfileProvider, useProfile } from "@/lib/profile-context";
 import { apple } from "@/lib/admin-design-system";
 
 /* ═══════════════════════════════════════
@@ -417,13 +418,35 @@ function AdminTopbar({
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#0a0a0a]" />
           </Link>
 
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold cursor-pointer shadow-sm min-w-[36px]">
-            <span className="hidden sm:inline">A</span>
-            <span className="sm:hidden text-xs">A</span>
-          </div>
+          <Link
+            href="/admin/settings"
+            className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold shadow-sm min-w-[36px] min-h-[36px] overflow-hidden cursor-pointer hover:ring-2 hover:ring-violet-400/40 transition-all"
+            title="Open settings"
+          >
+            <HeaderAvatar />
+          </Link>
         </div>
       </div>
     </header>
+  );
+}
+
+function HeaderAvatar() {
+  const { profileImage } = useProfile();
+  if (profileImage) {
+    return (
+      <img
+        src={profileImage}
+        alt="Admin avatar"
+        className="w-full h-full object-cover"
+      />
+    );
+  }
+  return (
+    <>
+      <span className="hidden sm:inline">A</span>
+      <span className="sm:hidden text-xs">A</span>
+    </>
   );
 }
 
@@ -505,7 +528,9 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
-      <AdminLayoutInner>{children}</AdminLayoutInner>
+      <ProfileProvider>
+        <AdminLayoutInner>{children}</AdminLayoutInner>
+      </ProfileProvider>
     </ThemeProvider>
   );
 }

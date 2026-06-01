@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme-context";
+import { useProfile } from "@/lib/profile-context";
 import {
   Lock,
   Sun,
@@ -29,7 +30,7 @@ export default function SettingsPage() {
   const [resetting, setResetting] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const { profileImage, setProfileImage } = useProfile();
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
