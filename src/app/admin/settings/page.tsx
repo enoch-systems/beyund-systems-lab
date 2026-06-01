@@ -1,4 +1,4 @@
-"use client";
+ico"use client";
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
@@ -11,6 +11,7 @@ import {
   Loader2,
   Check,
   Mail,
+  Send,
   Shield,
   Palette,
   Camera,
@@ -319,7 +320,7 @@ export default function SettingsPage() {
                     </>
                   ) : (
                     <>
-                      <Shield className="w-4 h-4" />
+                      <Send className="w-4 h-4" />
                       Send Reset Link
                     </>
                   )}
