@@ -6,11 +6,9 @@ import Link from "next/link";
 import {
   LayoutDashboard,
   Users,
-  CalendarDays,
   ClipboardList,
   Clock,
   Bell,
-  MessageSquare,
   BookOpen,
   BarChart3,
   Award,
@@ -51,9 +49,6 @@ const navGroups: { label: string; items: NavItem[] }[] = [
     label: "Academic",
     items: [
       { label: "Courses", href: "/admin/courses", icon: <BookOpen className="w-4 h-4" /> },
-      { label: "Schedule", href: "/admin/schedule", icon: <Clock className="w-4 h-4" /> },
-      { label: "Attendance", href: "/admin/attendance", icon: <CheckSquare className="w-4 h-4" /> },
-      { label: "Calendar", href: "/admin/calendar", icon: <CalendarDays className="w-4 h-4" /> },
     ],
   },
   {
@@ -61,7 +56,6 @@ const navGroups: { label: string; items: NavItem[] }[] = [
     items: [
       { label: "Payments", href: "/admin/payments", icon: <CreditCard className="w-4 h-4" /> },
       { label: "Notifications", href: "/admin/notifications", icon: <Bell className="w-4 h-4" /> },
-      { label: "Messages", href: "/admin/messages", icon: <MessageSquare className="w-4 h-4" /> },
     ],
   },
   {
