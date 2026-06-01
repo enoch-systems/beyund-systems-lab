@@ -1,10 +1,7 @@
 -- ============================================================
 -- BEYUND LABS ACADEMY — PRODUCTION DATABASE SCHEMA
 -- ============================================================
--- Run in Supabase SQL Editor:
--- https://supabase.com/dashboard/project/xwjrlxrsmeryozvystwa/sql/new
 --
--- Architecture:
 --   Single public schema with modular table prefixes
 --   (Supabase best practice — custom schemas require
 --    multi-client setup which complicates RLS + realtime)
@@ -88,15 +85,15 @@ CREATE POLICY "allow_auth_delete_exports" ON export_reports FOR DELETE TO authen
 -- ============================================================
 -- [COURSES MODULE] — Course & Curriculum Management
 -- ============================================================
--- Tables: courses_courses, courses_weeks
--- Foreign Key: courses_weeks.course_id → courses_courses.id
+-- Tables: courses, course_weeks
+-- Foreign Key: course_weeks.course_id → courses.id
 -- ============================================================
 
 -- ── COURSES ──
-DROP TABLE IF EXISTS courses_weeks;
-DROP TABLE IF EXISTS courses_courses;
+DROP TABLE IF EXISTS course_weeks;
+DROP TABLE IF EXISTS courses;
 
-CREATE TABLE courses_courses (
+CREATE TABLE courses (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
   total_weeks INTEGER NOT NULL DEFAULT 0,
@@ -106,12 +103,12 @@ CREATE TABLE courses_courses (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_courses_created_at ON courses_courses (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_courses_created_at ON courses (created_at DESC);
 
 -- ── COURSE WEEKS ──
-CREATE TABLE courses_weeks (
+CREATE TABLE course_weeks (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  course_id UUID NOT NULL REFERENCES courses_courses(id) ON DELETE CASCADE,
+  course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   week_number INTEGER NOT NULL,
   title TEXT NOT NULL,
   scheme_of_work TEXT DEFAULT '',
@@ -123,22 +120,22 @@ CREATE TABLE courses_weeks (
   UNIQUE(course_id, week_number)
 );
 
-CREATE INDEX IF NOT EXISTS idx_weeks_course ON courses_weeks (course_id);
-CREATE INDEX IF NOT EXISTS idx_weeks_number ON courses_weeks (course_id, week_number);
+CREATE INDEX IF NOT EXISTS idx_weeks_course ON course_weeks (course_id);
+CREATE INDEX IF NOT EXISTS idx_weeks_number ON course_weeks (course_id, week_number);
 
 -- ── RLS Policies ──
-ALTER TABLE courses_courses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE courses_weeks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE course_weeks ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "auth_read_courses"   ON courses_courses FOR SELECT TO authenticated USING (true);
-CREATE POLICY "auth_insert_courses" ON courses_courses FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "auth_update_courses" ON courses_courses FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY "auth_delete_courses" ON courses_courses FOR DELETE TO authenticated USING (true);
+CREATE POLICY "auth_read_courses"   ON courses FOR SELECT TO authenticated USING (true);
+CREATE POLICY "auth_insert_courses" ON courses FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "auth_update_courses" ON courses FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "auth_delete_courses" ON courses FOR DELETE TO authenticated USING (true);
 
-CREATE POLICY "auth_read_weeks"   ON courses_weeks FOR SELECT TO authenticated USING (true);
-CREATE POLICY "auth_insert_weeks" ON courses_weeks FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "auth_update_weeks" ON courses_weeks FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY "auth_delete_weeks" ON courses_weeks FOR DELETE TO authenticated USING (true);
+CREATE POLICY "auth_read_weeks"   ON course_weeks FOR SELECT TO authenticated USING (true);
+CREATE POLICY "auth_insert_weeks" ON course_weeks FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "auth_update_weeks" ON course_weeks FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "auth_delete_weeks" ON course_weeks FOR DELETE TO authenticated USING (true);
 
 -- ============================================================
 -- [FUTURE SCHEMA TEMPLATES] — Design Only, NOT YET ACTIVE
@@ -154,10 +151,9 @@ CREATE POLICY "auth_delete_weeks" ON courses_weeks FOR DELETE TO authenticated U
 -- CREATE TABLE attendance_records (
 --   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
 --   student_id UUID NOT NULL REFERENCES student_registrations(id) ON DELETE CASCADE,
---   course_id UUID NOT NULL REFERENCES courses_courses(id) ON DELETE CASCADE,
+--   course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
 --   week_number INTEGER,
 --   date DATE NOT NULL,
---   status TEXT NOT NULL CHECK (status IN ('present', 'absent', 'late', 'excused')),
 --   notes TEXT DEFAULT '',
 --   created_at TIMESTAMPTZ DEFAULT NOW(),
 --   UNIQUE(student_id, course_id, date)
@@ -181,7 +177,6 @@ CREATE POLICY "auth_delete_weeks" ON courses_weeks FOR DELETE TO authenticated U
 --   title TEXT NOT NULL,
 --   description TEXT DEFAULT '',
 --   event_type event_type NOT NULL DEFAULT 'class',
---   course_id UUID REFERENCES courses_courses(id) ON DELETE SET NULL,
 --   start_time TIMESTAMPTZ NOT NULL,
 --   end_time TIMESTAMPTZ NOT NULL,
 --   location TEXT DEFAULT '',
@@ -205,7 +200,6 @@ CREATE POLICY "auth_delete_weeks" ON courses_weeks FOR DELETE TO authenticated U
 --   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
 --   title TEXT NOT NULL,
 --   description TEXT DEFAULT '',
---   course_id UUID NOT NULL REFERENCES courses_courses(id) ON DELETE CASCADE,
 --   due_date DATE NOT NULL,
 --   total_points INTEGER DEFAULT 100,
 --   cohort TEXT DEFAULT '',
@@ -241,7 +235,6 @@ CREATE POLICY "auth_delete_weeks" ON courses_weeks FOR DELETE TO authenticated U
 -- 2026-06-01: Initial structured schema
 --   - Registration module (student_registrations)
 --   - Reports module (export_reports)
---   - Courses module (courses_courses, courses_weeks)
 --   - Future templates (attendance, calendar, assignments)
 --
 -- ============================================================
