@@ -592,29 +592,6 @@ export default function Contact() {
           </p>
         </div>
 
-        {/* Resume banner */}
-        {showResume && draft && (
-          <div className="max-w-xl mx-auto mb-4 flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-sm">
-            <span className="text-white/70">
-              You started this before.{" "}
-              <span className="text-white/40">Pick up where you left off?</span>
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={resumeDraft}
-                className="px-3 py-1.5 rounded-lg bg-green-500 text-white text-xs font-medium hover:bg-green-600 transition"
-              >
-                Resume
-              </button>
-              <button
-                onClick={discardDraft}
-                className="px-3 py-1.5 rounded-lg text-white/50 text-xs hover:text-white/80 transition"
-              >
-                Start fresh
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Wizard Card */}
         <div
