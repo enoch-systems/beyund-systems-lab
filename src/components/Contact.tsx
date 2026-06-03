@@ -161,6 +161,8 @@ export default function Contact() {
 
   const [slideOffset, setSlideOffset] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
+  const [countrySearch, setCountrySearch] = useState("");
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
 
   /* ----------------------------- mount: draft check -------------------- */
   // Read localStorage *after* hydration to avoid SSR/CSR mismatch.
@@ -741,6 +743,9 @@ export default function Contact() {
                       </div>
                     )}
                   </div>
+                  {emailStatus.status === "duplicate" && emailStatus.message && (
+                    <p className="text-red-400 text-xs mt-1.5">{emailStatus.message}</p>
+                  )}
                   {errors.email && (
                     <p className="text-red-400 text-xs mt-1.5">{errors.email}</p>
                   )}
@@ -750,23 +755,25 @@ export default function Contact() {
                   <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
                     WhatsApp number
                   </label>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                    <select
-                      value={form.dialCode}
-                      onChange={(e) => updateForm("dialCode", e.target.value)}
-                      className="shrink-0 px-2 py-3.5 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-xs sm:text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
-                      style={{ colorScheme: "dark", minWidth: 90 }}
-                    >
-                      <option value="+234">+234</option>
-                      <option value="+1">+1</option>
-                      <option value="+44">+44</option>
-                      <option value="+91">+91</option>
-                      <option value="+254">+254</option>
-                      <option value="+233">+233</option>
-                      <option value="+27">+27</option>
-                      <option value="+256">+256</option>
-                      <option value="+260">+260</option>
-                    </select>
+                  <div className="flex gap-0 items-stretch">
+                    <div className="relative shrink-0">
+                      <select
+                        value={form.dialCode}
+                        onChange={(e) => updateForm("dialCode", e.target.value)}
+                        className="h-full px-3 rounded-l-xl bg-neutral-900 border border-r-0 border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                        style={{ colorScheme: "dark", minWidth: 72 }}
+                      >
+                        <option value="+234">🇳🇬 +234</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                        <option value="+91">🇮🇳 +91</option>
+                        <option value="+254">🇰🇪 +254</option>
+                        <option value="+233">🇬🇭 +233</option>
+                        <option value="+27">🇿🇦 +27</option>
+                        <option value="+256">🇺🇬 +256</option>
+                        <option value="+260">🇿🇲 +260</option>
+                      </select>
+                    </div>
                     <input
                       id="err-mobile"
                       type="tel"
@@ -780,7 +787,7 @@ export default function Contact() {
                           e.target.value.replace(/\D/g, "").slice(0, 15)
                         )
                       }
-                      className={`flex-1 px-5 py-3.5 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
+                      className={`flex-1 min-w-0 px-4 py-3.5 rounded-r-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
                         errors.mobile ? "border-red-500/50" : "border-white/20"
                       }`}
                     />
@@ -835,26 +842,69 @@ export default function Contact() {
                     Where are you?
                   </label>
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <select
-                      id="err-country"
-                      value={form.country}
-                      onChange={(e) => {
-                        updateForm("country", e.target.value);
-                        updateForm("state", "");
-                      }}
-                      className={`flex-1 px-4 py-3 rounded-xl bg-neutral-900 border text-white/80 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${
-                        errors.country ? "border-red-500/50" : "border-white/20"
-                      }`}
-                    >
-                      <option value="" disabled>
-                        {loadingCountries ? "Loading…" : "Country"}
-                      </option>
-                      {countries.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div id="err-country" className="relative flex-1">
+                      <input
+                        type="text"
+                        placeholder={loadingCountries ? "Loading..." : "Search country..."}
+                        value={showCountryDropdown ? countrySearch : countries.find((c) => c.code === form.country)?.name || countrySearch}
+                        onFocus={() => {
+                          setShowCountryDropdown(true);
+                          setCountrySearch("");
+                        }}
+                        onBlur={() => {
+                          setTimeout(() => setShowCountryDropdown(false), 200);
+                          if (form.country && !countrySearch) {
+                            setCountrySearch("");
+                          }
+                        }}
+                        onChange={(e) => {
+                          setCountrySearch(e.target.value);
+                          setShowCountryDropdown(true);
+                          if (form.country) {
+                            updateForm("country", "");
+                            updateForm("state", "");
+                          }
+                        }}
+                        className={`w-full px-4 py-3 rounded-xl bg-neutral-900 border text-white/80 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 ${
+                          errors.country ? "border-red-500/50" : "border-white/20"
+                        }`}
+                      />
+                      {showCountryDropdown && (
+                        <div className="absolute z-50 mt-1 w-full max-h-60 overflow-y-auto rounded-xl bg-neutral-900 border border-white/20 shadow-lg">
+                          {countries
+                            .filter((c) =>
+                              c.name.toLowerCase().includes(countrySearch.toLowerCase())
+                            )
+                            .slice(0, 20)
+                            .map((c) => (
+                              <button
+                                key={c.code}
+                                type="button"
+                                onMouseDown={() => {
+                                  updateForm("country", c.code);
+                                  updateForm("state", "");
+                                  setCountrySearch("");
+                                  setShowCountryDropdown(false);
+                                }}
+                                className={`w-full px-4 py-2.5 text-left text-sm hover:bg-white/10 transition-colors ${
+                                  form.country === c.code
+                                    ? "text-green-400 bg-white/5"
+                                    : "text-white/80"
+                                }`}
+                              >
+                                {c.name}
+                              </button>
+                            ))}
+                          {countries.filter((c) =>
+                            c.name.toLowerCase().includes(countrySearch.toLowerCase())
+                          ).length === 0 && (
+                            <div className="px-4 py-2.5 text-sm text-white/40">
+                              No countries found
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     {states.length > 0 && (
                       <select
                         value={form.state}
