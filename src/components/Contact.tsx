@@ -164,25 +164,16 @@ export default function Contact() {
   const [countrySearch, setCountrySearch] = useState("");
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
 
-  /* ----------------------------- mount: draft check -------------------- */
-  // Read localStorage *after* hydration to avoid SSR/CSR mismatch.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+  /* ----------------------------- mount: fresh start ---------------------- */
+  // On every page load/refresh, start afresh: clear any saved draft, reset to step 1, prefill country from locale.
   useEffect(() => {
-    const d = loadDraft();
-    if (d && (d.form.name || d.form.email || d.form.mobile)) {
-      setDraft(d);
-      setShowResume(true);
-    } else {
-      setForm((prev) => ({ ...prev, country: bestGuessCountry() }));
-    }
+    clearDraft();
+    setForm({ ...EMPTY_FORM, country: bestGuessCountry() });
+    setCurrentStep(1);
+    setShowResume(false);
+    setDraft(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  /* ----------------------------- silent autosave ------------------------ */
-  useEffect(() => {
-    if (submitted) return;
-    const t = window.setTimeout(() => saveDraft(form, currentStep), 350);
-    return () => window.clearTimeout(t);
-  }, [form, currentStep, submitted]);
 
   /* ----------------------------- countries/states ----------------------- */
   type CountryApi = { cca2: string; name: { common: string } };
