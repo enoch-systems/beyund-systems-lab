@@ -123,7 +123,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-[1080px] space-y-8">
+    <div className="w-full space-y-8">
       {/* PAGE HEADER */}
       <div>
         <h1 className="text-[28px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.02em]">

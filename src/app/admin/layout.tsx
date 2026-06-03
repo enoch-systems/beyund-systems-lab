@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -17,7 +17,6 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  Search,
   Menu,
   X,
   LogOut,
@@ -27,6 +26,32 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
 import { ProfileProvider, useProfile } from "@/lib/profile-context";
 import { apple } from "@/lib/admin-design-system";
+import GlobalSearch from "@/components/admin/GlobalSearch";
+
+/* ═══════════════════════════════════════
+   Logo — Official client branding
+   ═══════════════════════════════════════ */
+const LOGO_URL =
+  "https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png";
+
+function AcademyLogo({ size = "sm" }: { size?: "sm" | "lg" }) {
+  const h = size === "lg" ? "h-8" : "h-6";
+  return (
+    <div className="flex items-center gap-1.5 shrink-0">
+      <img
+        src={LOGO_URL}
+        alt="Beyund Academy"
+        className={`${h} w-auto object-contain`}
+        style={{ imageRendering: "auto" }}
+      />
+      {size === "lg" && (
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-500 ml-0.5 whitespace-nowrap">
+          LMS
+        </span>
+      )}
+    </div>
+  );
+}
 
 /* ═══════════════════════════════════════
    Types
@@ -95,7 +120,6 @@ function DesktopSidebar({
   onNavigate: () => void;
 }) {
   const isActive = useActiveRoute();
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <aside
@@ -107,13 +131,7 @@ function DesktopSidebar({
       <div className={`flex items-center h-14 border-b border-neutral-200/70 dark:border-neutral-800/70 ${collapsed ? "justify-center px-0" : "justify-between px-4"}`}>
         {!collapsed ? (
           <Link href="/admin" className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-white flex items-center justify-center shrink-0">
-              <Sparkles className="w-3.5 h-3.5 text-white dark:text-neutral-900" />
-            </div>
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-sm font-semibold text-neutral-900 dark:text-white tracking-tight">Academy</span>
-              <span className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">LMS</span>
-            </div>
+            <AcademyLogo size="lg" />
           </Link>
         ) : (
           <Link href="/admin" className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-white flex items-center justify-center">
@@ -203,15 +221,12 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
 
   return (
     <>
-      {/* Backdrop */}
       {open && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 lg:hidden animate-in fade-in duration-200"
           onClick={onClose}
         />
       )}
-
-      {/* Drawer */}
       <div
         className={`fixed inset-y-0 left-0 z-50 w-[280px] bg-white dark:bg-[#0a0a0a] border-r border-neutral-200/70 dark:border-neutral-800/70 transform transition-all duration-300 ease-out lg:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
@@ -219,15 +234,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
       >
         {/* Header */}
         <div className="flex items-center justify-between h-14 px-4 border-b border-neutral-200/70 dark:border-neutral-800/70">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-white flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5 text-white dark:text-neutral-900" />
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-sm font-semibold text-neutral-900 dark:text-white">Academy</span>
-              <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">LMS</span>
-            </div>
-          </div>
+          <AcademyLogo size="lg" />
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
@@ -291,8 +298,6 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
    ═══════════════════════════════════════ */
 function MobileTabBar({ onMenuOpen }: { onMenuOpen: () => void }) {
   const isActive = useActiveRoute();
-
-  // Show the first 5 nav items as tabs
   const tabs = allNavItems.slice(0, 5);
 
   return (
@@ -341,11 +346,9 @@ function AdminTopbar({
   collapsed: boolean;
 }) {
   const { theme, toggleTheme } = useTheme();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <header className="sticky top-0 z-20 h-14 lg:h-14 border-b border-neutral-200/70 dark:border-neutral-800/70 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-20 h-14 border-b border-neutral-200/70 dark:border-neutral-800/70 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl">
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {/* Mobile hamburger */}
@@ -357,39 +360,13 @@ function AdminTopbar({
             <Menu className="w-5 h-5" />
           </button>
 
-          {/* Search */}
-          {searchOpen ? (
-            <div className="flex items-center gap-2 flex-1 max-w-md">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
-                <input
-                  type="text"
-                  autoFocus
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 border-0 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900/20 dark:focus:ring-white/20"
-                />
-              </div>
-              <button
-                onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
-                className="text-sm text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 text-neutral-400 dark:text-neutral-500 text-sm w-full max-w-[280px] lg:max-w-[360px] hover:bg-neutral-200/70 dark:hover:bg-neutral-800 transition-colors"
-            >
-              <Search className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">Search students, courses...</span>
-              <kbd className="ml-auto text-[10px] font-mono text-neutral-400 dark:text-neutral-600 bg-neutral-200/50 dark:bg-neutral-700/50 px-1.5 py-0.5 rounded hidden lg:inline">
-                ⌘K
-              </kbd>
-            </button>
-          )}
+          {/* Logo on mobile header */}
+          <Link href="/admin" className="lg:hidden shrink-0 mr-1">
+            <AcademyLogo size="sm" />
+          </Link>
+
+          {/* Global Search */}
+          <GlobalSearch />
         </div>
 
         {/* Right actions */}
@@ -442,7 +419,6 @@ function HeaderAvatar() {
       />
     );
   }
-  // Faceless human silhouette fallback (no letter, no initial)
   return (
     <svg
       className="w-5 h-5 text-white"
@@ -450,9 +426,7 @@ function HeaderAvatar() {
       fill="currentColor"
       aria-label="Default admin avatar"
     >
-      {/* Head */}
       <circle cx="12" cy="8" r="4" />
-      {/* Shoulders / body */}
       <path d="M12 13c-4.418 0-8 2.686-8 6v1h16v-1c0-3.314-3.582-6-8-6z" />
     </svg>
   );
@@ -464,7 +438,6 @@ function HeaderAvatar() {
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<{ email: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
@@ -484,7 +457,6 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     getUser();
   }, [router, supabase, isLoginPage]);
 
-  // Close mobile drawer on route change
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
   if (loading) return (
@@ -500,17 +472,13 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-[#0a0a0a] text-neutral-900 dark:text-white transition-colors">
-      {/* Desktop sidebar */}
       <DesktopSidebar
         collapsed={collapsed}
         setCollapsed={setCollapsed}
         onNavigate={() => {}}
       />
-
-      {/* Mobile drawer */}
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
-      {/* Main content area */}
       <div className={`flex flex-col min-w-0 transition-all duration-300 ease-out pb-16 lg:pb-0 ${
         collapsed ? "lg:ml-[64px]" : "lg:ml-[240px]"
       }`}>
@@ -519,20 +487,18 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           collapsed={collapsed}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto max-w-[1600px] mx-auto w-full">
-          {children}
+        <main className="flex-1 overflow-auto w-full">
+          <div className="p-4 sm:p-6 lg:px-8 lg:py-6 xl:px-10 xl:py-8 w-full">
+            {children}
+          </div>
         </main>
       </div>
 
-      {/* Mobile bottom tab bar */}
       <MobileTabBar onMenuOpen={() => setDrawerOpen(true)} />
     </div>
   );
 }
 
-/* ═══════════════════════════════════════
-   Export
-   ═══════════════════════════════════════ */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>

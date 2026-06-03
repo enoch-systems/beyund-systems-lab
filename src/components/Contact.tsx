@@ -1,137 +1,326 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { personalData } from "@/lib/data";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+
+/* -------------------------------------------------------------------------- */
+/*  Storage helpers                                                            */
+/* -------------------------------------------------------------------------- */
+
+const DRAFT_KEY = "beyund-registration-draft";
+
+type FormState = {
+  name: string;
+  email: string;
+  mobile: string;
+  dialCode: string;
+  sex: "" | "male" | "female";
+  country: string;
+  state: string;
+  course: string;
+  employment: "" | "employed" | "unemployed" | "student" | "freelancer";
+  laptop: "" | "yes" | "no";
+  reason: string;
+};
+
+const EMPTY_FORM: FormState = {
+  name: "",
+  email: "",
+  mobile: "",
+  dialCode: "+234",
+  sex: "",
+  country: "",
+  state: "",
+  course: "fullstack",
+  employment: "",
+  laptop: "",
+  reason: "",
+};
+
+type DraftEnvelope = { form: FormState; step: number; savedAt: number };
+
+function loadDraft(): DraftEnvelope | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as DraftEnvelope;
+    // Don't restore anything older than 7 days
+    if (Date.now() - parsed.savedAt > 7 * 24 * 60 * 60 * 1000) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function saveDraft(form: FormState, step: number) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(
+      DRAFT_KEY,
+      JSON.stringify({ form, step, savedAt: Date.now() } satisfies DraftEnvelope)
+    );
+  } catch {
+    /* private mode etc. */
+  }
+}
+
+function clearDraft() {
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    /* noop */
+  }
+}
+
+function bestGuessCountry(): string {
+  if (typeof navigator === "undefined") return "NG";
+  const locale = (navigator.language || "en-NG").toLowerCase();
+  if (locale.includes("ng")) return "NG";
+  if (locale.includes("gb")) return "GB";
+  if (locale.includes("us")) return "US";
+  if (locale.includes("ca")) return "CA";
+  if (locale.includes("gh")) return "GH";
+  if (locale.includes("ke")) return "KE";
+  if (locale.includes("za")) return "ZA";
+  return "NG";
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Steps                                                                      */
+/* -------------------------------------------------------------------------- */
 
 const STEPS = [
-  { id: 1, label: "Personal Identity", heading: "Let's start with your basic information", subtext: "We need your full name to personalize your experience." },
-  { id: 2, label: "Contact Details", heading: "How can we reach you?", subtext: "Provide a valid email and WhatsApp number for updates." },
-  { id: 3, label: "Demographics", heading: "Tell us a bit more about yourself", subtext: "This helps us tailor the program to your region." },
-  { id: 4, label: "Academic Selection", heading: "Choose your learning path", subtext: "Select your course and tell us about your background." },
-  { id: 5, label: "Motivation", heading: "Why do you want to learn this skill?", subtext: "Help us understand your goals and motivations." },
-  { id: 6, label: "Review", heading: "Review your application", subtext: "Double-check everything before submitting." },
-];
+  { id: 1, label: "You",    heading: "Hey, what should we call you?",   subtext: "Just the basics so we can reach you." },
+  { id: 2, label: "About",  heading: "A few quick taps.",               subtext: "Tap to pick — no typing needed." },
+  { id: 3, label: "Done",   heading: "One last thing.",                 subtext: "Optional. You can always tell us later." },
+] as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Tap-tile component                                                         */
+/* -------------------------------------------------------------------------- */
+
+type TileProps = {
+  active?: boolean;
+  onClick?: () => void;
+  children: React.ReactNode;
+  fullWidth?: boolean;
+  size?: "sm" | "md";
+};
+
+function Tile({ active, onClick, children, fullWidth, size = "md" }: TileProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick ?? (() => {})}
+      aria-disabled={!onClick}
+      className={[
+        "relative rounded-xl border text-left transition-all duration-200",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400/60",
+        size === "md" ? "px-4 py-3.5" : "px-3 py-2.5",
+        fullWidth ? "w-full" : "",
+        active
+          ? "border-green-400/60 bg-green-400/10 text-white shadow-[0_0_0_1px_rgba(74,222,128,0.25)]"
+          : "border-white/10 bg-white/[0.04] text-white/70 hover:border-white/25 hover:bg-white/[0.07] hover:text-white",
+      ].join(" ")}
+    >
+      {active && (
+        <span className="absolute top-2.5 right-2.5 text-green-400 text-xs leading-none">✓</span>
+      )}
+      <span className="block text-sm font-medium">{children}</span>
+    </button>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Main component                                                             */
+/* -------------------------------------------------------------------------- */
 
 export default function Contact() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [direction, setDirection] = useState<"next" | "back">("next");
-  const [form, setForm] = useState({
-    name: "", email: "", mobile: "", sex: "", country: "", state: "",
-    course: "", employment: "", laptop: "", reason: "",
-  });
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [draft, setDraft] = useState<DraftEnvelope | null>(null);
+  const [showResume, setShowResume] = useState(false);
 
   const [countries, setCountries] = useState<{ code: string; name: string }[]>([]);
   const [states, setStates] = useState<{ code: string; name: string }[]>([]);
   const [loadingCountries, setLoadingCountries] = useState(true);
   const [loadingStates, setLoadingStates] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState<{
+    name: string;
+    courseLabel: string;
+    email: string;
+  } | null>(null);
+  const [showingApproval, setShowingApproval] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [emailChecking, setEmailChecking] = useState(false);
   const [emailStatus, setEmailStatus] = useState<{
-    status: "idle" | "checking" | "available" | "duplicate"; message: string;
+    status: "idle" | "checking" | "available" | "duplicate";
+    message: string;
   }>({ status: "idle", message: "" });
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [whatsappFocused, setWhatsappFocused] = useState(false);
+
   const [slideOffset, setSlideOffset] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Global Enter key handler to trigger Next/Submit from anywhere in the form
+  /* ----------------------------- mount: draft check -------------------- */
+  // Read localStorage *after* hydration to avoid SSR/CSR mismatch.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => {
+    const d = loadDraft();
+    if (d && (d.form.name || d.form.email || d.form.mobile)) {
+      setDraft(d);
+      setShowResume(true);
+    } else {
+      setForm((prev) => ({ ...prev, country: bestGuessCountry() }));
+    }
+  }, []);
+
+  /* ----------------------------- silent autosave ------------------------ */
   useEffect(() => {
     if (submitted) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && !(e.target instanceof HTMLTextAreaElement)) {
-        e.preventDefault();
-        if (currentStep < 6) goNext();
-        else handleSubmit();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentStep, submitted]);
+    const t = window.setTimeout(() => saveDraft(form, currentStep), 350);
+    return () => window.clearTimeout(t);
+  }, [form, currentStep, submitted]);
+
+  /* ----------------------------- countries/states ----------------------- */
+  type CountryApi = { cca2: string; name: { common: string } };
+  type StatesApiCountry = { iso2?: string; iso3?: string; states?: { state_code?: string; name: string }[] };
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
         const res = await fetch("https://restcountries.com/v3.1/all?fields=cca2,name");
-        const data = await res.json();
-        setCountries(data.map((c: any) => ({ code: c.cca2, name: c.name.common })).sort((a: any, b: any) => a.name.localeCompare(b.name)));
+        const data = (await res.json()) as CountryApi[];
+        setCountries(
+          data
+            .map((c) => ({ code: c.cca2, name: c.name.common }))
+            .sort((a, b) => a.name.localeCompare(b.name))
+        );
       } catch {
         setCountries([
-          { code: "NG", name: "Nigeria" }, { code: "US", name: "United States" }, { code: "GB", name: "United Kingdom" },
-          { code: "CA", name: "Canada" }, { code: "AU", name: "Australia" }, { code: "DE", name: "Germany" },
-          { code: "KE", name: "Kenya" }, { code: "GH", name: "Ghana" }, { code: "OTHER", name: "Other" },
+          { code: "NG", name: "Nigeria" },
+          { code: "US", name: "United States" },
+          { code: "GB", name: "United Kingdom" },
+          { code: "CA", name: "Canada" },
+          { code: "AU", name: "Australia" },
+          { code: "DE", name: "Germany" },
+          { code: "KE", name: "Kenya" },
+          { code: "GH", name: "Ghana" },
+          { code: "OTHER", name: "Other" },
         ]);
-      } finally { setLoadingCountries(false); }
+      } finally {
+        setLoadingCountries(false);
+      }
     };
     fetchCountries();
   }, []);
 
   useEffect(() => {
     const fetchStates = async () => {
-      if (!form.country || form.country === "OTHER") { setStates([]); return; }
+      if (!form.country || form.country === "OTHER") {
+        setStates([]);
+        return;
+      }
       setLoadingStates(true);
       try {
         const res = await fetch("https://countriesnow.space/api/v0.1/countries/states");
         if (!res.ok) throw new Error("Failed");
         const data = await res.json();
         if (data?.data && Array.isArray(data.data)) {
-          const cd = data.data.find((i: any) => i.iso2 === form.country || i.iso3 === form.country);
+          const cd = (data.data as StatesApiCountry[]).find(
+            (i) => i.iso2 === form.country || i.iso3 === form.country
+          );
           if (cd?.states && Array.isArray(cd.states)) {
-            setStates(cd.states.map((s: any) => ({ code: s.state_code || s.name, name: s.name })).sort((a: any, b: any) => a.name.localeCompare(b.name)));
-          } else { setStates([]); }
-        } else { setStates([]); }
-      } catch { setStates([]); }
-      finally { setLoadingStates(false); }
+            setStates(
+              cd.states
+                .map((s) => ({ code: s.state_code || s.name, name: s.name }))
+                .sort((a, b) => a.name.localeCompare(b.name))
+            );
+          } else {
+            setStates([]);
+          }
+        } else {
+          setStates([]);
+        }
+      } catch {
+        setStates([]);
+      } finally {
+        setLoadingStates(false);
+      }
     };
     fetchStates();
   }, [form.country]);
 
-  const updateForm = (field: string, value: string) => {
-    setForm(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });
-    if (field === "email") setEmailStatus({ status: "idle", message: "" });
-  };
+  /* ----------------------------- mutations ----------------------------- */
+  const updateForm = useCallback(
+    (field: keyof FormState, value: string) => {
+      setForm((prev) => ({ ...prev, [field]: value }));
+      setErrors((prev) => {
+        if (!prev[field]) return prev;
+        const n = { ...prev };
+        delete n[field];
+        return n;
+      });
+      if (field === "email") setEmailStatus({ status: "idle", message: "" });
+    },
+    []
+  );
 
-  const checkEmailDuplicate = async (email: string) => {
+  const checkEmailDuplicate = useCallback(async (email: string) => {
     const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setEmailStatus({ status: "idle", message: "" }); return; }
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setEmailStatus({ status: "idle", message: "" });
+      return;
+    }
     setEmailChecking(true);
     setEmailStatus({ status: "checking", message: "Checking email..." });
     try {
-      const res = await fetch("/api/check-email", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: trimmed }) });
+      const res = await fetch("/api/check-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed }),
+      });
       const r = await res.json();
-      if (r.exists) setEmailStatus({ status: "duplicate", message: r.message });
-      else setEmailStatus({ status: "available", message: "" });
-    } catch { setEmailStatus({ status: "idle", message: "" }); }
-    finally { setEmailChecking(false); }
-  };
+      if (r.exists) {
+        setEmailStatus({ status: "duplicate", message: r.message });
+      } else {
+        setEmailStatus({ status: "available", message: "" });
+      }
+    } catch {
+      setEmailStatus({ status: "idle", message: "" });
+    } finally {
+      setEmailChecking(false);
+    }
+  }, []);
 
+  /* ----------------------------- validation ---------------------------- */
   const validateStep = (step: number): boolean => {
     const e: Record<string, string> = {};
     if (step === 1) {
-      if (!form.name.trim()) e.name = "Full name is required";
-      else if (/\d/.test(form.name)) e.name = "Name should not contain numbers.";
-      else if (form.name.trim().split(/\s+/).filter((w: string) => w.length > 0).length < 2) e.name = "Please enter your second name as well.";
+      if (!form.name.trim()) e.name = "We need a name to address you by.";
+      else if (/\d/.test(form.name)) e.name = "Names don't usually have numbers.";
+      else if (form.name.trim().split(/\s+/).filter((w) => w.length > 0).length < 2)
+        e.name = "Please add your last name too.";
     }
     if (step === 2) {
-      if (!form.email.trim()) e.email = "Email is required";
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Please enter a valid email address";
+      if (!form.email.trim()) e.email = "We need an email to send your confirmation.";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+        e.email = "That doesn't look like a valid email.";
       else if (emailStatus.status === "duplicate") e.email = emailStatus.message;
-      if (!form.mobile.trim()) e.mobile = "Please enter a valid WhatsApp number.";
-      else { const d = form.mobile.replace(/\D/g, ""); if (/^0+$/.test(d) || /^(\d)\1{4,}$/.test(d) || d.length < 7 || d.length > 15) e.mobile = "Please enter a valid WhatsApp number."; }
+      if (!form.mobile.trim()) e.mobile = "We need a WhatsApp number for updates.";
+      else {
+        const d = form.mobile.replace(/\D/g, "");
+        if (/^0+$/.test(d) || /^(\d)\1{4,}$/.test(d) || d.length < 7 || d.length > 15)
+          e.mobile = "That number doesn't look right.";
+      }
+      if (!form.sex) e.sex = "Tap one to continue.";
+      if (!form.country) e.country = "Tap a country.";
+      if (!form.employment) e.employment = "Tap one to continue.";
+      if (!form.laptop) e.laptop = "Tap one to continue.";
     }
     if (step === 3) {
-      if (!form.sex) e.sex = "Please select your sex";
-      if (!form.country) e.country = "Please select your country";
-    }
-    if (step === 4) {
-      if (!form.course) e.course = "Please select a course";
-      if (!form.employment) e.employment = "Please select employment status";
-      if (!form.laptop) e.laptop = "Please select an option";
-    }
-    if (step === 5) {
-      if (!form.reason.trim()) e.reason = "Please tell us why you want to learn this skill";
+      if (form.reason.trim() && form.reason.trim().length < 5)
+        e.reason = "Just a sentence or two helps us help you.";
     }
     setErrors(e);
     if (Object.keys(e).length > 0) {
@@ -142,350 +331,776 @@ export default function Contact() {
     return Object.keys(e).length === 0;
   };
 
+  /* ----------------------------- navigation ---------------------------- */
+  const animateTo = (next: number, dir: "next" | "back") => {
+    setSlideOffset(dir === "next" ? -30 : 30);
+    setTimeout(() => {
+      setCurrentStep(next);
+      setSlideOffset(dir === "next" ? 30 : -30);
+      setTimeout(() => setSlideOffset(0), 50);
+    }, 50);
+  };
+
   const goNext = () => {
     if (!validateStep(currentStep)) return;
-    if (currentStep < 6) {
-      setDirection("next");
-      setSlideOffset(-30);
-      setTimeout(() => { setCurrentStep(s => s + 1); setSlideOffset(30); setTimeout(() => setSlideOffset(0), 50); }, 50);
-    }
+    if (currentStep < STEPS.length) animateTo(currentStep + 1, "next");
+    else void handleSubmit();
   };
 
   const goBack = () => {
-    if (currentStep > 1) {
-      setDirection("back");
-      setSlideOffset(30);
-      setTimeout(() => { setCurrentStep(s => s - 1); setSlideOffset(-30); setTimeout(() => setSlideOffset(0), 50); }, 50);
+    if (currentStep > 1) animateTo(currentStep - 1, "back");
+  };
+
+  /* ----------------------------- submit -------------------------------- */
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    const dialCode = form.dialCode || "+234";
+    const fullPhone = `${dialCode}${form.mobile}`;
+    const countryName =
+      countries.find((c) => c.code === form.country)?.name || form.country;
+    const courseLabel = "Full Stack Development";
+
+    try {
+      const res = await fetch("/api/registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: form.name.trim(),
+          email: form.email.trim().toLowerCase(),
+          phone_whatsapp: fullPhone,
+          sex: form.sex,
+          country: countryName,
+          state: form.state || null,
+          course_applying_for: courseLabel,
+          employment_status: form.employment,
+          has_laptop: form.laptop,
+          heard_about_us: "registration",
+          learning_reason: form.reason.trim(),
+        }),
+      });
+      if (res.ok) {
+        setShowingApproval(true);
+        const approvalName = form.name.trim();
+        const approvalEmail = form.email.trim().toLowerCase();
+        setTimeout(() => {
+          setShowingApproval(false);
+          setSubmitted({
+            name: approvalName,
+            courseLabel,
+            email: approvalEmail,
+          });
+          clearDraft();
+        }, 3000);
+      } else {
+        const r = await res.json();
+        alert(
+          `We couldn't save your application: ${
+            r.error || "Please try again in a moment."
+          }`
+        );
+      }
+    } catch {
+      alert(
+        "Network hiccup. Please check your connection and try again — your progress is saved."
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    const phoneSelect = document.querySelector('select[defaultValue="+234"]') as HTMLSelectElement;
-    const dialCode = phoneSelect ? phoneSelect.value : "+234";
-    const fullPhone = `${dialCode}${form.mobile}`;
-    const countryName = countries.find(c => c.code === form.country)?.name || form.country;
-    const courseLabel = form.course === "fullstack" ? "Full Stack Development" : form.course;
-    try {
-      const res = await fetch("/api/registrations", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          full_name: form.name.trim(), email: form.email.trim().toLowerCase(), phone_whatsapp: fullPhone,
-          sex: form.sex, country: countryName, state: form.state || null, course_applying_for: courseLabel,
-          employment_status: form.employment, has_laptop: form.laptop, heard_about_us: "registration", learning_reason: form.reason.trim(),
-        }),
-      });
-      if (res.ok) setSubmitted(true);
-      else { const r = await res.json(); alert(`Registration failed: ${r.error}. Please try again later.`); }
-    } catch { alert("Registration failed. Please check your connection and try again."); }
-    finally { setSubmitting(false); }
+  const resetAll = () => {
+    setSubmitted(null);
+    setCurrentStep(1);
+    setForm({ ...EMPTY_FORM, country: bestGuessCountry() });
+    setErrors({});
+    setEmailStatus({ status: "idle", message: "" });
   };
 
-  const progress = ((currentStep) / STEPS.length) * 100;
-  const countryLabel = countries.find(c => c.code === form.country)?.name || "Not selected";
-  const courseLabel = form.course === "fullstack" ? "Full Stack Development" : form.course || "Not selected";
+  /* ----------------------------- enter-key ----------------------------- */
+  useEffect(() => {
+    if (submitted) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key !== "Enter") return;
+      const target = e.target as HTMLElement | null;
+      if (target && target.tagName === "TEXTAREA") return;
+      e.preventDefault();
+      goNext();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep, submitted, form, emailStatus]);
 
-  if (submitted) {
+  /* ----------------------------- resume draft -------------------------- */
+  const resumeDraft = () => {
+    if (!draft) return;
+    setForm(draft.form);
+    setCurrentStep(draft.step);
+    setShowResume(false);
+  };
+
+  const discardDraft = () => {
+    clearDraft();
+    setDraft(null);
+    setShowResume(false);
+    setForm({ ...EMPTY_FORM, country: bestGuessCountry() });
+  };
+
+  /* ----------------------------- derived ------------------------------- */
+  const progress = useMemo(
+    () => (currentStep / STEPS.length) * 100,
+    [currentStep]
+  );
+  const countryLabel =
+    countries.find((c) => c.code === form.country)?.name || "Not selected";
+  const stateLabel = states.find((s) => s.code === form.state)?.name || "";
+  const employmentLabel: Record<string, string> = {
+    employed: "Employed",
+    unemployed: "Looking for work",
+    student: "Student",
+    freelancer: "Freelancer",
+  };
+
+  /* ----------------------------- approval animation ----------------------- */
+  if (showingApproval) {
     return (
-      <section id="contact" className="py-24 relative overflow-hidden min-h-screen flex items-center justify-center">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div className="max-w-md mx-auto text-center">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-              <svg className="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" /></svg>
+      <section
+        id="contact"
+        className="py-24 relative overflow-hidden min-h-screen flex items-center justify-center"
+      >
+        <div className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8 relative z-10 w-full flex flex-col items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto mb-6 w-24 h-24 rounded-full bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center animate-[fade-in_0.4s_ease-out]">
+              <svg
+                className="w-12 h-12 text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">Application Submitted!</h2>
-            <p className="text-white/60 text-sm mb-2">Thank you, <span className="text-white font-medium">{form.name.split(" ")[0]}</span>!</p>
-            <p className="text-white/50 text-sm mb-8 leading-relaxed">We will contact you via <span className="text-white/80 font-medium">email</span> and <span className="text-white/80 font-medium">WhatsApp</span> using the details you provided. Please check your inbox regularly for updates.</p>
-            <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02] mb-6">
-              <p className="text-white/40 text-xs mb-2">Application Summary</p>
-              <div className="text-left space-y-1 text-sm">
-                <p className="text-white/70"><span className="text-white/40">Name:</span> {form.name}</p>
-                <p className="text-white/70"><span className="text-white/40">Email:</span> {form.email}</p>
-                <p className="text-white/70"><span className="text-white/40">Course:</span> {courseLabel}</p>
-              </div>
-            </div>
-            <button onClick={() => { setSubmitted(false); setCurrentStep(1); setForm({ name: "", email: "", mobile: "", sex: "", country: "", state: "", course: "", employment: "", laptop: "", reason: "" }); }} className="px-6 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white/70 text-sm hover:bg-white/20 transition">Register Another Student</button>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+              Application approved!
+            </h2>
+            <p className="text-white/50 text-sm">Setting things up...</p>
           </div>
         </div>
       </section>
     );
   }
 
+  /* ----------------------------- success screen ------------------------ */
+  if (submitted) {
+    return (
+      <section
+        id="contact"
+        className="py-24 relative overflow-hidden min-h-screen flex items-center justify-center"
+      >
+        <div className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8 relative z-10 w-full flex flex-col items-center justify-center">
+          <div className="text-center w-full max-w-md mx-auto">
+            <div className="mx-auto mb-6 w-20 h-20 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center animate-[fade-in_0.6s_ease-out]">
+              <svg
+                className="w-10 h-10 text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+              You're in, {submitted.name.split(" ")[0]}.
+            </h2>
+            <p className="text-white/60 text-sm sm:text-base mb-10 max-w-md mx-auto">
+              We'll reach you on WhatsApp within 24 hours with next steps for{" "}
+              <span className="text-white/90 font-medium">
+                {submitted.courseLabel}
+              </span>
+              .
+            </p>
+
+            <div className="grid sm:grid-cols-3 gap-3 mb-10 text-left">
+              {[
+                { icon: "💬", title: "WhatsApp ping", body: "A quick hello from the team." },
+                { icon: "📧", title: "Email confirmation", body: `Sent to ${submitted.email}.` },
+                { icon: "🗓️", title: "Onboarding link", body: "Class schedule + materials." },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                >
+                  <div className="text-xl mb-1.5">{item.icon}</div>
+                  <p className="text-white text-sm font-medium">{item.title}</p>
+                  <p className="text-white/50 text-xs mt-0.5 leading-relaxed">
+                    {item.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={resetAll}
+              className="text-white/40 text-xs hover:text-white/70 transition"
+            >
+              Register another student
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  /* ----------------------------- main render --------------------------- */
   return (
     <section id="contact" className="py-24 relative overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Title */}
-        <div id="contact-header" className="flex items-start gap-4 md:gap-6 mb-10 md:mb-14 max-w-2xl mx-auto">
+        <div className="flex items-start gap-4 md:gap-6 mb-10 md:mb-14 max-w-2xl mx-auto">
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
-            <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">embrace clarity</p>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">READY TO KICKOFF YOUR JOURNEY ?</h2>
-            <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">Register Now</p>
+            <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
+              embrace clarity
+            </p>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
+              READY TO KICKOFF YOUR JOURNEY?
+            </h2>
+            {/* Note: heading already ends with "?" not "'" so no escape needed here */}
+            <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
+              Register Now
+            </p>
           </div>
         </div>
 
         <div className="max-w-xl mx-auto text-center mb-8">
           <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
             Ready to acquire building skills in software fullstack development at{" "}
-            <span className="inline-flex items-center align-middle">
-              <span className="relative flex items-center">
-                <img
-                  src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
-                  alt="Beyund Labs Academy logo"
-                  className="h-5 w-auto md:h-6 lg:h-7 shrink-0 inline-block"
-                  style={{
-                    maskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
-                    WebkitMaskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
-                  }}
-                />
-                <span className="flex items-baseline -ml-1 md:-ml-1.5 lg:-ml-2 mix-blend-screen select-none" style={{ textShadow: "0 0 30px rgba(255,255,255,0.08)" }}>
-                  <span className="text-white text-sm md:text-base lg:text-lg font-light tracking-wide">eyund</span>
-                  <span className="text-slate-300/90 text-xs md:text-sm lg:text-base font-mono ml-0.5" style={{ fontVariant: "small-caps" }}>𝙻𝚊𝚋𝚜.</span>
-                  <span className="ml-1 font-light tracking-widest uppercase flex items-baseline">
-                    <span className="text-green-400/80 text-sm md:text-base lg:text-lg font-normal">A</span>
-                    <span className="text-green-300/80 text-xs md:text-sm lg:text-base">cademy</span>
-                  </span>
-                </span>
-              </span>
-            </span>?
+            <span className="text-white font-medium">Beyund Labs Academy</span>?
+            Takes about 60 seconds.
           </p>
         </div>
 
+        {/* Resume banner */}
+        {showResume && draft && (
+          <div className="max-w-xl mx-auto mb-4 flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-sm">
+            <span className="text-white/70">
+              You started this before.{" "}
+              <span className="text-white/40">Pick up where you left off?</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={resumeDraft}
+                className="px-3 py-1.5 rounded-lg bg-green-500 text-white text-xs font-medium hover:bg-green-600 transition"
+              >
+                Resume
+              </button>
+              <button
+                onClick={discardDraft}
+                className="px-3 py-1.5 rounded-lg text-white/50 text-xs hover:text-white/80 transition"
+              >
+                Start fresh
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Wizard Card */}
-        <div ref={cardRef} className="max-w-xl mx-auto" style={{ transform: `translateY(${slideOffset}px)`, transition: "transform 0.3s ease-out" }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && e.target instanceof HTMLElement && e.target.tagName !== "TEXTAREA") {
-              e.preventDefault();
-              if (currentStep < 6) goNext();
-              else handleSubmit();
-            }
+        <div
+          ref={cardRef}
+          className="max-w-xl mx-auto"
+          style={{
+            transform: `translateY(${slideOffset}px)`,
+            transition: "transform 0.3s ease-out",
           }}
         >
-          {/* Progress bar */}
+          {/* Progress dots */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-[11px] text-white/40 font-mono tracking-wider uppercase">{STEPS[currentStep - 1].label}</span>
-              <span className="text-[11px] text-white/30">Step {currentStep} of {STEPS.length}</span>
+              <span className="text-[11px] text-white/40 font-mono tracking-wider uppercase">
+                {STEPS[currentStep - 1].label}
+              </span>
+              <span className="text-[11px] text-white/30">
+                Step {currentStep} of {STEPS.length}
+              </span>
             </div>
             <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-green-400 rounded-full transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
+              <div
+                className="h-full bg-green-400 rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${progress}%` }}
+              />
             </div>
           </div>
 
           {/* Step content */}
           <div className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm">
             <div className="mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">{STEPS[currentStep - 1].heading}</h3>
-              <p className="text-white/50 text-sm">{STEPS[currentStep - 1].subtext}</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">
+                {STEPS[currentStep - 1].heading}
+              </h3>
+              <p className="text-white/50 text-sm">
+                {STEPS[currentStep - 1].subtext}
+              </p>
             </div>
 
-            {/* Step 1: Personal Identity */}
+            {/* STEP 1 — Name only */}
             {currentStep === 1 && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Full Name *</label>
-                  <input type="text" placeholder="Enter your full name" value={form.name} autoFocus
-                    onChange={(e) => updateForm("name", e.target.value.replace(/[0-9]/g, ""))}
-                    className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${errors.name ? "border-red-500/50" : "border-white/20"}`} />
-                  {errors.name && <p id="err-name" className="text-red-400 text-xs mt-1">{errors.name}</p>}
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    Your name
+                  </label>
+                  <input
+                    id="err-name"
+                    type="text"
+                    placeholder="e.g. Ada Lovelace"
+                    value={form.name}
+                    autoFocus
+                    onChange={(e) =>
+                      updateForm("name", e.target.value.replace(/[0-9]/g, ""))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        goNext();
+                      }
+                    }}
+                    className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-base focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
+                      errors.name ? "border-red-500/50" : "border-white/20"
+                    }`}
+                  />
+                  {errors.name && (
+                    <p className="text-red-400 text-xs mt-1.5">{errors.name}</p>
+                  )}
+                  <p className="text-white/30 text-[11px] mt-2">
+                    First and last name. We use it to greet you.
+                  </p>
                 </div>
               </div>
             )}
 
-            {/* Step 2: Contact Details */}
+            {/* STEP 2 — All the taps */}
             {currentStep === 2 && (
-              <div className="space-y-4">
+              <div className="space-y-6">
+                {/* Email + WhatsApp */}
                 <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Email Address *</label>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    Email
+                  </label>
                   <div className="relative">
-                    <input type="email" placeholder="Enter your email address" value={form.email} autoComplete="off"
+                    <input
+                      id="err-email"
+                      type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      placeholder="you@somewhere.com"
+                      value={form.email}
                       onChange={(e) => updateForm("email", e.target.value)}
-                      onFocus={() => setEmailFocused(true)}
-                      onBlur={(e) => { setEmailFocused(false); checkEmailDuplicate(e.target.value); }}
-                      disabled={emailChecking}
-                      className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
-                        errors.email ? "border-red-500/50" : emailStatus.status === "duplicate" ? "border-red-500/50" : emailStatus.status === "available" ? "border-green-500/50" : "border-white/20"
-                      } ${emailChecking ? "opacity-70" : ""}`} />
-                    {emailStatus.status === "checking" && <div className="absolute right-4 top-1/2 -translate-y-1/2"><div className="w-4 h-4 border-2 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin" /></div>}
-                    {emailStatus.status === "available" && <div className="absolute right-4 top-1/2 -translate-y-1/2 text-green-400 text-sm font-medium">✓</div>}
-                    {emailStatus.status === "duplicate" && <div className="absolute right-4 top-1/2 -translate-y-1/2 text-red-400 text-sm font-medium">✗</div>}
+                      onBlur={(e) => checkEmailDuplicate(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const next = document.getElementById(
+                            "err-mobile"
+                          ) as HTMLInputElement | null;
+                          next?.focus();
+                        }
+                      }}
+                      className={`w-full px-5 py-3.5 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
+                        errors.email
+                          ? "border-red-500/50"
+                          : emailStatus.status === "duplicate"
+                          ? "border-red-500/50"
+                          : emailStatus.status === "available"
+                          ? "border-green-500/50"
+                          : "border-white/20"
+                      } ${emailChecking ? "opacity-70" : ""}`}
+                    />
+                    {emailStatus.status === "checking" && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                        <div className="w-4 h-4 border-2 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin" />
+                      </div>
+                    )}
+                    {emailStatus.status === "available" && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-green-400 text-sm">
+                        ✓
+                      </div>
+                    )}
+                    {emailStatus.status === "duplicate" && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-red-400 text-sm">
+                        ✗
+                      </div>
+                    )}
                   </div>
-                  {errors.email && <p id="err-email" className="text-red-400 text-xs mt-1">{errors.email}</p>}
-                  {emailStatus.status === "duplicate" && !errors.email && <p className="text-red-400/80 text-[11px] mt-1">{emailStatus.message}</p>}
-                  {emailStatus.status === "available" && <p className="text-green-200 text-[10px] mt-1">Note: If this email is wrong, you will not receive updates about your application, classes, or program activities.</p>}
-                  {emailFocused && emailStatus.status !== "available" && <p className="text-amber-200 text-[11px] mt-1">Please enter a valid email address that you actively use. Important updates will be sent to this email.</p>}
+                  {errors.email && (
+                    <p className="text-red-400 text-xs mt-1.5">{errors.email}</p>
+                  )}
                 </div>
+
                 <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">WhatsApp Number *</label>
-                  <div className="flex gap-3">
-                    <div className="relative shrink-0" style={{ minWidth: "100px", maxWidth: "120px" }}>
-                      <select defaultValue="+234" onChange={(e) => updateForm("dialCode", e.target.value)}
-                        className="w-full px-2 py-4 pr-6 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-xs sm:text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer" style={{ colorScheme: "dark" }}>
-                        <option value="+234">+234 (NG)</option><option value="+1">+1 (US/CA)</option><option value="+44">+44 (GB)</option>
-                        <option value="+91">+91 (IN)</option><option value="+254">+254 (KE)</option><option value="+233">+233 (GH)</option>
-                        <option value="+27">+27 (ZA)</option><option value="+256">+256 (UG)</option><option value="+260">+260 (ZM)</option>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    WhatsApp number
+                  </label>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                    <select
+                      value={form.dialCode}
+                      onChange={(e) => updateForm("dialCode", e.target.value)}
+                      className="shrink-0 px-2 py-3.5 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-xs sm:text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                      style={{ colorScheme: "dark", minWidth: 90 }}
+                    >
+                      <option value="+234">+234</option>
+                      <option value="+1">+1</option>
+                      <option value="+44">+44</option>
+                      <option value="+91">+91</option>
+                      <option value="+254">+254</option>
+                      <option value="+233">+233</option>
+                      <option value="+27">+27</option>
+                      <option value="+256">+256</option>
+                      <option value="+260">+260</option>
+                    </select>
+                    <input
+                      id="err-mobile"
+                      type="tel"
+                      inputMode="numeric"
+                      autoComplete="tel"
+                      placeholder="801 234 5678"
+                      value={form.mobile}
+                      onChange={(e) =>
+                        updateForm(
+                          "mobile",
+                          e.target.value.replace(/\D/g, "").slice(0, 15)
+                        )
+                      }
+                      className={`flex-1 px-5 py-3.5 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
+                        errors.mobile ? "border-red-500/50" : "border-white/20"
+                      }`}
+                    />
+                  </div>
+                  {errors.mobile && (
+                    <p className="text-red-400 text-xs mt-1.5">
+                      {errors.mobile}
+                    </p>
+                  )}
+                </div>
+
+                {/* Sex */}
+                <div>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    Sex
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Tile
+                      active={form.sex === "female"}
+                      onClick={() => updateForm("sex", "female")}
+                    >
+                      Female
+                    </Tile>
+                    <Tile
+                      active={form.sex === "male"}
+                      onClick={() => updateForm("sex", "male")}
+                    >
+                      Male
+                    </Tile>
+                  </div>
+                  {errors.sex && (
+                    <p className="text-red-400 text-xs mt-1.5">{errors.sex}</p>
+                  )}
+                </div>
+
+                {/* Course (pre-selected, single option) */}
+                <div>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    Course
+                  </label>
+                  <Tile active fullWidth>
+                    Full Stack Development
+                    <span className="block text-[11px] text-white/40 mt-0.5 font-normal">
+                      Currently the only open cohort.
+                    </span>
+                  </Tile>
+                </div>
+
+                {/* Country + State */}
+                <div>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    Where are you?
+                  </label>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <select
+                      id="err-country"
+                      value={form.country}
+                      onChange={(e) => {
+                        updateForm("country", e.target.value);
+                        updateForm("state", "");
+                      }}
+                      className={`flex-1 px-4 py-3 rounded-xl bg-neutral-900 border text-white/80 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${
+                        errors.country ? "border-red-500/50" : "border-white/20"
+                      }`}
+                    >
+                      <option value="" disabled>
+                        {loadingCountries ? "Loading…" : "Country"}
+                      </option>
+                      {countries.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                    {states.length > 0 && (
+                      <select
+                        value={form.state}
+                        onChange={(e) => updateForm("state", e.target.value)}
+                        className="flex-1 px-4 py-3 rounded-xl bg-neutral-900 border border-white/20 text-white/80 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer"
+                      >
+                        <option value="" disabled>
+                          {loadingStates ? "Loading…" : "State"}
+                        </option>
+                        {states.map((s) => (
+                          <option key={s.code} value={s.code}>
+                            {s.name}
+                          </option>
+                        ))}
                       </select>
-                      <svg className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                    </div>
-                    <input type="tel" placeholder="Enter your active WhatsApp number" value={form.mobile} autoComplete="off"
-                      onChange={(e) => updateForm("mobile", e.target.value.replace(/\D/g, "").slice(0, 15))}
-                      onFocus={() => setWhatsappFocused(true)} onBlur={() => setWhatsappFocused(false)}
-                      inputMode="numeric" className={`flex-1 px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${errors.mobile ? "border-red-500/50" : "border-white/20"}`} />
+                    )}
                   </div>
-                  {errors.mobile && <p id="err-mobile" className="text-red-400 text-xs mt-1">{errors.mobile}</p>}
-                  {form.mobile.trim().length >= 7 && !errors.mobile && <p className="text-green-200 text-[10px] mt-1">Note: If this WhatsApp number is wrong, you will not receive updates about your application.</p>}
-                  {whatsappFocused && !(form.mobile.trim().length >= 7 && !errors.mobile) && <p className="text-amber-200 text-[11px] mt-1">Please provide a valid WhatsApp number that you actively use.</p>}
+                  {errors.country && (
+                    <p className="text-red-400 text-xs mt-1.5">
+                      {errors.country}
+                    </p>
+                  )}
+                </div>
+
+                {/* Employment */}
+                <div>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    You are currently…
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(
+                      [
+                        ["employed", "Employed"],
+                        ["freelancer", "Freelancer"],
+                        ["student", "A student"],
+                        ["unemployed", "Looking for work"],
+                      ] as const
+                    ).map(([val, label]) => (
+                      <Tile
+                        key={val}
+                        active={form.employment === val}
+                        onClick={() => updateForm("employment", val)}
+                      >
+                        {label}
+                      </Tile>
+                    ))}
+                  </div>
+                  {errors.employment && (
+                    <p className="text-red-400 text-xs mt-1.5">
+                      {errors.employment}
+                    </p>
+                  )}
+                </div>
+
+                {/* Laptop */}
+                <div>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    Do you have a laptop?
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Tile
+                      active={form.laptop === "yes"}
+                      onClick={() => updateForm("laptop", "yes")}
+                    >
+                      Yes, I do
+                    </Tile>
+                    <Tile
+                      active={form.laptop === "no"}
+                      onClick={() => updateForm("laptop", "no")}
+                    >
+                      Not yet
+                    </Tile>
+                  </div>
+                  {errors.laptop && (
+                    <p className="text-red-400 text-xs mt-1.5">
+                      {errors.laptop}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* Step 3: Demographics */}
+            {/* STEP 3 — Optional why + review */}
             {currentStep === 3 && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Sex *</label>
-                  <div className="relative">
-                    <select value={form.sex} onChange={(e) => updateForm("sex", e.target.value)}
-                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${errors.sex ? "border-red-500/50" : "border-white/20"}`}>
-                      <option value="" disabled>Select your sex</option><option value="male">Male</option><option value="female">Female</option>
-                    </select>
-                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                  <div className="flex items-baseline justify-between mb-2">
+                    <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40">
+                      Why do you want to learn?
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateForm("reason", "");
+                        goNext();
+                      }}
+                      className="text-white/40 text-[11px] hover:text-white/70 transition"
+                    >
+                      Skip
+                    </button>
                   </div>
-                  {errors.sex && <p id="err-sex" className="text-red-400 text-xs mt-1">{errors.sex}</p>}
-                </div>
-                <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Country *</label>
-                  <div className="relative">
-                    <select value={form.country} onChange={(e) => { updateForm("country", e.target.value); updateForm("state", ""); }}
-                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${errors.country ? "border-red-500/50" : "border-white/20"}`}>
-                      <option value="" disabled>{loadingCountries ? "Loading..." : "Select country"}</option>
-                      {countries.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
-                    </select>
-                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                  {errors.country && <p id="err-country" className="text-red-400 text-xs mt-1">{errors.country}</p>}
-                </div>
-                {loadingStates && (
-                  <div><label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">State/Province</label>
-                  <select disabled className="w-full px-5 py-4 rounded-xl bg-neutral-900/50 border border-white/10 text-white/40 text-sm cursor-not-allowed"><option>Loading states...</option></select></div>
-                )}
-                {!loadingStates && states.length > 0 && (
-                  <div><label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">State/Province *</label>
-                  <div className="relative">
-                    <select value={form.state} onChange={(e) => updateForm("state", e.target.value)}
-                      className="w-full px-5 py-4 rounded-xl bg-neutral-900 border border-white/20 text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer">
-                      <option value="" disabled>Select state</option>
-                      {states.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
-                    </select>
-                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                  </div></div>
-                )}
-                {!loadingStates && form.country && form.country !== "OTHER" && states.length === 0 && <p className="text-white/40 text-xs italic">This country has no states/provinces.</p>}
-              </div>
-            )}
-
-            {/* Step 4: Academic Selection */}
-            {currentStep === 4 && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Course Applying For *</label>
-                  <div className="relative">
-                    <select value={form.course} onChange={(e) => updateForm("course", e.target.value)}
-                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${errors.course ? "border-red-500/50" : "border-white/20"}`}>
-                      <option value="" disabled>Select course</option><option value="fullstack">Full Stack Development</option>
-                    </select>
-                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                  {errors.course && <p id="err-course" className="text-red-400 text-xs mt-1">{errors.course}</p>}
-                </div>
-                <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Employment Status *</label>
-                  <div className="relative">
-                    <select value={form.employment} onChange={(e) => updateForm("employment", e.target.value)}
-                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${errors.employment ? "border-red-500/50" : "border-white/20"}`}>
-                      <option value="" disabled>Select status</option><option value="employed">Employed</option><option value="unemployed">Unemployed</option>
-                      <option value="student">Student</option><option value="freelancer">Freelancer</option>
-                    </select>
-                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                  {errors.employment && <p id="err-employment" className="text-red-400 text-xs mt-1">{errors.employment}</p>}
-                </div>
-                <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Do You Have a Laptop? *</label>
-                  <div className="relative">
-                    <select value={form.laptop} onChange={(e) => updateForm("laptop", e.target.value)}
-                      className={`w-full px-5 py-4 rounded-xl bg-neutral-900 border text-white/70 text-sm focus:outline-none focus:border-yellow-500/50 transition-all duration-200 appearance-none cursor-pointer ${errors.laptop ? "border-red-500/50" : "border-white/20"}`}>
-                      <option value="" disabled>Select option</option><option value="yes">Yes</option><option value="no">No</option>
-                    </select>
-                    <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                  {errors.laptop && <p id="err-laptop" className="text-red-400 text-xs mt-1">{errors.laptop}</p>}
-                </div>
-              </div>
-            )}
-
-            {/* Step 5: Motivation */}
-            {currentStep === 5 && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Why Do You Want To Learn This Skill? *</label>
-                  <textarea placeholder="Tell us briefly why you want to learn fullstack development..." rows={5} value={form.reason}
+                  <textarea
+                    rows={4}
+                    placeholder="A sentence or two. What would you build if you had these skills?"
+                    value={form.reason}
                     onChange={(e) => updateForm("reason", e.target.value)}
-                    className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 resize-none ${errors.reason ? "border-red-500/50" : "border-white/20"}`} />
-                  {errors.reason && <p id="err-reason" className="text-red-400 text-xs mt-1">{errors.reason}</p>}
+                    className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-sm focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 resize-none ${
+                      errors.reason ? "border-red-500/50" : "border-white/20"
+                    }`}
+                  />
+                  {errors.reason && (
+                    <p className="text-red-400 text-xs mt-1.5">
+                      {errors.reason}
+                    </p>
+                  )}
+                  <p className="text-white/30 text-[11px] mt-2">
+                    Optional. Skip if you would rather tell us on the call.
+                  </p>
                 </div>
-              </div>
-            )}
 
-            {/* Step 6: Review */}
-            {currentStep === 6 && (
-              <div className="space-y-4">
+                {/* Read-only review summary */}
                 <div className="rounded-xl border border-white/10 bg-white/[0.03] divide-y divide-white/5">
-                  <div className="p-4">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-white/30 mb-1">Personal Information</p>
-                    <p className="text-white/80 text-sm">{form.name}</p>
+                  <div className="px-4 py-3 flex items-center justify-between gap-3">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-white/30">
+                      You
+                    </span>
+                    <span className="text-white/80 text-sm text-right truncate">
+                      {form.name || "—"}
+                    </span>
                   </div>
-                  <div className="p-4">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-white/30 mb-1">Contact</p>
-                    <p className="text-white/80 text-sm">{form.email}</p>
-                    <p className="text-white/60 text-xs mt-0.5">WhatsApp: {form.mobile}</p>
+                  <div className="px-4 py-3 flex items-center justify-between gap-3">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-white/30">
+                      Reach you
+                    </span>
+                    <span className="text-white/80 text-sm text-right truncate">
+                      {form.email || "—"} · {form.dialCode}
+                      {form.mobile}
+                    </span>
                   </div>
-                  <div className="p-4">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-white/30 mb-1">Demographics</p>
-                    <p className="text-white/80 text-sm capitalize">{form.sex || "—"} · {countryLabel} {form.state ? `· ${states.find(s => s.code === form.state)?.name || form.state}` : ""}</p>
+                  <div className="px-4 py-3 flex items-center justify-between gap-3">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-white/30">
+                      Course
+                    </span>
+                    <span className="text-white/80 text-sm">Full Stack Development</span>
                   </div>
-                  <div className="p-4">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-white/30 mb-1">Academic</p>
-                    <p className="text-white/80 text-sm">{courseLabel}</p>
-                    <p className="text-white/60 text-xs mt-0.5 capitalize">{form.employment || "—"} · Laptop: {form.laptop || "—"}</p>
+                  <div className="px-4 py-3 flex items-center justify-between gap-3">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-white/30">
+                      About
+                    </span>
+                    <span className="text-white/80 text-sm text-right truncate">
+                      {form.sex ? (form.sex === "male" ? "Male" : "Female") : "—"}{" "}
+                      · {employmentLabel[form.employment] || "—"} · Laptop:{" "}
+                      {form.laptop === "yes" ? "Yes" : form.laptop === "no" ? "No" : "—"}
+                    </span>
                   </div>
-                  <div className="p-4">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-white/30 mb-1">Motivation</p>
-                    <p className="text-white/80 text-sm">{form.reason || "—"}</p>
+                  <div className="px-4 py-3 flex items-center justify-between gap-3">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-white/30">
+                      From
+                    </span>
+                    <span className="text-white/80 text-sm text-right truncate">
+                      {countryLabel}
+                      {stateLabel ? `, ${stateLabel}` : ""}
+                    </span>
                   </div>
                 </div>
-                <p className="text-green-200 text-[10px]">Note: Please review your details. Once submitted, you will be contacted via the email and WhatsApp number provided.</p>
               </div>
             )}
 
             {/* Navigation */}
-            <div className="flex justify-between items-center mt-8 pt-4 border-t border-white/5">
+            <div className="flex justify-between items-center mt-8 pt-5 border-t border-white/5">
               {currentStep > 1 ? (
-                <button onClick={goBack} className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-white/10 text-white/60 text-sm hover:bg-white/5 transition">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                <button
+                  type="button"
+                  onClick={goBack}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-white/10 text-white/60 text-sm hover:bg-white/5 transition"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
                   Back
                 </button>
-              ) : <div />}
-              {currentStep < 6 ? (
-                <button onClick={goNext} disabled={currentStep === 2 && emailChecking}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                  Next
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+              ) : (
+                <div />
+              )}
+              {currentStep < STEPS.length ? (
+                <button
+                  type="button"
+                  onClick={goNext}
+                  disabled={currentStep === 2 && emailChecking}
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {currentStep === 1 ? "Continue" : "Almost done"}
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
                 </button>
               ) : (
-                <button onClick={handleSubmit} disabled={submitting}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                  {submitting ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Submitting...</> : "Submit Application"}
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending…
+                    </>
+                  ) : (
+                    <>
+                      Let's go
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </>
+                  )}
                 </button>
               )}
             </div>
@@ -494,18 +1109,40 @@ export default function Contact() {
           {/* Step dots */}
           <div className="flex justify-center gap-2 mt-6">
             {STEPS.map((s, i) => (
-              <button key={s.id} onClick={() => {
-                if (i + 1 < currentStep) {
-                  setDirection("back"); setSlideOffset(30);
-                  setTimeout(() => { setCurrentStep(i + 1); setSlideOffset(-30); setTimeout(() => setSlideOffset(0), 50); }, 50);
-                }
-              }}
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => {
+                  if (i + 1 < currentStep) animateTo(i + 1, "back");
+                }}
+                aria-label={`Go to step ${i + 1}: ${s.label}`}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i + 1 === currentStep ? "bg-green-400 w-6" : i + 1 < currentStep ? "bg-green-400/40 w-1.5" : "bg-white/10 w-1.5"
-                } ${i + 1 < currentStep ? "cursor-pointer hover:bg-green-400/60" : "cursor-default"}`}
+                  i + 1 === currentStep
+                    ? "bg-green-400 w-6"
+                    : i + 1 < currentStep
+                    ? "bg-green-400/40 w-1.5 cursor-pointer hover:bg-green-400/60"
+                    : "bg-white/10 w-1.5 cursor-default"
+                }`}
               />
             ))}
           </div>
+
+          <p className="text-center text-white/30 text-[11px] mt-5 flex items-center justify-center gap-1.5">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+            Your info is safe. We never spam.
+          </p>
         </div>
       </div>
     </section>

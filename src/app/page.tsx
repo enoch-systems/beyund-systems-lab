@@ -34,6 +34,7 @@ export default function Home() {
         <Navbar />
         <SocialSidebar />
         <MeetTheMentor />
+        <Contact />
         <Layers />
         <About />
          <Contact />
