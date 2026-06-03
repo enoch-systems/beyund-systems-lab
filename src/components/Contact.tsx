@@ -272,20 +272,20 @@ export default function Contact() {
       setEmailStatus({ status: "idle", message: "" });
       return;
     }
-    setEmailChecking(true);
-    setEmailStatus({ status: "checking", message: "Checking email..." });
-    try {
-      const res = await fetch("/api/check-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed }),
-      });
-      const r = await res.json();
-      if (r.exists) {
-        setEmailStatus({ status: "duplicate", message: r.message });
-      } else {
-        setEmailStatus({ status: "available", message: "" });
-      }
+      setEmailChecking(true);
+      setEmailStatus({ status: "checking", message: "Checking email..." });
+      try {
+        const res = await fetch("/api/check-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: trimmed }),
+        });
+        const r = await res.json();
+        if (r.exists) {
+          setEmailStatus({ status: "duplicate", message: "This email has already been registered. Please use a different email or contact support." });
+        } else {
+          setEmailStatus({ status: "available", message: "" });
+        }
     } catch {
       setEmailStatus({ status: "idle", message: "" });
     } finally {
