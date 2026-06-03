@@ -23,35 +23,15 @@ import {
   Sparkles,
 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import BeyundLogo from "@/components/BeyundLogo";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
 import { ProfileProvider, useProfile } from "@/lib/profile-context";
 import { apple } from "@/lib/admin-design-system";
 import GlobalSearch from "@/components/admin/GlobalSearch";
 
 /* ═══════════════════════════════════════
-   Logo — Official client branding
+   Logo — Same as landing page client side
    ═══════════════════════════════════════ */
-const LOGO_URL =
-  "https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png";
-
-function AcademyLogo({ size = "sm" }: { size?: "sm" | "lg" }) {
-  const h = size === "lg" ? "h-8" : "h-6";
-  return (
-    <div className="flex items-center gap-1.5 shrink-0">
-      <img
-        src={LOGO_URL}
-        alt="Beyund Academy"
-        className={`${h} w-auto object-contain`}
-        style={{ imageRendering: "auto" }}
-      />
-      {size === "lg" && (
-        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-500 ml-0.5 whitespace-nowrap">
-          LMS
-        </span>
-      )}
-    </div>
-  );
-}
 
 /* ═══════════════════════════════════════
    Types
@@ -131,7 +111,7 @@ function DesktopSidebar({
       <div className={`flex items-center h-14 border-b border-neutral-200/70 dark:border-neutral-800/70 ${collapsed ? "justify-center px-0" : "justify-between px-4"}`}>
         {!collapsed ? (
           <Link href="/admin" className="flex items-center gap-2 group">
-            <AcademyLogo size="lg" />
+            <BeyundLogo className="h-8" />
           </Link>
         ) : (
           <Link href="/admin" className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-white flex items-center justify-center">
@@ -189,20 +169,7 @@ function DesktopSidebar({
         ))}
       </nav>
 
-      {/* ── Footer ── */}
-      <div className="px-2.5 py-3 border-t border-neutral-200/70 dark:border-neutral-800/70">
-        <Link
-          href="/admin/settings"
-          onClick={onNavigate}
-          className={`flex items-center rounded-lg text-sm font-medium transition-all duration-150 text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40 ${
-            collapsed ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3 py-2"
-          }`}
-          title={collapsed ? "Settings" : undefined}
-        >
-          <Settings className="w-4 h-4 shrink-0" />
-          {!collapsed && <span>Settings</span>}
-        </Link>
-      </div>
+
     </aside>
   );
 }
@@ -234,7 +201,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
       >
         {/* Header */}
         <div className="flex items-center justify-between h-14 px-4 border-b border-neutral-200/70 dark:border-neutral-800/70">
-          <AcademyLogo size="lg" />
+          <BeyundLogo className="h-8" />
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
@@ -278,16 +245,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
           ))}
         </nav>
 
-        {/* Footer */}
-        <div className="px-3 py-3 border-t border-neutral-200/70 dark:border-neutral-800/70">
-          <button
-            onClick={() => handleNav("/admin/settings")}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition-all duration-150 min-h-[44px]"
-          >
-            <Settings className="w-4 h-4 shrink-0" />
-            <span>Settings</span>
-          </button>
-        </div>
+
       </div>
     </>
   );
@@ -362,7 +320,7 @@ function AdminTopbar({
 
           {/* Logo on mobile header */}
           <Link href="/admin" className="lg:hidden shrink-0 mr-1">
-            <AcademyLogo size="sm" />
+            <BeyundLogo className="h-6" />
           </Link>
 
           {/* Global Search */}

@@ -26,7 +26,6 @@ import {
   AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
-
 /* ═══════════════════════════════════════
    Types
    ═══════════════════════════════════════ */
@@ -189,7 +188,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-5 sm:space-y-7">
       {/* ──────── HEADER ──────── */}
-      <div className="flex items-end justify-between">
+      <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-[28px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">

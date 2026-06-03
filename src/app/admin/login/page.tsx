@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import BeyundLogo from "@/components/BeyundLogo";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -40,38 +41,9 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-[#0a0a0a] flex items-center justify-center px-4 transition-colors">
       <div className="w-full max-w-sm">
-        {/* Logo — blended image + text */}
-        <div className="flex items-center justify-center mb-10 group">
-          <div className="relative flex items-center">
-            {/* Logo image with gradient mask to seamlessly fade into text */}
-            <img
-              src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
-              alt="Beyund Labs Academy logo"
-              className="h-7 w-auto md:h-9 lg:h-11 shrink-0"
-              style={{
-                maskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to right, black 40%, rgba(0,0,0,0.6) 70%, transparent 100%)",
-              }}
-            />
-            {/* Text overlapping the faded edge for seamless blend */}
-            <div
-              className="flex items-baseline -ml-2 md:-ml-5 lg:-ml-6 mix-blend-screen select-none"
-              style={{ textShadow: "0 0 30px rgba(255,255,255,0.08)" }}
-            >
-              <span className="text-white text-base md:text-xl lg:text-2xl font-light tracking-wide group-hover:text-white transition-colors duration-300">
-                eyund
-              </span>
-              <span
-                className="text-slate-300/90 group-hover:text-slate-200 transition-colors duration-300 ml-1 text-sm md:text-lg lg:text-xl font-mono"
-                style={{ fontVariant: "small-caps" }}
-              >
-                𝙻𝚊𝚋𝚜.
-              </span>
-              <span className="text-slate-400/70 group-hover:text-slate-300 transition-colors duration-300 ml-1 text-xs md:text-sm lg:text-base font-light tracking-widest uppercase">
-                LMS
-              </span>
-            </div>
-          </div>
+        {/* Logo — same as landing page */}
+        <div className="flex items-center justify-center mb-10">
+          <BeyundLogo className="h-7 md:h-9 lg:h-11" />
         </div>
 
         {/* Login Card */}
