@@ -126,10 +126,10 @@ export default function SettingsPage() {
     <div className="w-full space-y-8">
       {/* PAGE HEADER */}
       <div>
-        <h1 className="text-[28px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.02em]">
+        <h1 className="text-[20px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.02em]">
           Settings
         </h1>
-        <p className="text-[15px] text-[#86868b] dark:text-[#98989d] mt-1">
+        <p className="text-[11px] text-[#86868b] dark:text-[#98989d] mt-0.5">
           Manage your admin profile and dashboard preferences.
         </p>
       </div>
