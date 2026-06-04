@@ -138,7 +138,7 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* ── Admin Profile Card ── */}
-        <div className="rounded-[14px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-5 lg:row-span-2">
+        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-5 lg:row-span-2">
           <div className="mb-4">
             <h2 className="text-[13px] font-semibold text-neutral-900 dark:text-white">
               Admin Profile
@@ -156,7 +156,7 @@ export default function SettingsPage() {
             onChange={handleImageChange}
             className="hidden"
           />
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-4 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-3">
             <div
               role="button"
               tabIndex={0}
@@ -168,14 +168,14 @@ export default function SettingsPage() {
                 <img
                   src={profileImage}
                   alt="Profile"
-                  className="w-14 h-14 rounded-full object-cover border-2 border-neutral-200/60 dark:border-neutral-800/60"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-[#e2e8f0] dark:border-[#1e293b]"
                 />
               ) : (
-                <div className="w-14 h-14 rounded-full bg-neutral-50 dark:bg-neutral-800/60 border-2 border-neutral-200/60 dark:border-neutral-800/60 flex items-center justify-center overflow-hidden">
+                <div className="w-14 h-14 rounded-full bg-[#f1f5f9] dark:bg-[#1e293b] border-2 border-[#e2e8f0] dark:border-[#1e293b] flex items-center justify-center overflow-hidden">
                   <Camera className="w-5 h-5 text-neutral-400" />
                 </div>
               )}
-              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-neutral-900 dark:bg-white flex items-center justify-center border-2 border-white dark:border-[#1c1c1e] shadow-sm">
+              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-neutral-900 dark:bg-white flex items-center justify-center border-2 border-white dark:border-[#111827] shadow-sm">
                 <Pencil className="w-2.5 h-2.5 text-white dark:text-neutral-900" />
               </div>
             </div>
@@ -189,7 +189,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-3">
             {/* Name */}
             <div>
               <label className="block text-[11px] font-medium text-neutral-900 dark:text-white mb-1">
@@ -246,9 +246,9 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Password Card ── */}
-        <div className="rounded-[14px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-5">
+        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-5">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-[10px] bg-neutral-50 dark:bg-neutral-800/60 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center">
               <Lock className="w-4 h-4 text-neutral-400" />
             </div>
             <div>
@@ -273,9 +273,9 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Appearance Card ── */}
-        <div className="rounded-[14px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-5">
+        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-5">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-[10px] bg-neutral-50 dark:bg-neutral-800/60 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center">
               <Palette className="w-4 h-4 text-amber-500" />
             </div>
             <div>
@@ -288,7 +288,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-[10px] bg-neutral-50 dark:bg-neutral-800/60">
+          <div className="flex items-center justify-between p-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
             <div className="flex items-center gap-3">
               {theme === "dark" ? (
                 <Moon className="w-4 h-4 text-neutral-500" />
@@ -318,7 +318,7 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Account Card ── */}
-        <div className="rounded-[14px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-5 lg:col-span-1">
+        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-5 lg:col-span-1">
           <div className="mb-3">
             <h2 className="text-[13px] font-semibold text-neutral-900 dark:text-white">
               Account
@@ -328,7 +328,7 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          <div className="p-3 rounded-[10px] bg-neutral-50 dark:bg-neutral-800/60">
+          <div className="p-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
             <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mb-2.5">
               Sign out from your admin account. You will need to sign in again.
             </p>
