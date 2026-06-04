@@ -446,7 +446,9 @@ export default function Contact() {
   );
   const countryLabel =
     countries.find((c) => c.code === form.country)?.name || "Not selected";
-  const stateLabel = states.find((s) => s.code === form.state)?.name || "";
+  // Use the form's state value directly — we now save the full name (e.g. "Abia")
+  // instead of the short code (e.g. "NG-AB") in the dropdown, so no lookup is needed.
+  const stateLabel = form.state;
   const employmentLabel: Record<string, string> = {
     employed: "Employed",
     unemployed: "Looking for work",
@@ -883,7 +885,11 @@ export default function Contact() {
                           {loadingStates ? "Loading…" : "State"}
                         </option>
                         {states.map((s) => (
-                          <option key={s.code} value={s.code}>
+                          // Save the full state NAME (e.g. "Abia") to the form,
+                          // not the short code (e.g. "NG-AB"). The form's
+                          // `state` value is sent straight to the API, so this
+                          // keeps the dashboard chart readable.
+                          <option key={s.code} value={s.name}>
                             {s.name}
                           </option>
                         ))}

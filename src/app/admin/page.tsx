@@ -102,24 +102,153 @@ export default function AdminDashboardPage() {
   const unread = notifications.filter(n => n.status === "unread").length;
   const trend = prevTotal > 0 ? ((total - prevTotal) / prevTotal * 100).toFixed(1) : "0";
 
-  // ── Region Data (enrolled only, custom order) ──
+  // ── Region Data (enrolled only) ──
+  // Group by (country + state) so we can show:
+  //   - country + real flag image on the left side (outside the bar)
+  //   - "State (N persons)" centered inside the bar
+  // For registrations that only have a country (no state), we still surface the country.
+  //
+  // Flag rendering: real PNG flags from flagcdn.com (auto-resolves any ISO-3166-1
+  // alpha-2 country code). No hard-coded emoji. We just need the ISO code.
+  //
+  // Comprehensive country name -> ISO code map (the form's country search uses the
+  // restcountries.com API which spells names a certain way; the SQL seed uses English
+  // common names; both are covered below).
+  const COUNTRY_NAME_TO_CODE: Record<string, string> = {
+    Afghanistan: "af", "Åland Islands": "ax", Albania: "al", Algeria: "dz",
+    "American Samoa": "as", Andorra: "ad", Angola: "ao", Anguilla: "ai",
+    Antarctica: "aq", "Antigua and Barbuda": "ag", Argentina: "ar", Armenia: "am",
+    Aruba: "aw", Australia: "au", Austria: "at", Azerbaijan: "az",
+    Bahamas: "bs", Bahrain: "bh", Bangladesh: "bd", Barbados: "bb",
+    Belarus: "by", Belgium: "be", Belize: "bz", Benin: "bj", Bermuda: "bm",
+    Bhutan: "bt", Bolivia: "bo", "Bonaire, Sint Eustatius and Saba": "bq",
+    "Bosnia and Herzegovina": "ba", Botswana: "bw", "Bouvet Island": "bv",
+    Brazil: "br", "British Indian Ocean Territory": "io",
+    "Brunei Darussalam": "bn", Bulgaria: "bg", "Burkina Faso": "bf",
+    Burundi: "bi", Cambodia: "kh", Cameroon: "cm", Canada: "ca",
+    "Cape Verde": "cv", "Cayman Islands": "ky", "Central African Republic": "cf",
+    Chad: "td", Chile: "cl", China: "cn", "Christmas Island": "cx",
+    "Cocos (Keeling) Islands": "cc", Colombia: "co", Comoros: "km",
+    Congo: "cg", "Congo, Democratic Republic of the": "cd",
+    "Cook Islands": "ck", "Costa Rica": "cr", "Côte d'Ivoire": "ci",
+    "Cote d'Ivoire": "ci", Croatia: "hr", Cuba: "cu", Curaçao: "cw",
+    Cyprus: "cy", "Czech Republic": "cz", "Czechia": "cz", Denmark: "dk",
+    Djibouti: "dj", Dominica: "dm", "Dominican Republic": "do", Ecuador: "ec",
+    Egypt: "eg", "El Salvador": "sv", "Equatorial Guinea": "gq", Eritrea: "er",
+    Estonia: "ee", Eswatini: "sz", Ethiopia: "et",
+    "Falkland Islands": "fk", "Faroe Islands": "fo", Fiji: "fj", Finland: "fi",
+    France: "fr", "French Guiana": "gf", "French Polynesia": "pf",
+    "French Southern Territories": "tf", Gabon: "ga", Gambia: "gm", Georgia: "ge",
+    Germany: "de", Ghana: "gh", Gibraltar: "gi", Greece: "gr", Greenland: "gl",
+    Grenada: "gd", Guadeloupe: "gp", Guam: "gu", Guatemala: "gt",
+    Guernsey: "gg", Guinea: "gn", "Guinea-Bissau": "gw", Guyana: "gy",
+    Haiti: "ht", "Heard Island and McDonald Islands": "hm",
+    "Holy See (Vatican City State)": "va", Honduras: "hn",
+    "Hong Kong": "hk", Hungary: "hu", Iceland: "is", India: "in", Indonesia: "id",
+    Iran: "ir", Iraq: "iq", Ireland: "ie", "Isle of Man": "im", Israel: "il",
+    Italy: "it", Jamaica: "jm", Japan: "jp", Jersey: "je", Jordan: "jo",
+    Kazakhstan: "kz", Kenya: "ke", Kiribati: "ki",
+    "Korea, Democratic People's Republic of": "kp",
+    "Korea, Republic of": "kr", "South Korea": "kr", "North Korea": "kp",
+    Kuwait: "kw", Kyrgyzstan: "kg",
+    "Lao People's Democratic Republic": "la", Laos: "la", Latvia: "lv",
+    Lebanon: "lb", Lesotho: "ls", Liberia: "lr", Libya: "ly",
+    Liechtenstein: "li", Lithuania: "lt", Luxembourg: "lu", Macao: "mo",
+    "North Macedonia": "mk", Madagascar: "mg", Malawi: "mw", Malaysia: "my",
+    Maldives: "mv", Mali: "ml", Malta: "mt", "Marshall Islands": "mh",
+    Martinique: "mq", Mauritania: "mr", Mauritius: "mu", Mayotte: "yt",
+    Mexico: "mx", Micronesia: "fm", Moldova: "md", Monaco: "mc", Mongolia: "mn",
+    Montenegro: "me", Montserrat: "ms", Morocco: "ma", Mozambique: "mz",
+    Myanmar: "mm", Namibia: "na", Nauru: "nr", Nepal: "np",
+    Netherlands: "nl", "New Caledonia": "nc", "New Zealand": "nz",
+    Nicaragua: "ni", Niger: "ne", Nigeria: "ng", Niue: "nu",
+    "Norfolk Island": "nf", "Northern Mariana Islands": "mp", Norway: "no",
+    Oman: "om", Pakistan: "pk", Palau: "pw", "Palestine, State of": "ps",
+    Panama: "pa", "Papua New Guinea": "pg", Paraguay: "py", Peru: "pe",
+    Philippines: "ph", Pitcairn: "pn", Poland: "pl", Portugal: "pt",
+    "Puerto Rico": "pr", Qatar: "qa", Réunion: "re", Romania: "ro",
+    "Russian Federation": "ru", Russia: "ru", Rwanda: "rw",
+    "Saint Barthélemy": "bl", "Saint Helena, Ascension and Tristan da Cunha": "sh",
+    "Saint Kitts and Nevis": "kn", "Saint Lucia": "lc",
+    "Saint Martin (French part)": "mf", "Saint Pierre and Miquelon": "pm",
+    "Saint Vincent and the Grenadines": "vc", Samoa: "ws", "San Marino": "sm",
+    "Sao Tome and Principe": "st", "Saudi Arabia": "sa", Senegal: "sn",
+    Serbia: "rs", Seychelles: "sc", "Sierra Leone": "sl", Singapore: "sg",
+    "Sint Maarten (Dutch part)": "sx", Slovakia: "sk", Slovenia: "si",
+    "Solomon Islands": "sb", Somalia: "so", "South Africa": "za",
+    "South Georgia and the South Sandwich Islands": "gs",
+    "South Sudan": "ss", Spain: "es", "Sri Lanka": "lk", Sudan: "sd",
+    Suriname: "sr", "Svalbard and Jan Mayen": "sj",
+    Sweden: "se", Switzerland: "ch", "Syrian Arab Republic": "sy", Syria: "sy",
+    Taiwan: "tw", Tajikistan: "tj", Tanzania: "tz", Thailand: "th",
+    "Timor-Leste": "tl", Togo: "tg", Tokelau: "tk", Tonga: "to",
+    "Trinidad and Tobago": "tt", Tunisia: "tn", Turkey: "tr", Turkmenistan: "tm",
+    "Turks and Caicos Islands": "tc", Tuvalu: "tv", Uganda: "ug", Ukraine: "ua",
+    "United Arab Emirates": "ae", UAE: "ae",
+    "United Kingdom": "gb", UK: "gb", "Great Britain": "gb", England: "gb",
+    "United States": "us", USA: "us", "United States of America": "us",
+    "United States Minor Outlying Islands": "um", Uruguay: "uy",
+    Uzbekistan: "uz", Vanuatu: "vu", "Venezuela, Bolivarian Republic of": "ve",
+    Venezuela: "ve", Vietnam: "vn", "Viet Nam": "vn",
+    "Virgin Islands, British": "vg", "British Virgin Islands": "vg",
+    "Virgin Islands, U.S.": "vi", "U.S. Virgin Islands": "vi",
+    "Wallis and Futuna": "wf", "Western Sahara": "eh", Yemen: "ye",
+    Zambia: "zm", Zimbabwe: "zw", Kosovo: "xk",
+  };
+  // Build the flag URL for a country name. Returns null if we can't resolve
+  // the country to an ISO-2 code (e.g. "Unknown").
+  const flagUrl = (country: string): string | null => {
+    const code = COUNTRY_NAME_TO_CODE[country];
+    if (!code) return null;
+    // flagcdn.com serves a real PNG flag for any ISO-3166-1 alpha-2 code.
+    // 20px wide is enough for a small YAxis tick.
+    return `https://flagcdn.com/w20/${code}.png`;
+  };
+  type RegionRow = { country: string; state: string; count: number; flagUrl: string | null };
   const enrolledStudents = students.filter(s => s.status === "enrolled");
-  const rc: Record<string, number> = {};
-  enrolledStudents.forEach(s => { const r = s.state || "Unknown"; rc[r] = (rc[r] || 0) + 1; });
-  const customOrder = ["Owerri", "Abia", "Enugu", "Lagos", "Rivers", "Anambra"];
-  const rd = Object.entries(rc)
-    .sort((a, b) => {
-      const ia = customOrder.indexOf(a[0]);
-      const ib = customOrder.indexOf(b[0]);
-      if (ia !== -1 && ib !== -1) return ia - ib;
-      if (ia !== -1) return -1;
-      if (ib !== -1) return 1;
-      return b[1] - a[1];
-    })
-    .slice(0, 5)
-    .map(([region, count]) => ({ region, count }));
+  const rcMap: Record<string, RegionRow> = {};
+  enrolledStudents.forEach(s => {
+    const country = (s.country && s.country.trim()) || "Unknown";
+    const state = (s.state && s.state.trim()) || country;
+    // Use a composite key so the same state name in two different countries doesn't collide
+    const key = `${country}::${state}`;
+    if (!rcMap[key]) {
+      rcMap[key] = {
+        country,
+        state,
+        count: 0,
+        flagUrl: flagUrl(country),
+      };
+    }
+    rcMap[key].count += 1;
+  });
+  const rd = Object.values(rcMap)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
   const maxC = Math.max(...rd.map(d => d.count), 1);
-  const regionData = rd.map(d => ({ ...d, fill: C.teal, fillOpacity: 0.25 + (d.count / maxC) * 0.55 }));
+  const regionData = rd.map(d => ({
+    ...d,
+    // YAxis tick: country (real flag is rendered by the custom tick below)
+    yLabel: d.country,
+    // Bar center label: "State (N person(s))"
+    barLabel: `${d.state} (${d.count} ${d.count === 1 ? "person" : "persons"})`,
+    fill: C.teal,
+    fillOpacity: 0.25 + (d.count / maxC) * 0.55,
+  }));
+  // Distinct countries represented in the registered data (for context label)
+  const countriesSet = Array.from(
+    new Set(
+      enrolledStudents
+        .map(s => (s.country && s.country.trim()) || "")
+        .filter(Boolean)
+    )
+  );
+  const regionSubLabel = countriesSet.length > 0
+    ? `Top 5 states · ${countriesSet.length} ${countriesSet.length === 1 ? "country" : "countries"}`
+    : "Top 5 states";
+
+  // ── Recent Registrations ──
+  const recentStudents = students.slice(0, 5);
 
   // ── Status Data ──
   const sd = [
@@ -242,26 +371,138 @@ export default function AdminDashboardPage() {
       {/* ── Secondary Chart Row ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
         {/* Region */}
-        <Card title="Enrollment by Region" sub="Top 5 states" icon={<BarChart3 size={12} />} C={C}>
-          {regionData.length === 0 ? (
-            <div style={{ height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: 11, color: C.muted }}>No data</span>
-            </div>
-          ) : (
-            <div style={{ height: 170 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={regionData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }} layout="vertical">
-                  <CartesianGrid stroke={C.border} strokeDasharray="3 3" horizontal={false} />
-                  <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
-                  <YAxis type="category" dataKey="region" tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} width={75} />
-                  <Tooltip content={<CTip C={C} />} />
-                  <Bar dataKey="count" radius={[0, 2, 2, 0]} name="Students" barSize={14} label={{ position: 'center', fill: '#f8fafc', fontSize: 9, fontWeight: 700, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
-                    {regionData.map((e, i) => <Cell key={i} fill={e.fill} fillOpacity={e.fillOpacity} />)}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          )}
+        <Card title="Enrollment by Region" sub={regionSubLabel} icon={<BarChart3 size={12} />} C={C}>
+          <div
+            style={{
+              position: "relative",
+              borderRadius: 4,
+              overflow: "hidden",
+              minHeight: 170,
+            }}
+          >
+            {/* Globe background — blended softly behind the chart */}
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: "url('/globe.png')",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "contain",
+                opacity: theme === "dark" ? 0.10 : 0.18,
+                filter: theme === "dark"
+                  ? "invert(1) hue-rotate(180deg) brightness(1.4)"
+                  : "hue-rotate(-10deg) saturate(0.6) brightness(1.05)",
+                mixBlendMode: theme === "dark" ? "screen" : "multiply",
+                pointerEvents: "none",
+              }}
+            />
+            {regionData.length === 0 ? (
+              <div style={{ position: "relative", height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 11, color: C.muted }}>No data</span>
+              </div>
+            ) : (
+              <div style={{ position: "relative", height: 170 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={regionData}
+                    margin={{ top: 4, right: 16, left: 4, bottom: 0 }}
+                    layout="vertical"
+                    barCategoryGap={6}
+                  >
+                    <CartesianGrid stroke={C.border} strokeDasharray="3 3" horizontal={false} />
+                    <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+                    {/* YAxis (left side, outside the bar) shows flag image + country */}
+                    <YAxis
+                      type="category"
+                      dataKey="yLabel"
+                      axisLine={false}
+                      tickLine={false}
+                      width={108}
+                      tick={(props: any) => {
+                        const { x, y, payload } = props;
+                        const item = regionData.find(d => d.yLabel === payload.value);
+                        return (
+                          <g transform={`translate(${x},${y})`}>
+                            {item?.flagUrl ? (
+                              <image
+                                href={item.flagUrl}
+                                x={-100}
+                                y={-7}
+                                width={18}
+                                height={12}
+                                preserveAspectRatio="xMidYMid meet"
+                                style={{ borderRadius: 1, outline: "1px solid rgba(255,255,255,0.15)" }}
+                              />
+                            ) : (
+                              <rect x={-100} y={-7} width={18} height={12} fill={C.dim} opacity={0.3} rx={1} />
+                            )}
+                            <text
+                              x={-78}
+                              y={0}
+                              dy={4}
+                              textAnchor="start"
+                              fill={C.text}
+                              fontSize={9}
+                              fontWeight={600}
+                              fontFamily="'Inter','SF Pro',system-ui,sans-serif"
+                            >
+                              {payload.value}
+                            </text>
+                          </g>
+                        );
+                      }}
+                    />
+                    <Tooltip
+                      cursor={{ fill: "transparent" }}
+                      content={<CTip C={C} />}
+                    />
+                    {/* Bar center label: "State (N person(s))" */}
+                    <Bar
+                      dataKey="count"
+                      radius={[0, 3, 3, 0]}
+                      name="Students"
+                      barSize={16}
+                      isAnimationActive={false}
+                      label={{
+                        position: "center",
+                        fill: "#f8fafc",
+                        fontSize: 9,
+                        fontWeight: 700,
+                        fontFamily: "'JetBrains Mono','SF Mono',monospace",
+                        formatter: (v: any) => {
+                          const item = regionData.find(d => d.count === v);
+                          return item ? item.barLabel : String(v);
+                        },
+                        content: (props: any) => {
+                          const { index } = props;
+                          const item = regionData[index];
+                          if (!item) return null;
+                          return (
+                            <text
+                              x={props.x + props.width / 2}
+                              y={props.y + props.height / 2}
+                              fill="#f8fafc"
+                              fontSize={9}
+                              fontWeight={700}
+                              fontFamily="'JetBrains Mono','SF Mono',monospace"
+                              textAnchor="middle"
+                              dominantBaseline="central"
+                            >
+                              {item.barLabel}
+                            </text>
+                          );
+                        },
+                      }}
+                    >
+                      {regionData.map((e, i) => <Cell key={i} fill={e.fill} fillOpacity={e.fillOpacity} />)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
         </Card>
 
         {/* Payment Analytics */}
@@ -351,6 +592,33 @@ export default function AdminDashboardPage() {
           )}
         </Card>
       </div>
+
+      {/* ── Recently Registered ── */}
+      {recentStudents.length > 0 && (
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: 10, marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+            <span style={{ color: C.muted, display: "flex" }}><Users size={12} /></span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: C.text }}>Recently Registered</span>
+            <Link href="/admin/students" style={{ marginLeft: "auto", fontSize: 9, color: C.teal, fontFamily: "'JetBrains Mono','SF Mono',monospace", textDecoration: "none", cursor: "pointer" }}>
+              See all →
+            </Link>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {recentStudents.map((s) => (
+              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 8px", borderRadius: 3, background: C.bg, border: `1px solid ${C.border}` }}>
+                <div style={{ width: 24, height: 24, borderRadius: "50%", background: `linear-gradient(135deg, ${C.teal}33, ${C.accent}33)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 700, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>
+                  {initials(s.full_name)}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 10, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.full_name}</p>
+                  <p style={{ fontSize: 9, color: C.muted, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.course_applying_for}</p>
+                </div>
+                <span style={{ fontSize: 8, color: C.dim, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>{nDate(s.created_at)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Footer ── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0 0", marginTop: 12, borderTop: `1px solid ${C.border}` }}>

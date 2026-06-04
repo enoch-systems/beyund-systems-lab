@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import {
   Wallet,
@@ -22,8 +22,16 @@ import {
   GraduationCap,
   CalendarDays,
   MoreHorizontal,
+  ChevronDown,
+  MoreVertical,
 } from "lucide-react";
 import { apple } from "@/lib/admin-design-system";
+
+/* ═══════════════════════════════════════
+   Constants
+   ═══════════════════════════════════════ */
+const DEFAULT_TOTAL_FEE = 150000;
+const DEFAULT_INSTALLMENT = Math.round(DEFAULT_TOTAL_FEE / 2); // 75,000
 
 /* ═══════════════════════════════════════
    Types
@@ -346,7 +354,7 @@ export default function PaymentsPage() {
   };
 
   const handleMarkAsPaid = async (student: StudentWithProfile) => {
-    const totalFee = student.profile?.total_fee || 150000;
+    const totalFee = student.profile?.total_fee || DEFAULT_TOTAL_FEE;
     const balance = student.profile?.balance || totalFee;
     if (balance <= 0) return;
 
@@ -374,6 +382,80 @@ export default function PaymentsPage() {
         amount_paid: totalFee,
         payment_status: "paid",
       });
+    }
+
+    loadData();
+  };
+
+  const handleMarkAsPending = async (student: StudentWithProfile) => {
+    const totalFee = student.profile?.total_fee || DEFAULT_TOTAL_FEE;
+
+    if (student.profile) {
+      await supabase
+        .from("student_payment_profiles")
+        .update({
+          amount_paid: 0,
+          payment_status: "pending",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("student_id", student.student.id);
+    } else {
+      await supabase.from("student_payment_profiles").insert({
+        student_id: student.student.id,
+        total_fee: totalFee,
+        amount_paid: 0,
+        payment_status: "pending",
+      });
+    }
+
+    loadData();
+  };
+
+  const handleMarkAsInstallment = async (student: StudentWithProfile) => {
+    const totalFee = student.profile?.total_fee || DEFAULT_TOTAL_FEE;
+    // Installment = exactly 50% of the total fee.
+    // For the default 150,000 this equals 75,000.
+    const halfAmount = Math.round(totalFee / 2);
+    const currentPaid = student.profile?.amount_paid || 0;
+
+    // Only record the payment if they haven't already paid the installment
+    if (currentPaid < halfAmount) {
+      const paymentAmount = halfAmount - currentPaid;
+      await supabase.from("payments").insert({
+        student_id: student.student.id,
+        amount: paymentAmount,
+        payment_method: "transfer",
+        reference: `PAY-${Date.now().toString().slice(-6)}`,
+        notes: `Installment (50% of ₦${totalFee.toLocaleString()})`,
+      });
+
+      if (student.profile) {
+        await supabase
+          .from("student_payment_profiles")
+          .update({
+            amount_paid: halfAmount,
+            payment_status: "installment",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("student_id", student.student.id);
+      } else {
+        await supabase.from("student_payment_profiles").insert({
+          student_id: student.student.id,
+          total_fee: totalFee,
+          amount_paid: halfAmount,
+          payment_status: "installment",
+        });
+      }
+    } else {
+      if (student.profile) {
+        await supabase
+          .from("student_payment_profiles")
+          .update({
+            payment_status: "installment",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("student_id", student.student.id);
+      }
     }
 
     loadData();
@@ -528,6 +610,8 @@ export default function PaymentsPage() {
                       setShowPaymentModal(true);
                     }}
                     onMarkPaid={() => handleMarkAsPaid(swp)}
+                    onMarkPending={() => handleMarkAsPending(swp)}
+                    onMarkInstallment={() => handleMarkAsInstallment(swp)}
                     onViewHistory={() => {
                       setHistoryStudent(swp);
                       setShowHistoryModal(true);
@@ -554,6 +638,8 @@ export default function PaymentsPage() {
                 setShowPaymentModal(true);
               }}
               onMarkPaid={() => handleMarkAsPaid(swp)}
+              onMarkPending={() => handleMarkAsPending(swp)}
+              onMarkInstallment={() => handleMarkAsInstallment(swp)}
               onViewHistory={() => {
                 setHistoryStudent(swp);
                 setShowHistoryModal(true);
@@ -853,11 +939,15 @@ function TableRow({
   data,
   onRecordPayment,
   onMarkPaid,
+  onMarkPending,
+  onMarkInstallment,
   onViewHistory,
 }: {
   data: StudentWithProfile;
   onRecordPayment: () => void;
   onMarkPaid: () => void;
+  onMarkPending: () => void;
+  onMarkInstallment: () => void;
   onViewHistory: () => void;
 }) {
   const { student, profile, payments } = data;
@@ -941,7 +1031,7 @@ function TableRow({
           </span>
         </div>
       </td>
-      <td className="py-2.5 pr-5 text-right">
+    <td className="py-2.5 pr-5 text-right">
         <div className="flex items-center justify-end gap-1">
           <button
             onClick={onRecordPayment}
@@ -950,15 +1040,13 @@ function TableRow({
           >
             <Plus className="w-3.5 h-3.5" />
           </button>
-          {balance > 0 && (
-            <button
-              onClick={onMarkPaid}
-              className="w-7 h-7 rounded-[6px] flex items-center justify-center text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer"
-              title="Mark Fully Paid"
-            >
-              <CheckCircle className="w-3.5 h-3.5" />
-            </button>
-          )}
+          <StatusMenu
+            currentStatus={status}
+            totalFee={totalFee}
+            onMarkPaid={onMarkPaid}
+            onMarkPending={onMarkPending}
+            onMarkInstallment={onMarkInstallment}
+          />
           {payments.length > 0 && (
             <button
               onClick={onViewHistory}
@@ -978,11 +1066,15 @@ function MobilePaymentCard({
   data,
   onRecordPayment,
   onMarkPaid,
+  onMarkPending,
+  onMarkInstallment,
   onViewHistory,
 }: {
   data: StudentWithProfile;
   onRecordPayment: () => void;
   onMarkPaid: () => void;
+  onMarkPending: () => void;
+  onMarkInstallment: () => void;
   onViewHistory: () => void;
 }) {
   const { student, profile } = data;
@@ -1058,15 +1150,14 @@ function MobilePaymentCard({
           <Plus className="w-3.5 h-3.5" />
           Add Payment
         </button>
-        {balance > 0 && (
-          <button
-            onClick={onMarkPaid}
-            className="inline-flex items-center justify-center gap-1.5 h-[36px] px-3 rounded-[8px] border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-medium hover:bg-emerald-500/5 transition-all active:scale-[0.98] cursor-pointer"
-          >
-            <CheckCircle className="w-3.5 h-3.5" />
-            Mark Paid
-          </button>
-        )}
+        <StatusMenu
+          variant="full"
+          currentStatus={status}
+          totalFee={totalFee}
+          onMarkPaid={onMarkPaid}
+          onMarkPending={onMarkPending}
+          onMarkInstallment={onMarkInstallment}
+        />
       </div>
     </div>
   );
@@ -1125,5 +1216,189 @@ function Modal({
         </div>
       </div>
     </>
+  );
+}
+
+/* ═══════════════════════════════════════
+   Status Menu Dropdown
+   ═══════════════════════════════════════
+   Compact dropdown for changing payment status:
+   - Mark as Paid
+   - Mark as Pending
+   - Installment (50% of total fee)
+*/
+function StatusMenu({
+  currentStatus,
+  totalFee,
+  variant = "compact",
+  onMarkPaid,
+  onMarkPending,
+  onMarkInstallment,
+}: {
+  currentStatus: PaymentStatus;
+  totalFee: number;
+  variant?: "compact" | "full";
+  onMarkPaid: () => void;
+  onMarkPending: () => void;
+  onMarkInstallment: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const installmentAmount = Math.round(totalFee / 2);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [open]);
+
+  const handleAction = (action: () => void) => {
+    action();
+    setOpen(false);
+  };
+
+  if (variant === "full") {
+    return (
+      <div ref={menuRef} className="relative w-full">
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="w-full inline-flex items-center justify-center gap-1.5 h-[36px] rounded-[8px] border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 text-[12px] font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all active:scale-[0.98] cursor-pointer"
+        >
+          <MoreVertical className="w-3.5 h-3.5" />
+          Change Status
+          <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        </button>
+        {open && (
+          <div className="absolute right-0 bottom-full mb-1 w-56 rounded-[10px] bg-white dark:bg-[#1c1c1e] border border-[#e2e8f0] dark:border-[#1e293b] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.4)] z-30 overflow-hidden">
+            <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
+              Set Status
+            </div>
+            <StatusMenuItem
+              icon={<CheckCircle className="w-3.5 h-3.5" />}
+              label="Mark as Paid"
+              hint="Full payment"
+              color="emerald"
+              active={currentStatus === "paid"}
+              onClick={() => handleAction(onMarkPaid)}
+            />
+            <StatusMenuItem
+              icon={<CreditCard className="w-3.5 h-3.5" />}
+              label="Installment"
+              hint={`₦${installmentAmount.toLocaleString()} (50%)`}
+              color="blue"
+              active={currentStatus === "installment"}
+              onClick={() => handleAction(onMarkInstallment)}
+            />
+            <StatusMenuItem
+              icon={<Clock className="w-3.5 h-3.5" />}
+              label="Mark as Pending"
+              hint="Reset to pending"
+              color="amber"
+              active={currentStatus === "pending"}
+              onClick={() => handleAction(onMarkPending)}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div ref={menuRef} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-7 h-7 rounded-[6px] flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+        title="Change Status"
+        aria-haspopup="menu"
+        aria-expanded={open}
+      >
+        <MoreVertical className="w-3.5 h-3.5" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 w-60 rounded-[10px] bg-white dark:bg-[#1c1c1e] border border-[#e2e8f0] dark:border-[#1e293b] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.4)] z-30 overflow-hidden">
+          <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
+            Set Status
+          </div>
+          <StatusMenuItem
+            icon={<CheckCircle className="w-3.5 h-3.5" />}
+            label="Mark as Paid"
+            hint="Full payment"
+            color="emerald"
+            active={currentStatus === "paid"}
+            onClick={() => handleAction(onMarkPaid)}
+          />
+          <StatusMenuItem
+            icon={<CreditCard className="w-3.5 h-3.5" />}
+            label="Installment"
+            hint={`₦${installmentAmount.toLocaleString()} (50%)`}
+            color="blue"
+            active={currentStatus === "installment"}
+            onClick={() => handleAction(onMarkInstallment)}
+          />
+          <StatusMenuItem
+            icon={<Clock className="w-3.5 h-3.5" />}
+            label="Mark as Pending"
+            hint="Reset to pending"
+            color="amber"
+            active={currentStatus === "pending"}
+            onClick={() => handleAction(onMarkPending)}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatusMenuItem({
+  icon,
+  label,
+  hint,
+  color,
+  active,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  hint: string;
+  color: "emerald" | "blue" | "amber";
+  active: boolean;
+  onClick: () => void;
+}) {
+  const colorClasses: Record<typeof color, { text: string; bg: string }> = {
+    emerald: { text: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/8" },
+    blue: { text: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/8" },
+    amber: { text: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/8" },
+  };
+  const c = colorClasses[color];
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-2.5 px-2 py-1.5 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition-colors cursor-pointer text-left ${
+        active ? c.bg : ""
+      }`}
+    >
+      <span className={c.text}>{icon}</span>
+      <div className="flex-1 min-w-0">
+        <p className={`text-[12px] font-medium ${active ? c.text : "text-neutral-900 dark:text-white"}`}>
+          {label}
+        </p>
+        <p className="text-[10px] text-neutral-400 dark:text-neutral-500">{hint}</p>
+      </div>
+      {active && (
+        <span className={`w-1.5 h-1.5 rounded-full ${c.text.replace("text-", "bg-")}`} />
+      )}
+    </button>
   );
 }
