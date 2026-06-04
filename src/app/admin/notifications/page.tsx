@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
-import { UserPlus, CreditCard, Loader2 } from "lucide-react";
+import { UserPlus, CreditCard, Loader2, CheckCheck, Check, MailOpen } from "lucide-react";
 
 type Notification = {
   id: string;
@@ -46,6 +46,7 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "student" | "payment">("all");
+  const [markingAll, setMarkingAll] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -77,14 +78,57 @@ export default function NotificationsPage() {
           }
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "notifications" },
+        (payload) => {
+          const updated = payload.new as Notification;
+          setNotifications((prev) =>
+            prev.map((n) => (n.id === updated.id ? updated : n))
+          );
+        }
+      )
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
   }, [supabase]);
 
+  // ── Mark single notification as read ──
+  const markAsRead = async (id: string) => {
+    // Optimistic update
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, status: "read" as const } : n))
+    );
+    await supabase
+      .from("notifications")
+      .update({ status: "read" })
+      .eq("id", id);
+  };
+
+  // ── Mark all visible (unread) as read ──
+  const markAllAsRead = async () => {
+    const unreadIds = filtered
+      .filter((n) => n.status === "unread")
+      .map((n) => n.id);
+    if (unreadIds.length === 0) return;
+
+    setMarkingAll(true);
+    // Optimistic update
+    setNotifications((prev) =>
+      prev.map((n) => (unreadIds.includes(n.id) ? { ...n, status: "read" as const } : n))
+    );
+    await supabase
+      .from("notifications")
+      .update({ status: "read" })
+      .in("id", unreadIds);
+    setMarkingAll(false);
+  };
+
   const filtered = filter === "all"
     ? notifications
     : notifications.filter((n) => n.category === filter);
+
+  const unreadCount = notifications.filter((n) => n.status === "unread").length;
 
   if (loading) {
     return (
@@ -96,15 +140,38 @@ export default function NotificationsPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-[20px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
-          Notifications
-        </h1>
-        <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
-          Stay updated with student registrations and payments.
-        </p>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[20px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
+            Notifications
+          </h1>
+          <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+            Stay updated with student registrations and payments.
+            {unreadCount > 0 && (
+              <span className="ml-1.5 text-blue-500 font-medium">
+                · {unreadCount} unread
+              </span>
+            )}
+          </p>
+        </div>
+        {unreadCount > 0 && (
+          <button
+            onClick={markAllAsRead}
+            disabled={markingAll}
+            className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[11px] font-semibold hover:bg-blue-500/20 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 shrink-0"
+          >
+            {markingAll ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            ) : (
+              <CheckCheck className="w-3 h-3" />
+            )}
+            Mark All as Read
+          </button>
+        )}
       </div>
 
+      {/* Filters */}
       <div className="flex items-center gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/50 rounded-[8px] w-fit">
         {(["all", "student", "payment"] as const).map((f) => (
           <button
@@ -121,8 +188,9 @@ export default function NotificationsPage() {
         ))}
       </div>
 
+      {/* List */}
       {filtered.length === 0 ? (
-      <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
           <div className="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-3">
             <CreditCard className="w-6 h-6 text-neutral-400" />
           </div>
@@ -137,7 +205,7 @@ export default function NotificationsPage() {
               <div
                 key={item.id}
                 className={`rounded-[12px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4 transition-all hover:shadow-sm ${
-                  item.status === "unread" ? "border-l-[3px] border-l-blue-500" : ""
+                  item.status === "unread" ? "border-l-[3px] border-l-blue-500" : "border-l-[3px] border-l-transparent"
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -160,9 +228,27 @@ export default function NotificationsPage() {
                       {item.message}
                     </p>
                   </div>
-                  <span className="text-[10px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap shrink-0">
-                    {timeAgo(item.created_at)}
-                  </span>
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    <span className="text-[10px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap">
+                      {timeAgo(item.created_at)}
+                    </span>
+                    {item.status === "unread" && (
+                      <button
+                        onClick={() => markAsRead(item.id)}
+                        className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-500 hover:text-blue-600 transition-colors cursor-pointer bg-transparent border-0 p-0"
+                        title="Mark as read"
+                      >
+                        <Check className="w-3 h-3" />
+                        Read
+                      </button>
+                    )}
+                    {item.status === "read" && (
+                      <span className="inline-flex items-center gap-1 text-[10px] text-neutral-400">
+                        <MailOpen className="w-3 h-3" />
+                        Read
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             );
