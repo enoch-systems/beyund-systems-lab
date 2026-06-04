@@ -137,19 +137,19 @@ export default function StudentsPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
           <input
             type="text"
             placeholder="Search students..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-[44px] pl-10 pr-4 rounded-[10px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+            className="w-full h-[34px] pl-8 pr-3 rounded-[8px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[12px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="h-[44px] px-3.5 rounded-[10px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all cursor-pointer shrink-0"
+          className="h-[34px] px-3 rounded-[8px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[12px] text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all cursor-pointer shrink-0"
           style={{ colorScheme: "dark" }}
         >
           <option value="all">All Status</option>
@@ -159,7 +159,7 @@ export default function StudentsPage() {
             </option>
           ))}
         </select>
-        <p className="text-[13px] text-neutral-400 dark:text-neutral-500 shrink-0 self-center ml-auto sm:ml-0 hidden sm:block">
+        <p className="text-[11px] text-neutral-400 dark:text-neutral-500 shrink-0 self-center ml-auto sm:ml-0 hidden sm:block">
           {filteredStudents.length} student{filteredStudents.length !== 1 ? "s" : ""}
         </p>
       </div>
