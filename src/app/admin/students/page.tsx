@@ -143,13 +143,13 @@ export default function StudentsPage() {
             placeholder="Search students..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="h-[30px] px-3 rounded-[6px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[11px] text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all cursor-pointer shrink-0"
+          className="h-[30px] px-3 rounded-[6px] bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] text-[11px] text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all cursor-pointer shrink-0"
           style={{ colorScheme: "dark" }}
         >
           <option value="all">All Status</option>
@@ -165,7 +165,7 @@ export default function StudentsPage() {
       </div>
 
       {/* ──────── DESKTOP TABLE (md+) ──────── */}
-      <div className="hidden md:block rounded-[16px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] overflow-hidden">
+      <div className="hidden md:block rounded-[16px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px]">
             <thead>
@@ -257,7 +257,7 @@ export default function StudentsPage() {
       {/* ──────── MOBILE CARDS (< md) ──────── */}
       <div className="md:hidden space-y-3">
         {filteredStudents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e]">
+          <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
             <div className="w-14 h-14 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-3">
               <Search className="w-6 h-6 text-neutral-400" />
             </div>
@@ -268,7 +268,7 @@ export default function StudentsPage() {
           filteredStudents.map((student) => (
             <div
               key={student.id}
-              className="rounded-[14px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-4 space-y-3"
+              className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4 space-y-3"
             >
               {/* Top: avatar + name + status */}
               <div className="flex items-center gap-3">
