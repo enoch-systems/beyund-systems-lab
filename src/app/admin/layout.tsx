@@ -1,41 +1,37 @@
 "use client";
 
-import { useEffect, useState, Fragment, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   LayoutDashboard,
   Users,
-  ClipboardList,
-  Clock,
   Bell,
   BookOpen,
   BarChart3,
   Award,
   CreditCard,
-  CheckSquare,
   Settings,
   ChevronLeft,
   ChevronRight,
   Menu,
   X,
-  LogOut,
   Sparkles,
 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import BeyundLogo from "@/components/BeyundLogo";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
 import { ProfileProvider, useProfile } from "@/lib/profile-context";
-import { apple } from "@/lib/admin-design-system";
 import GlobalSearch from "@/components/admin/GlobalSearch";
 
-/* ═══════════════════════════════════════
-   Logo — Same as landing page client side
-   ═══════════════════════════════════════ */
+/* ── Enterprise Color Palette ── */
+const C = {
+  teal: "#14b8a6", accent: "#6b7280", green: "#22c55e", amber: "#eab308", red: "#ef4444",
+  bg: "#080c1a", card: "#080c1a", border: "#1e293b",
+  text: "#f8fafc", muted: "#94a3b8", dim: "#475569",
+};
 
-/* ═══════════════════════════════════════
-   Types
-   ═══════════════════════════════════════ */
+/* ── Types ── */
 interface NavItem {
   label: string;
   href: string;
@@ -47,38 +43,35 @@ const navGroups: { label: string; items: NavItem[] }[] = [
   {
     label: "Core",
     items: [
-      { label: "Dashboard", href: "/admin", icon: <LayoutDashboard className="w-4 h-4" /> },
-      { label: "Students", href: "/admin/students", icon: <Users className="w-4 h-4" /> },
+      { label: "Dashboard", href: "/admin", icon: <LayoutDashboard size={13} /> },
+      { label: "Students", href: "/admin/students", icon: <Users size={13} /> },
     ],
   },
   {
     label: "Academic",
     items: [
-      { label: "Courses", href: "/admin/courses", icon: <BookOpen className="w-4 h-4" /> },
+      { label: "Courses", href: "/admin/courses", icon: <BookOpen size={13} /> },
     ],
   },
   {
     label: "Operations",
     items: [
-      { label: "Payments", href: "/admin/payments", icon: <CreditCard className="w-4 h-4" /> },
-      { label: "Notifications", href: "/admin/notifications", icon: <Bell className="w-4 h-4" /> },
+      { label: "Payments", href: "/admin/payments", icon: <CreditCard size={13} /> },
+      { label: "Notifications", href: "/admin/notifications", icon: <Bell size={13} /> },
     ],
   },
   {
     label: "System",
     items: [
-      { label: "Analytics", href: "#", icon: <BarChart3 className="w-4 h-4" />, badge: "Soon" },
-      { label: "Certificates", href: "/admin/certificates", icon: <Award className="w-4 h-4" /> },
-      { label: "Settings", href: "/admin/settings", icon: <Settings className="w-4 h-4" /> },
+      { label: "Analytics", href: "#", icon: <BarChart3 size={13} />, badge: "Soon" },
+      { label: "Certificates", href: "/admin/certificates", icon: <Award size={13} /> },
+      { label: "Settings", href: "/admin/settings", icon: <Settings size={13} /> },
     ],
   },
 ];
 
 const allNavItems = navGroups.flatMap((g) => g.items);
 
-/* ═══════════════════════════════════════
-   Shared
-   ═══════════════════════════════════════ */
 function useActiveRoute() {
   const pathname = usePathname();
   return (href: string) => {
@@ -87,277 +80,236 @@ function useActiveRoute() {
   };
 }
 
-/* ═══════════════════════════════════════
-   Desktop Sidebar
-   ═══════════════════════════════════════ */
-function DesktopSidebar({
-  collapsed,
-  setCollapsed,
-  onNavigate,
-}: {
-  collapsed: boolean;
-  setCollapsed: (v: boolean) => void;
-  onNavigate: () => void;
+/* ── Desktop Sidebar ── */
+function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: {
+  collapsed: boolean; setCollapsed: (v: boolean) => void; onNavigate: () => void;
 }) {
   const isActive = useActiveRoute();
-
   return (
-    <aside
-      className={`hidden lg:flex flex-col fixed inset-y-0 left-0 z-30 bg-white dark:bg-[#0a0a0a] border-r border-neutral-200/70 dark:border-neutral-800/70 transition-all duration-300 ease-out ${
-        collapsed ? "w-[64px]" : "w-[240px]"
-      }`}
-    >
-      {/* ── Logo ── */}
-      <div className={`flex items-center h-14 border-b border-neutral-200/70 dark:border-neutral-800/70 ${collapsed ? "justify-center px-0" : "justify-between px-4"}`}>
+    <aside style={{
+      position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 30,
+      background: "#080c1a", borderRight: `1px solid ${C.border}`,
+      width: collapsed ? 56 : 220, transition: "width 0.2s",
+    }} className="hidden lg:flex lg:flex-col">
+      {/* Logo */}
+      <div style={{
+        display: "flex", alignItems: "center", height: 48,
+        borderBottom: `1px solid ${C.border}`,
+        padding: collapsed ? "0 12px" : "0 12px",
+        justifyContent: collapsed ? "center" : "space-between",
+      }}>
         {!collapsed ? (
-          <Link href="/admin" className="flex items-center gap-2 group">
-            <BeyundLogo className="h-8" />
+          <Link href="/admin" style={{ display: "flex", alignItems: "center" }}>
+            <BeyundLogo className="h-6" />
           </Link>
         ) : (
-          <Link href="/admin" className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-white flex items-center justify-center">
-            <Sparkles className="w-3.5 h-3.5 text-white dark:text-neutral-900" />
+          <Link href="/admin" style={{
+            width: 24, height: 24, borderRadius: 3,
+            background: C.card, border: `1px solid ${C.border}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            overflow: "hidden",
+          }}>
+            <img
+              src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
+              alt="Beyund"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
           </Link>
         )}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="w-6 h-6 rounded-md flex items-center justify-center text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-        >
-          {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
+        <button onClick={() => setCollapsed(!collapsed)}
+          style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted, display: "flex" }}>
+          {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
         </button>
       </div>
 
-      {/* ── Navigation ── */}
-      <nav className="flex-1 overflow-y-auto py-4 px-2.5 space-y-5">
+      {/* Nav */}
+      <nav style={{ flex: 1, overflowY: "auto", padding: "12px 8px" }}>
         {navGroups.map((group) => (
-          <div key={group.label}>
+          <div key={group.label} style={{ marginBottom: 16 }}>
             {!collapsed && (
-              <p className="px-2.5 mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-600">
+              <p style={{
+                fontSize: 9, fontWeight: 600, textTransform: "uppercase",
+                letterSpacing: "0.08em", color: C.dim, margin: "0 8px 6px",
+                fontFamily: "'JetBrains Mono','SF Mono',monospace",
+              }}>
                 {group.label}
               </p>
             )}
-            <div className="space-y-0.5">
-              {group.items.map((item) => {
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={onNavigate}
-                    className={`flex items-center rounded-lg text-sm font-medium transition-all duration-150 ${
-                      collapsed ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3 py-2"
-                    } ${
-                      active
-                        ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white"
-                        : "text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40"
-                    }`}
-                    title={collapsed ? item.label : undefined}
-                  >
-                    <span className="shrink-0">{item.icon}</span>
-                    {!collapsed && (
-                      <span className="flex-1 truncate">{item.label}</span>
-                    )}
-                    {!collapsed && item.badge && (
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300">
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
+            {group.items.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link key={item.href} href={item.href} onClick={onNavigate}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 8,
+                    padding: collapsed ? "6px 0" : "6px 8px",
+                    justifyContent: collapsed ? "center" : "flex-start",
+                    borderRadius: 3, textDecoration: "none",
+                    fontSize: 11, fontWeight: 500,
+                    background: active ? C.card : "transparent",
+                    color: active ? C.text : C.muted,
+                    border: active ? `1px solid ${C.border}` : "1px solid transparent",
+                    marginBottom: 2,
+                    transition: "background 0.1s, color 0.1s",
+                    cursor: "pointer",
+                  }}
+                  title={collapsed ? item.label : undefined}
+                  onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = C.card; e.currentTarget.style.color = C.text; } }}
+                  onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.muted; } }}
+                >
+                  <span style={{ display: "flex", flexShrink: 0 }}>{item.icon}</span>
+                  {!collapsed && <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.label}</span>}
+                  {!collapsed && item.badge && (
+                    <span style={{
+                      fontSize: 8, fontWeight: 600, padding: "1px 5px",
+                      borderRadius: 2, background: C.card, color: C.muted,
+                      border: `1px solid ${C.border}`,
+                      fontFamily: "'JetBrains Mono','SF Mono',monospace",
+                    }}>
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
           </div>
         ))}
       </nav>
-
-
     </aside>
   );
 }
 
-/* ═══════════════════════════════════════
-   Mobile Drawer
-   ═══════════════════════════════════════ */
+/* ── Mobile Drawer ── */
 function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const isActive = useActiveRoute();
   const router = useRouter();
-
-  const handleNav = (href: string) => {
-    router.push(href);
-    onClose();
-  };
+  const handleNav = (href: string) => { router.push(href); onClose(); };
 
   return (
     <>
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 lg:hidden animate-in fade-in duration-200"
-          onClick={onClose}
-        />
-      )}
-      <div
-        className={`fixed inset-y-0 left-0 z-50 w-[280px] bg-white dark:bg-[#0a0a0a] border-r border-neutral-200/70 dark:border-neutral-800/70 transform transition-all duration-300 ease-out lg:hidden ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between h-14 px-4 border-b border-neutral-200/70 dark:border-neutral-800/70">
-          <BeyundLogo className="h-8" />
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-          >
-            <X className="w-4 h-4" />
+      {open && <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 50 }} className="lg:hidden" onClick={onClose} />}
+      <div style={{
+        position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 51,
+        width: 260, background: "#080c1a", borderRight: `1px solid ${C.border}`,
+        transform: open ? "translateX(0)" : "translateX(-100%)",
+        transition: "transform 0.25s",
+      }} className="lg:hidden">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 48, padding: "0 12px", borderBottom: `1px solid ${C.border}` }}>
+          <BeyundLogo className="h-[22px]" />
+          <button onClick={onClose} style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted, display: "flex" }}>
+            <X size={14} />
           </button>
         </div>
-
-        {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-5">
+        <nav style={{ padding: "12px 8px" }}>
           {navGroups.map((group) => (
-            <div key={group.label}>
-              <p className="px-2 mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-500">
-                {group.label}
-              </p>
-              <div className="space-y-0.5">
-                {group.items.map((item) => {
-                  const active = isActive(item.href);
-                  return (
-                    <button
-                      key={item.href}
-                      onClick={() => handleNav(item.href)}
-                      className={`flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 min-h-[44px] ${
-                        active
-                          ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white"
-                          : "text-neutral-500 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/40"
-                      }`}
-                    >
-                      <span className="shrink-0">{item.icon}</span>
-                      <span className="flex-1 text-left truncate">{item.label}</span>
-                      {item.badge && (
-                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300">
-                          {item.badge}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+            <div key={group.label} style={{ marginBottom: 16 }}>
+              <p style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: C.dim, margin: "0 8px 6px", fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{group.label}</p>
+              {group.items.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <button key={item.href} onClick={() => handleNav(item.href)}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 8, width: "100%",
+                      padding: "7px 8px", borderRadius: 3, border: "none",
+                      fontSize: 11, fontWeight: 500, cursor: "pointer",
+                      background: active ? C.card : "transparent",
+                      color: active ? C.text : C.muted,
+                      marginBottom: 2, textAlign: "left",
+                    }}>
+                    <span style={{ display: "flex", flexShrink: 0 }}>{item.icon}</span>
+                    <span style={{ flex: 1 }}>{item.label}</span>
+                    {item.badge && (
+                      <span style={{ fontSize: 8, fontWeight: 600, padding: "1px 5px", borderRadius: 2, background: C.card, color: C.muted, border: `1px solid ${C.border}`, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{item.badge}</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           ))}
         </nav>
-
-
       </div>
     </>
   );
 }
 
-/* ═══════════════════════════════════════
-   Mobile Bottom Tab Bar
-   ═══════════════════════════════════════ */
+/* ── Mobile Tab Bar ── */
 function MobileTabBar({ onMenuOpen }: { onMenuOpen: () => void }) {
   const isActive = useActiveRoute();
   const tabs = allNavItems.slice(0, 5);
-
   return (
-    <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-xl border-t border-neutral-200/70 dark:border-neutral-800/70 safe-area-bottom">
-      <div className="flex items-center justify-around h-full px-2">
+    <nav style={{
+      display: "none", position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, height: 52,
+      background: C.bg, borderTop: `1px solid ${C.border}`,
+    }} className="lg:hidden">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", padding: "0 4px" }}>
         {tabs.map((item) => {
           const active = isActive(item.href);
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg min-w-[48px] min-h-[44px] transition-colors duration-150 ${
-                active
-                  ? "text-neutral-900 dark:text-white"
-                  : "text-neutral-400 dark:text-neutral-500"
-              }`}
-            >
-              <span className="shrink-0">{item.icon}</span>
-              <span className="text-[10px] font-medium leading-none truncate max-w-[48px] text-center">
-                {item.label}
-              </span>
-              {active && <span className="absolute bottom-1 w-4 h-0.5 rounded-full bg-neutral-900 dark:bg-white" />}
+            <Link key={item.href} href={item.href}
+              style={{
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+                padding: "4px 8px", textDecoration: "none",
+                color: active ? C.text : C.muted, fontSize: 9, fontWeight: 500,
+              }}>
+              {item.icon}
+              <span style={{ fontSize: 9 }}>{item.label}</span>
             </Link>
           );
         })}
-        <button
-          onClick={onMenuOpen}
-          className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg min-w-[48px] min-h-[44px] text-neutral-400 dark:text-neutral-500 transition-colors duration-150"
-        >
-          <Menu className="w-4 h-4" />
-          <span className="text-[10px] font-medium">More</span>
+        <button onClick={onMenuOpen}
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "4px 8px", background: "transparent", border: "none", cursor: "pointer", color: C.muted }}>
+          <Menu size={13} />
+          <span style={{ fontSize: 9 }}>More</span>
         </button>
       </div>
     </nav>
   );
 }
 
-/* ═══════════════════════════════════════
-   Top Bar
-   ═══════════════════════════════════════ */
-function AdminTopbar({
-  onMobileMenuOpen,
-  collapsed,
-}: {
-  onMobileMenuOpen: () => void;
-  collapsed: boolean;
-}) {
+/* ── Top Bar ── */
+function AdminTopbar({ onMobileMenuOpen, collapsed }: { onMobileMenuOpen: () => void; collapsed: boolean }) {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-20 h-14 border-b border-neutral-200/70 dark:border-neutral-800/70 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl">
-      <div className="flex items-center justify-between h-full px-4 lg:px-6">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          {/* Mobile hamburger */}
-          <button
-            onClick={onMobileMenuOpen}
-            className="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors min-w-[44px] min-h-[44px]"
-            aria-label="Open menu"
-          >
-            <Menu className="w-5 h-5" />
+    <header style={{
+      position: "sticky", top: 0, zIndex: 20, height: 48,
+      borderBottom: `1px solid ${C.border}`,
+      background: C.bg,
+    }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "100%", padding: "0 12px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
+          <button onClick={onMobileMenuOpen}
+            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted }}
+            className="lg:hidden">
+            <Menu size={14} />
           </button>
-
-          {/* Logo on mobile header */}
-          <Link href="/admin" className="lg:hidden shrink-0 mr-1">
-            <BeyundLogo className="h-6" />
+          <Link href="/admin" className="lg:hidden">
+            <BeyundLogo className="h-5" />
           </Link>
-
-          {/* Global Search */}
           <GlobalSearch />
         </div>
-
-        {/* Right actions */}
-        <div className="flex items-center gap-1 sm:gap-2">
-          <button
-            onClick={toggleTheme}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors min-w-[44px] min-h-[44px]"
-            title="Toggle theme"
-          >
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button onClick={toggleTheme}
+            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted, display: "flex" }}
+            title="Toggle theme">
             {theme === "dark" ? (
-              <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
             ) : (
-              <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
               </svg>
             )}
           </button>
-
-          <Link
-            href="/admin/notifications"
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors relative min-w-[44px] min-h-[44px]"
-          >
-            <Bell className="w-[18px] h-[18px]" />
-            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#0a0a0a]" />
+          <Link href="/admin/notifications" style={{ position: "relative", background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted, display: "flex", textDecoration: "none" }}>
+            <Bell size={13} />
+            <span style={{ position: "absolute", top: 1, right: 1, width: 5, height: 5, borderRadius: "50%", background: C.red }} />
           </Link>
-
-          <Link
-            href="/admin/settings"
-            className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold shadow-sm min-w-[36px] min-h-[36px] overflow-hidden cursor-pointer hover:ring-2 hover:ring-violet-400/40 transition-all"
-            title="Open settings"
-          >
+          <Link href="/admin/settings" style={{
+            width: 24, height: 24, borderRadius: "50%", background: C.card,
+            border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center",
+            textDecoration: "none", color: C.muted, fontSize: 10, fontWeight: 600,
+          }}>
             <HeaderAvatar />
           </Link>
         </div>
@@ -369,30 +321,17 @@ function AdminTopbar({
 function HeaderAvatar() {
   const { profileImage } = useProfile();
   if (profileImage) {
-    return (
-      <img
-        src={profileImage}
-        alt="Admin avatar"
-        className="w-full h-full object-cover"
-      />
-    );
+    return <img src={profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />;
   }
   return (
-    <svg
-      className="w-5 h-5 text-white"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-label="Default admin avatar"
-    >
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
       <circle cx="12" cy="8" r="4" />
       <path d="M12 13c-4.418 0-8 2.686-8 6v1h16v-1c0-3.314-3.582-6-8-6z" />
     </svg>
   );
 }
 
-/* ═══════════════════════════════════════
-   Layout Shell
-   ═══════════════════════════════════════ */
+/* ── Layout Shell ── */
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<{ email: string } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -418,35 +357,27 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#0a0a0a]">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 rounded-full border-2 border-neutral-200 dark:border-neutral-700 border-t-neutral-900 dark:border-t-white animate-spin" />
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">Loading dashboard...</p>
-      </div>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.bg }}>
+      <div style={{ width: 16, height: 16, borderRadius: "50%", border: `2px solid ${C.dim}`, borderTopColor: C.teal }} />
     </div>
   );
-  if (isLoginPage) return <>{children}</>;
+  if (isLoginPage) return <div style={{ background: C.bg, minHeight: "100vh" }}>{children}</div>;
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-[#0a0a0a] text-neutral-900 dark:text-white transition-colors">
-      <DesktopSidebar
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
-        onNavigate={() => {}}
-      />
+    <div style={{ minHeight: "100vh", background: C.bg, color: C.text }}>
+      <DesktopSidebar collapsed={collapsed} setCollapsed={setCollapsed} onNavigate={() => {}} />
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
-      <div className={`flex flex-col min-w-0 transition-all duration-300 ease-out pb-16 lg:pb-0 ${
-        collapsed ? "lg:ml-[64px]" : "lg:ml-[240px]"
-      }`}>
-        <AdminTopbar
-          onMobileMenuOpen={() => setDrawerOpen(true)}
-          collapsed={collapsed}
-        />
-
-        <main className="flex-1 overflow-auto w-full">
-          <div className="p-4 sm:p-6 lg:px-8 lg:py-6 xl:px-10 xl:py-8 w-full">
+      <div style={{
+        display: "flex", flexDirection: "column", minWidth: 0,
+        transition: "margin-left 0.2s",
+        marginLeft: collapsed ? 56 : 220,
+        paddingBottom: 56,
+      }} className="lg:pb-0 lg:ml-auto-style">
+        <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} collapsed={collapsed} />
+        <main style={{ flex: 1, overflow: "auto", width: "100%" }}>
+          <div style={{ padding: "12px" }}>
             {children}
           </div>
         </main>

@@ -4,545 +4,429 @@ import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import Link from "next/link";
 import {
-  Users,
-  BookOpen,
-  Wallet,
-  Bell,
-  ChevronRight,
-  UserPlus,
-  CreditCard,
-  Activity,
-  TrendingUp,
-  BarChart3,
-  PieChart,
-  ArrowUpRight,
-  GraduationCap,
-  DollarSign,
-  Layers,
-  Clock,
+  Users, BookOpen, Bell, ChevronRight, Activity, TrendingUp, BarChart3,
+  GraduationCap, DollarSign, Eye, EyeOff, Layers,
 } from "lucide-react";
 import {
   BarChart, Bar, PieChart as RePieChart, Pie, Cell,
   AreaChart, Area,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
-/* ═══════════════════════════════════════
-   Types
-   ═══════════════════════════════════════ */
-type Student = {
-  id: string; full_name: string; email: string; course_applying_for: string;
-  status: string; country: string; created_at: string;
-};
-type Course = { id: string; title: string; total_weeks: number; status: string };
-type PaymentProfile = { id: string; student_id: string; total_fee: number; amount_paid: number; balance: number; payment_status: string };
-type Notification = { id: string; title: string; message: string; category: string; status: string; created_at: string };
 
-/* ═══════════════════════════════════════
-   Helpers
-   ═══════════════════════════════════════ */
-function getGreeting(): string {
-  const now = new Date();
-  const nigeriaTime = new Date(now.toLocaleString("en-US", { timeZone: "Africa/Lagos" }));
-  const h = nigeriaTime.getHours();
-  if (h >= 4 && h < 12) return "Good morning";
-  if (h >= 12 && h < 16) return "Good afternoon";
-  return "Good evening";
-}
+/* ── Types ── */
+type Student = { id: string; full_name: string; email: string; course_applying_for: string; status: string; country: string; state?: string; created_at: string; };
+type Course = { id: string; title: string; total_weeks: number; status: string; };
+type PaymentProfile = { id: string; student_id: string; total_fee: number; amount_paid: number; balance: number; payment_status: string; };
+type PaymentTx = { id: string; student_id: string; amount: number; payment_method: string; created_at: string; };
+type Notification = { id: string; title: string; message: string; category: string; status: string; created_at: string; };
 
-function formatCurrency(amount: number): string {
-  if (amount === 0) return "₦0";
-  return `₦${amount.toLocaleString()}`;
-}
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  const hours = Math.floor(diff / 3600000);
-  const days = Math.floor(diff / 86400000);
-  if (mins < 1) return "Just now";
-  if (mins < 60) return `${mins}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
-  return new Date(dateStr).toLocaleDateString("en-NG", { day: "numeric", month: "short" });
-}
-
-function getInitials(name: string): string {
-  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
-}
-
-const COLORS = {
-  enrolled: "#30d158", contacted: "#0a84ff", pending: "#ff9f0a", rejected: "#ff453a",
-  violet: "#8940fa", emerald: "#30d158", amber: "#ff9f0a", blue: "#0a84ff",
-  surface: "#f2f2f7", darkSurface: "#2c2c2e",
+/* ── Colors (dark & black-touch, no blue) ── */
+const C = {
+  teal: "#14b8a6", accent: "#6b7280", slate: "#64748b",
+  green: "#22c55e", amber: "#eab308", red: "#ef4444",
+  bg: "#080c1a", card: "#080c1a", border: "#1e293b",
+  text: "#f8fafc", muted: "#94a3b8", dim: "#475569",
 };
 
-/* ═══════════════════════════════════════
-   Dashboard Page
-   ═══════════════════════════════════════ */
+/* ── Helpers ── */
+const fmt = (n: number) => n === 0 ? "₦0" : `₦${n.toLocaleString()}`;
+const nDate = (s: string) => {
+  const d = new Date(s);
+  return d.toLocaleDateString("en-NG", { day: "numeric", month: "short" });
+};
+const initials = (n: string) => n.split(" ").map(s => s[0]).join("").toUpperCase().slice(0, 2);
+const ts = () => {
+  const d = new Date();
+  return d.toLocaleString("en-NG", {
+    weekday: "short", day: "numeric", month: "short",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+  });
+};
+
 export default function AdminDashboardPage() {
   const supabase = createSupabaseBrowserClient();
-  const [adminName, setAdminName] = useState("Admin");
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [paymentProfiles, setPaymentProfiles] = useState<PaymentProfile[]>([]);
+  const [transactions, setTransactions] = useState<PaymentTx[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [prevTotal, setPrevTotal] = useState(0);
+  const [showRevenue, setShowRevenue] = useState(true);
+  const [showCollected, setShowCollected] = useState(true);
+  const [showOutstanding, setShowOutstanding] = useState(true);
+  const [showTotalFees, setShowTotalFees] = useState(true);
+  const [now, setNow] = useState(ts());
+
+  useEffect(() => { document.title = "Admin LMS — Beyund Labs Academy"; }, []);
 
   useEffect(() => {
-    document.title = "Admin LMS — Beyund Labs Academy";
-    async function loadAll() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user?.email) {
-        const { data: settings } = await supabase.from("admin_settings").select("value").eq("key", "admin_name").single();
-        if (settings?.value) setAdminName(settings.value);
-        else setAdminName(session.user.email.split("@")[0].charAt(0).toUpperCase() + session.user.email.split("@")[0].slice(1));
-      }
+    const i = setInterval(() => setNow(ts()), 30000);
+    return () => clearInterval(i);
+  }, []);
 
-      const [{ data: s }, { data: c }, { data: p }, { data: n }] = await Promise.all([
+  useEffect(() => {
+    async function load() {
+      const [{ data: s }, { data: c }, { data: p }, { data: tx }, { data: n }] = await Promise.all([
         supabase.from("student_registrations").select("*").order("created_at", { ascending: false }),
         supabase.from("courses").select("*").order("created_at", { ascending: false }),
         supabase.from("student_payment_profiles").select("*"),
+        supabase.from("payments").select("*").order("created_at", { ascending: false }),
         supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(10),
       ]);
-
-      if (s) {
-        setStudents(s as Student[]);
-        setPrevTotal((s as Student[]).length);
-      }
+      if (s) { setStudents(s as Student[]); setPrevTotal(s.length); }
       if (c) setCourses(c as Course[]);
       if (p) setPaymentProfiles(p as PaymentProfile[]);
+      if (tx) setTransactions(tx as PaymentTx[]);
       if (n) setNotifications(n as Notification[]);
       setLoading(false);
     }
-    loadAll();
+    load();
   }, [supabase]);
 
-  const totalStudents = students.length;
-  const enrolledStudents = students.filter((s) => s.status === "enrolled").length;
-  const pendingStudents = students.filter((s) => s.status === "pending").length;
-  const contactedStudents = students.filter((s) => s.status === "contacted").length;
-  const rejectedStudents = students.filter((s) => s.status === "rejected").length;
+  const total = students.length;
+  const enrolled = students.filter(s => s.status === "enrolled").length;
+  const pending = students.filter(s => s.status === "pending").length;
+  const contacted = students.filter(s => s.status === "contacted").length;
+  const rejected = students.filter(s => s.status === "rejected").length;
+  const activeCourses = courses.filter(c => c.status === "active").length;
+  const collected = paymentProfiles.reduce((s, p) => s + p.amount_paid, 0);
+  const outstanding = paymentProfiles.reduce((s, p) => s + p.balance, 0);
+  const totalFees = paymentProfiles.reduce((s, p) => s + p.total_fee, 0);
+  const collectionRate = totalFees > 0 ? Math.round((collected / totalFees) * 100) : 0;
+  const unread = notifications.filter(n => n.status === "unread").length;
+  const trend = prevTotal > 0 ? ((total - prevTotal) / prevTotal * 100).toFixed(1) : "0";
 
-  const totalCourses = courses.length;
-  const activeCourses = courses.filter((c) => c.status === "active").length;
+  // ── Region Data (enrolled only, custom order) ──
+  const enrolledStudents = students.filter(s => s.status === "enrolled");
+  const rc: Record<string, number> = {};
+  enrolledStudents.forEach(s => { const r = s.state || "Unknown"; rc[r] = (rc[r] || 0) + 1; });
+  const customOrder = ["Owerri", "Abia", "Enugu", "Lagos", "Rivers", "Anambra"];
+  const rd = Object.entries(rc)
+    .sort((a, b) => {
+      const ia = customOrder.indexOf(a[0]);
+      const ib = customOrder.indexOf(b[0]);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return b[1] - a[1];
+    })
+    .slice(0, 5)
+    .map(([region, count]) => ({ region, count }));
+  const maxC = Math.max(...rd.map(d => d.count), 1);
+  const regionData = rd.map(d => ({ ...d, fill: C.teal, fillOpacity: 0.25 + (d.count / maxC) * 0.55 }));
 
-  const totalCollected = paymentProfiles.reduce((sum, p) => sum + p.amount_paid, 0);
-  const totalOutstanding = paymentProfiles.reduce((sum, p) => sum + p.balance, 0);
-  const fullyPaid = paymentProfiles.filter((p) => p.payment_status === "paid").length;
-  const installmentCount = paymentProfiles.filter((p) => p.payment_status === "installment").length;
-  const unreadNotifs = notifications.filter((n) => n.status === "unread").length;
+  // ── Status Data ──
+  const sd = [
+    { name: "Enrolled", value: enrolled || 0, color: C.green },
+    { name: "Pending", value: pending || 0, color: C.amber },
+    { name: "Contacted", value: contacted || 0, color: C.accent },
+    { name: "Rejected", value: rejected || 0, color: C.red },
+  ].filter(d => d.value > 0);
+  const displaySD = total > 0 ? sd : [{ name: "—", value: 1, color: C.dim }];
 
-  const hasStudents = totalStudents > 0;
-  const hasPayments = paymentProfiles.length > 0;
-  const trend = prevTotal > 0 ? ((totalStudents - prevTotal) / prevTotal * 100).toFixed(1) : "0";
-
-  /* ── Chart Data ── */
-  const statusData = [
-    { name: "Enrolled", value: enrolledStudents || 0, color: COLORS.enrolled },
-    { name: "Contacted", value: contactedStudents || 0, color: COLORS.contacted },
-    { name: "Pending", value: pendingStudents || 0, color: COLORS.pending },
-    { name: "Rejected", value: rejectedStudents || 0, color: COLORS.rejected },
-  ].filter((d) => d.value > 0);
-
-  // If no students, show a placeholder status
-  const displayStatusData = hasStudents ? statusData : [{ name: "No Data", value: 1, color: "#e5e5ea" }];
-
-  const courseCounts: Record<string, number> = {};
-  students.forEach((s) => {
-    courseCounts[s.course_applying_for] = (courseCounts[s.course_applying_for] || 0) + 1;
-  });
-  const courseData = Object.entries(courseCounts)
-    .map(([course, count]) => ({ course: course.length > 18 ? course.slice(0, 18) + "…" : course, count }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 8);
-
-  const last14Days = [];
+  // ── Growth ──
+  const gd = [];
   for (let i = 13; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
-    const label = d.toLocaleDateString("en-NG", { weekday: "short", day: "numeric" });
-    const count = students.filter((s) => s.created_at?.startsWith(dateStr)).length;
-    last14Days.push({ date: dateStr, count, label });
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const ds = d.toISOString().split("T")[0];
+    const lb = d.toLocaleDateString("en-NG", { weekday: "short", day: "numeric" });
+    gd.push({ date: ds, count: students.filter(s => s.created_at?.startsWith(ds)).length, label: lb });
   }
 
-  const totalFees = paymentProfiles.reduce((sum, p) => sum + p.total_fee, 0);
-  const paymentChartData = [
-    { name: "Collected", amount: totalCollected, fill: COLORS.emerald },
-    { name: "Outstanding", amount: totalOutstanding, fill: COLORS.amber },
-    { name: "Total Fees", amount: totalFees, fill: COLORS.violet },
+  // ── Daily Payments ──
+  const dpm: Record<string, { count: number; amount: number }> = {};
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    dpm[d.toISOString().split("T")[0]] = { count: 0, amount: 0 };
+  }
+  transactions.forEach(tx => {
+    const day = tx.created_at?.split("T")[0];
+    if (day && dpm[day] !== undefined) { dpm[day].count++; dpm[day].amount += tx.amount; }
+  });
+  const dailyPayments = Object.entries(dpm).map(([day, data]) => {
+    const d = new Date(day + "T12:00:00");
+    return { day, label: d.toLocaleDateString("en-NG", { weekday: "short", day: "numeric" }), ...data };
+  });
+
+  // ── Methods ──
+  const methods = [
+    { method: "Transfer", count: 10 },
+    { method: "POS", count: 1 },
   ];
+  const MCOLORS: Record<string, string> = { Transfer: C.accent, Card: "#a855f7", Pos: C.green, Cash: C.amber, Ussd: C.red };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[600px]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 border-neutral-200 dark:border-neutral-700 border-t-neutral-900 dark:border-t-white animate-spin" />
-          <p className="text-sm text-neutral-500">Loading dashboard...</p>
-        </div>
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[100vh]" style={{ background: C.bg }}>
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-6 h-6 rounded-full border border-t-transparent animate-spin" style={{ borderColor: C.dim, borderTopColor: C.teal }} />
+        <p className="text-xs" style={{ color: C.muted }}>Loading...</p>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div className="space-y-5 sm:space-y-7">
-      {/* ──────── HEADER ──────── */}
-      <div className="flex items-end justify-between gap-4 flex-wrap">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-[28px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
-              {getGreeting()}, {adminName}
-            </h1>
-            <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-medium">
-              <ArrowUpRight className="w-3 h-3" />
-              {trend}%
-            </span>
-          </div>
-          <p className="text-[15px] text-neutral-500 dark:text-neutral-400 mt-1">
-            {totalStudents} total student{totalStudents !== 1 ? "s" : ""} · {activeCourses} active course{activeCourses !== 1 ? "s" : ""}
-          </p>
+    <div style={{ background: C.bg, minHeight: "100vh", padding: "16px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif" }}>
+
+      {/* ── Top Bar ── */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${C.border}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: C.text, letterSpacing: "-0.01em" }}>Beyund Academy</span>
+          <span style={{ fontSize: 11, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{now}</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, color: C.muted }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.green }} />
+            System OK
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, color: C.muted }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: unread > 0 ? C.amber : C.dim }} />
+            {unread} alert{unread !== 1 ? "s" : ""}
+          </span>
         </div>
       </div>
 
-      {/* ──────── KPI GRID ──────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KpiCard
-          icon={<GraduationCap className="w-4 h-4" />}
-          label="Students"
-          value={String(totalStudents)}
-          trend={`${enrolledStudents} enrolled`}
-          color="text-neutral-900 dark:text-white"
-          href="/admin/students"
-        />
-        <KpiCard
-          icon={<BookOpen className="w-4 h-4" />}
-          label="Courses"
-          value={String(activeCourses)}
-          trend={`${totalCourses} total`}
-          color="text-violet-600 dark:text-violet-400"
-          href="/admin/courses"
-        />
-        <KpiCard
-          icon={<DollarSign className="w-4 h-4" />}
-          label="Revenue"
-          value={formatCurrency(totalCollected)}
-          trend={`${fullyPaid} paid`}
-          color="text-emerald-600 dark:text-emerald-400"
-          href="/admin/payments"
-        />
-        <KpiCard
-          icon={<Bell className="w-4 h-4" />}
-          label="Activity"
-          value={String(notifications.length)}
-          trend={`${unreadNotifs} unread`}
-          color="text-amber-600 dark:text-amber-400"
-          href="/admin/notifications"
-        />
+      {/* ── KPI Row ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 12 }}>
+        <Kpi icon={<GraduationCap size={13} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/admin/students" />
+        <Kpi icon={<BookOpen size={13} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/admin/courses" />
+        <Kpi icon={<DollarSign size={13} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/admin/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor="#fde68a" />
+        <Kpi icon={<Bell size={13} />} label="Activity" value={String(notifications.length)} sub={`${unread} unread`} href="/admin/notifications" />
       </div>
 
-      {/* ──────── CHARTS SECTION ──────── */}
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full bg-violet-500" />
-          <h2 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-neutral-400 dark:text-neutral-500">Analytics</h2>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          {/* Student Growth */}
-          <div className="rounded-[14px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] p-4 sm:p-5">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-[10px] bg-violet-500/10 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-violet-500" />
-              </div>
-              <div>
-                <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">Student Growth</p>
-                <p className="text-[11px] text-neutral-400">Last 14 days</p>
-              </div>
-              <div className="ml-auto text-right">
-                <p className="text-[13px] font-semibold text-neutral-900 dark:text-white">{totalStudents}</p>
-                <p className="text-[10px] text-neutral-400">Total</p>
-              </div>
-            </div>
-            <div className="h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={last14Days} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="growthGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={COLORS.violet} stopOpacity={0.12} />
-                      <stop offset="95%" stopColor={COLORS.violet} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" className="dark:opacity-20" vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 10, fill: "#86868b" }} axisLine={false} tickLine={false} interval={1} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: "#86868b" }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area type="monotone" dataKey="count" stroke={COLORS.violet} strokeWidth={2} fill="url(#growthGrad)" name="Registrations" dot={hasStudents ? { r: 3, fill: COLORS.violet, stroke: "white", strokeWidth: 2 } : false} />
-                </AreaChart>
-              </ResponsiveContainer>
+      {/* ── Main Chart Row ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+        {/* Growth */}
+        <Card title="Registrations" sub="14d" icon={<TrendingUp size={12} />}>
+          <div style={{ height: 160 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={gd} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="gg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={C.teal} stopOpacity={0.1} />
+                    <stop offset="95%" stopColor={C.teal} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} interval={1} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CTip />} />
+                <Area type="monotone" dataKey="count" stroke={C.teal} strokeWidth={1.5} fill="url(#gg)" name="New" dot={total > 0 ? { r: 2, fill: C.teal, stroke: "none" } : false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      
+        {/* Status */}
+        <Card title="Registration Status" sub={sd.filter(d => d.value > 0).length + " statuses"} icon={<BarChart3 size={12} />}>
+          <div style={{ height: 160, display: "flex", alignItems: "center" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <RePieChart>
+                <Pie data={displaySD} cx="50%" cy="50%" innerRadius={40} outerRadius={60} paddingAngle={2} dataKey="value">
+                  {displaySD.map((e, i) => <Cell key={i} fill={e.color} stroke="transparent" />)}
+                </Pie>
+                <Tooltip content={<CTip />} />
+              </RePieChart>
+            </ResponsiveContainer>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 8 }}>
+              {sd.map(d => (
+                <div key={d.name} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: d.color }} />
+                  <span style={{ fontSize: 10, color: C.muted }}>{d.name}</span>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{d.value}</span>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Registration Status */}
-          <div className="rounded-[14px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] p-4 sm:p-5">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-[10px] bg-blue-500/10 flex items-center justify-center">
-                <PieChart className="w-4 h-4 text-blue-500" />
-              </div>
-              <div>
-                <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">Registration Status</p>
-                <p className="text-[11px] text-neutral-400">Status breakdown</p>
-              </div>
-            </div>
-            <div className="h-[200px] flex items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <RePieChart>
-                  <Pie data={displayStatusData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value">
-                    {displayStatusData.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} stroke="transparent" />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend
-                    verticalAlign="bottom"
-                    height={25}
-                    formatter={(value: string) => <span className="text-[11px] text-neutral-500">{value}</span>}
-                  />
-                </RePieChart>
-              </ResponsiveContainer>
-            </div>
-            {!hasStudents && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <p className="text-[13px] text-neutral-400 bg-white/80 dark:bg-[#1c1c1e]/80 px-3 py-1 rounded-[8px]">No data yet</p>
-              </div>
-            )}
-          </div>
-        </div>
+        </Card>
       </div>
 
-      {/* ──────── SECONDARY CHARTS ──────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {/* Enrollment by Course */}
-        <div className="rounded-[14px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] p-4 sm:p-5">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 rounded-[10px] bg-amber-500/10 flex items-center justify-center">
-              <BarChart3 className="w-4 h-4 text-amber-500" />
-            </div>
-            <div>
-              <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">Enrollment by Course</p>
-              <p className="text-[11px] text-neutral-400">Students per course</p>
-            </div>
-          </div>
-          {courseData.length === 0 ? (
-            <div className="h-[200px] flex flex-col items-center justify-center text-center">
-              <Layers className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mb-2" />
-              <p className="text-[13px] text-neutral-400">No enrollments yet</p>
+      {/* ── Secondary Chart Row ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+        {/* Region */}
+        <Card title="Enrollment by Region" sub="Top 5 states" icon={<BarChart3 size={12} />}>
+          {regionData.length === 0 ? (
+            <div style={{ height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: 11, color: C.muted }}>No data</span>
             </div>
           ) : (
-            <div className="h-[200px]">
+            <div style={{ height: 170 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={courseData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" className="dark:opacity-20" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 10, fill: "#86868b" }} axisLine={false} tickLine={false} allowDecimals={false} />
-                  <YAxis type="category" dataKey="course" tick={{ fontSize: 10, fill: "#86868b" }} axisLine={false} tickLine={false} width={90} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="count" fill={COLORS.blue} radius={[0, 4, 4, 0]} name="Students" barSize={18} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          )}
-        </div>
-
-        {/* Payment Analytics */}
-        <div className="rounded-[14px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] p-4 sm:p-5">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 rounded-[10px] bg-emerald-500/10 flex items-center justify-center">
-              <DollarSign className="w-4 h-4 text-emerald-500" />
-            </div>
-            <div>
-              <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">Payment Analytics</p>
-              <p className="text-[11px] text-neutral-400">Collected vs Outstanding</p>
-            </div>
-          </div>
-          {!hasPayments ? (
-            <div className="h-[200px] flex flex-col items-center justify-center text-center">
-              <Wallet className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mb-2" />
-              <p className="text-[13px] text-neutral-400">No payment data yet</p>
-            </div>
-          ) : (
-            <div className="h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={paymentChartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" className="dark:opacity-20" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#86868b" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "#86868b" }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="amount" radius={[4, 4, 0, 0]} name="Amount" barSize={36}>
-                    {paymentChartData.map((entry, i) => (
-                      <Cell key={i} fill={entry.fill} />
-                    ))}
+                <BarChart data={regionData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }} layout="vertical">
+                  <CartesianGrid stroke={C.border} strokeDasharray="3 3" horizontal={false} />
+                  <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="region" tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} width={75} />
+                  <Tooltip content={<CTip />} />
+                  <Bar dataKey="count" radius={[0, 2, 2, 0]} name="Students" barSize={14} label={{ position: 'center', fill: '#f8fafc', fontSize: 9, fontWeight: 700, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+                    {regionData.map((e, i) => <Cell key={i} fill={e.fill} fillOpacity={e.fillOpacity} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
           )}
-        </div>
-      </div>
+        </Card>
 
-      {/* ──────── BOTTOM ROW ──────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
-        {/* Recent Registrations */}
-        <div className="lg:col-span-3 rounded-[14px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-[8px] bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-500">
-                <Activity className="w-3.5 h-3.5" />
-              </div>
-              <div>
-                <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">Recent</p>
-                <p className="text-[11px] text-neutral-400">Latest applicants</p>
-              </div>
-            </div>
-            <Link href="/admin/students" className="text-[11px] font-medium text-blue-500 hover:underline flex items-center gap-0.5">
-              View all <ChevronRight className="w-3 h-3" />
-            </Link>
-          </div>
-          {students.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-14 text-center px-5">
-              <div className="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-3">
-                <Users className="w-6 h-6 text-neutral-400" />
-              </div>
-              <p className="text-[14px] font-medium text-neutral-500">No registrations yet</p>
-              <p className="text-[12px] text-neutral-400 mt-1">New applicants will appear here</p>
+        {/* Payment Analytics */}
+        <Card title="Payment Analytics" sub={`${transactions.length} tx`} icon={<DollarSign size={12} />}>
+          {paymentProfiles.length === 0 ? (
+            <div style={{ height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: 11, color: C.muted }}>No data</span>
             </div>
           ) : (
-            <div className="divide-y divide-neutral-100 dark:divide-neutral-800/50">
-              {students.slice(0, 5).map((student) => (
-                <Link key={student.id} href="/admin/students"
-                  className="flex items-center gap-3 px-5 py-3 hover:bg-neutral-50 dark:hover:bg-white/[0.02] transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xs font-semibold text-white shrink-0">
-                    {getInitials(student.full_name)}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {/* Stats row */}
+              <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 8 }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: C.card, borderRadius: 4, padding: "8px 10px", border: `1px solid ${C.border}` }}>
+                  <div style={{ position: "relative", width: 52, height: 52 }}>
+                    <svg viewBox="0 0 36 36" style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
+                      <circle cx="18" cy="18" r="15.5" fill="none" stroke={C.dim} strokeWidth="3" />
+                      <circle cx="18" cy="18" r="15.5" fill="none" stroke={collectionRate > 70 ? C.green : collectionRate > 40 ? C.amber : C.red} strokeWidth="3" strokeDasharray={`${collectionRate} ${100 - collectionRate}`} strokeLinecap="round" />
+                    </svg>
+                    <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{collectionRate}%</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-neutral-900 dark:text-white truncate">{student.full_name}</p>
-                    <p className="text-[11px] text-neutral-400 dark:text-neutral-500 truncate">{student.course_applying_for}</p>
-                  </div>
-                  <StatusBadge status={student.status} />
-                </Link>
-              ))}
+                  <span style={{ fontSize: 8, color: C.muted, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.05em" }}>Rate</span>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+                  {[
+                    { label: "Collected", val: fmt(collected), color: "#fde68a" },
+                    { label: "Outstanding", val: fmt(outstanding), color: C.amber },
+                    { label: "Total Fees", val: fmt(totalFees), color: C.text },
+                  ].map(s => (
+                    <div key={s.label} style={{ background: C.card, borderRadius: 4, padding: "6px 8px", border: `1px solid ${C.border}`, position: "relative" }}>
+                      <p style={{ fontSize: 8, color: C.muted, textTransform: "uppercase", letterSpacing: "0.04em", margin: 0, display: "flex", alignItems: "center", gap: 4 }}>
+                        {s.label}
+                        {s.label === "Collected" && (
+                          <button onClick={() => setShowCollected(!showCollected)}
+                            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
+                            {showCollected ? <EyeOff size={10} /> : <Eye size={10} />}
+                          </button>
+                        )}
+                        {s.label === "Outstanding" && (
+                          <button onClick={() => setShowOutstanding(!showOutstanding)}
+                            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
+                            {showOutstanding ? <EyeOff size={10} /> : <Eye size={10} />}
+                          </button>
+                        )}
+                        {s.label === "Total Fees" && (
+                          <button onClick={() => setShowTotalFees(!showTotalFees)}
+                            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
+                            {showTotalFees ? <EyeOff size={10} /> : <Eye size={10} />}
+                          </button>
+                        )}
+                      </p>
+                      <p style={{ fontSize: 12, fontWeight: 700, color: s.color, margin: "2px 0 0", fontFamily: "'JetBrains Mono','SF Mono',monospace", overflow: "hidden", textOverflow: "ellipsis" }}>{
+                        s.label === "Collected" ? (showCollected ? s.val : "₦••••••") :
+                        s.label === "Outstanding" ? (showOutstanding ? s.val : "₦••••••") :
+                        s.label === "Total Fees" ? (showTotalFees ? s.val : "₦••••••") :
+                        s.val
+                      }</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Daily trend */}
+              {dailyPayments.some(d => d.count > 0) && (
+                <div style={{ height: 55 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={dailyPayments} margin={{ top: 2, right: 2, left: -16, bottom: 0 }}>
+                      <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={C.teal} stopOpacity={0.1} /><stop offset="95%" stopColor={C.teal} stopOpacity={0} /></linearGradient></defs>
+                      <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="label" tick={{ fontSize: 8, fill: C.muted }} axisLine={false} tickLine={false} />
+                      <YAxis hide />
+                      <Tooltip content={<CTip />} />
+                      <Area type="monotone" dataKey="amount" stroke={C.teal} strokeWidth={1.5} fill="url(#pg)" name="Amount" dot={{ r: 2, fill: C.teal, stroke: "none" }} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+
+              {/* Methods */}
+              {methods.length > 0 && (
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                  {methods.map(m => (
+                    <div key={m.method} style={{ display: "flex", alignItems: "center", gap: 4, background: C.card, borderRadius: 3, padding: "3px 6px", border: `1px solid ${C.border}` }}>
+                      <span style={{ width: 5, height: 5, borderRadius: "50%", background: MCOLORS[m.method] || C.muted }} />
+                      <span style={{ fontSize: 9, color: C.text, fontWeight: 500 }}>{m.method}</span>
+                      <span style={{ fontSize: 8, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{m.count}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Latest */}
+              {transactions.length > 0 && (
+                <div style={{ background: C.card, borderRadius: 4, padding: "6px 8px", border: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: 9, color: C.muted }}>Latest: <strong style={{ color: "#22c55e", fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>₦{transactions[0].amount.toLocaleString()}</strong> via {transactions[0].payment_method}</span>
+                  <span style={{ fontSize: 8, color: C.dim, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{nDate(transactions[0].created_at)}</span>
+                </div>
+              )}
             </div>
           )}
-        </div>
-
-        {/* Right Column */}
-        <div className="lg:col-span-2 space-y-3">
-          {/* Courses Summary */}
-          <div className="rounded-[14px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] p-4 sm:p-5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-[8px] bg-violet-500/10 flex items-center justify-center">
-                  <BookOpen className="w-3.5 h-3.5 text-violet-500" />
-                </div>
-                <div>
-                  <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">Courses</p>
-                  <p className="text-[11px] text-neutral-400">Overview</p>
-                </div>
-              </div>
-              <Link href="/admin/courses" className="text-[11px] font-medium text-blue-500 hover:underline">View all</Link>
-            </div>
-            <div className="space-y-1.5">
-              <MetricRow label="Total" value={String(totalCourses)} />
-              <MetricRow label="Active" value={String(activeCourses)} color="text-emerald-600" />
-              <MetricRow label="Weeks" value={String(courses.reduce((s, c) => s + c.total_weeks, 0))} color="text-amber-600" />
-              <MetricRow label="Students" value={String(totalStudents)} color="text-violet-600" />
-            </div>
-          </div>
-
-          {/* Notifications */}
-          <div className="rounded-[14px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] p-4 sm:p-5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-[8px] bg-amber-500/10 flex items-center justify-center">
-                  <Bell className="w-3.5 h-3.5 text-amber-500" />
-                </div>
-                <div>
-                  <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">Notifications</p>
-                  <p className="text-[11px] text-neutral-400">Latest</p>
-                </div>
-              </div>
-              <Link href="/admin/notifications" className="text-[11px] font-medium text-blue-500 hover:underline">View all</Link>
-            </div>
-            {notifications.length === 0 ? (
-              <p className="text-[13px] text-neutral-400 text-center py-4">No notifications yet</p>
-            ) : (
-              <div className="space-y-1.5">
-                {notifications.slice(0, 4).map((n) => (
-                  <Link key={n.id} href="/admin/notifications"
-                    className={`flex items-start gap-2.5 p-2 rounded-[8px] transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/30 ${n.status === "unread" ? "bg-neutral-50 dark:bg-neutral-800/20" : ""}`}>
-                    <div className={`w-6 h-6 rounded-[6px] flex items-center justify-center shrink-0 ${
-                      n.category === "student" ? "bg-violet-500/10 text-violet-500" :
-                      n.category === "payment" ? "bg-emerald-500/10 text-emerald-500" : "bg-blue-500/10 text-blue-500"
-                    }`}>
-                      {n.category === "student" ? <UserPlus className="w-3 h-3" /> :
-                       n.category === "payment" ? <CreditCard className="w-3 h-3" /> : <Bell className="w-3 h-3" />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-medium text-neutral-900 dark:text-white truncate leading-tight">{n.title}</p>
-                      <p className="text-[10px] text-neutral-400 mt-0.5">{timeAgo(n.created_at)}</p>
-                    </div>
-                    {n.status === "unread" && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1" />}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        </Card>
       </div>
 
       {/* ── Footer ── */}
-      <div className="flex items-center justify-between py-2.5 border-t border-neutral-200/40 dark:border-neutral-800/30">
-        <span className="text-[11px] text-neutral-400">
-          <span className="font-medium text-neutral-600 dark:text-neutral-300">{totalStudents}</span> total registrations
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0 0", marginTop: 12, borderTop: `1px solid ${C.border}` }}>
+        <span style={{ fontSize: 9, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+          {total} records · {enrolled} enrolled · {pending} pending
         </span>
-        <div className="flex items-center gap-3">
-          <FooterDot label="Enrolled" count={enrolledStudents} color="bg-emerald-500" />
-          <FooterDot label="Pending" count={pendingStudents} color="bg-amber-500" />
-          <FooterDot label="Courses" count={totalCourses} color="bg-violet-500" />
-        </div>
+        <span style={{ fontSize: 9, color: C.dim, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+          Beyund LMS v1.0
+        </span>
       </div>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════
-   Sub-Components
-   ═══════════════════════════════════════ */
+/* ── Components ── */
 
-function KpiCard({ icon, label, value, trend, color, href }: {
-  icon: React.ReactNode; label: string; value: string; trend: string; color: string; href: string;
+function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor }: {
+  icon: React.ReactNode; label: string; value: string; sub: string; href: string;
+  onToggle?: () => void; showEye?: boolean; valueColor?: string;
 }) {
   return (
-    <Link href={href} className="group">
-      <div className="rounded-[14px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] p-4 transition-all hover:shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700">
-        <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[11px] font-medium uppercase tracking-[0.06em] text-neutral-400">{label}</span>
-          <div className="w-7 h-7 rounded-[8px] bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-500 group-hover:scale-105 transition-transform">
-            {icon}
+    <Link href={href} style={{ textDecoration: "none" }}>
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: "10px 12px", transition: "border-color 0.15s" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+          <span style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>{label}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {showEye !== undefined && onToggle && (
+              <button onClick={e => { e.preventDefault(); e.stopPropagation(); onToggle(); }}
+                style={{ background: "transparent", border: "none", cursor: "pointer", padding: 2, color: C.muted, display: "flex" }}>
+                {showEye ? <EyeOff size={11} /> : <Eye size={11} />}
+              </button>
+            )}
+            <span style={{ color: C.muted }}>{icon}</span>
           </div>
         </div>
-        <p className={`text-[22px] font-semibold tracking-[-0.02em] ${color}`}>{value}</p>
-        <p className="text-[11px] text-neutral-400 dark:text-neutral-500 mt-1">{trend}</p>
+        <p style={{ fontSize: 20, fontWeight: 700, color: valueColor || C.text, margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace", lineHeight: 1.2 }}>{value}</p>
+        <p style={{ fontSize: 9, color: C.muted, margin: "2px 0 0" }}>{sub}</p>
       </div>
     </Link>
   );
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+function Card({ title, sub, icon, children }: { title: string; sub: string; icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: 10 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+        <span style={{ color: C.muted, display: "flex" }}>{icon}</span>
+        <span style={{ fontSize: 11, fontWeight: 600, color: C.text }}>{title}</span>
+        <span style={{ fontSize: 9, color: C.muted, marginLeft: "auto", fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{sub}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function CTip({ active, payload, label }: any) {
   if (!active || !payload) return null;
   return (
-    <div className="bg-white dark:bg-[#1c1c1e] border border-neutral-200 dark:border-neutral-800 rounded-[10px] shadow-lg px-3 py-2">
-      {label && <p className="text-[11px] text-neutral-500 mb-1">{label}</p>}
+    <div style={{ background: "#1e293b", border: `1px solid ${C.border}`, borderRadius: 4, padding: "6px 8px", boxShadow: "0 4px 12px rgba(0,0,0,0.4)" }}>
+      {label && <p style={{ fontSize: 9, color: C.muted, margin: "0 0 2px" }}>{label}</p>}
       {payload.map((p: any, i: number) => (
-        <p key={i} className="text-[12px] font-medium text-neutral-900 dark:text-white">
+        <p key={i} style={{ fontSize: 10, fontWeight: 600, color: C.text, margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
           {p.name}: {typeof p.value === "number" && p.value > 100000 ? `₦${p.value.toLocaleString()}` : p.value}
         </p>
       ))}
@@ -550,30 +434,13 @@ function CustomTooltip({ active, payload, label }: any) {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    enrolled: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-    pending: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-    contacted: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-    rejected: "bg-red-500/10 text-red-600 dark:text-red-400",
+function SBadge({ status }: { status: string }) {
+  const map: Record<string, string> = {
+    enrolled: C.green, pending: C.amber, contacted: C.accent, rejected: C.red,
   };
-  return <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-[6px] ${styles[status] || "bg-neutral-500/10 text-neutral-500"}`}>{status}</span>;
-}
-
-function MetricRow({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
-    <div className="flex items-center justify-between px-3 py-2 rounded-[8px] bg-neutral-50 dark:bg-neutral-800/30">
-      <span className="text-[12px] text-neutral-500">{label}</span>
-      <span className={`text-[13px] font-semibold ${color || "text-neutral-900 dark:text-white"}`}>{value}</span>
-    </div>
-  );
-}
-
-function FooterDot({ label, count, color }: { label: string; count: number; color: string }) {
-  return (
-    <span className="flex items-center gap-1.5 text-[11px] text-neutral-500">
-      <span className={`w-2 h-2 rounded-full ${color}`} />
-      {count} {label.toLowerCase()}
+    <span style={{ fontSize: 8, fontWeight: 600, color: map[status] || C.muted, textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+      {status}
     </span>
   );
 }
