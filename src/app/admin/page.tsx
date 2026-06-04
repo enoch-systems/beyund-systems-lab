@@ -195,7 +195,7 @@ export default function AdminDashboardPage() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 12 }}>
         <Kpi icon={<GraduationCap size={13} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/admin/students" C={C} />
         <Kpi icon={<BookOpen size={13} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/admin/courses" C={C} />
-        <Kpi icon={<DollarSign size={13} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/admin/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor="#fde68a" C={C} />
+        <Kpi icon={<DollarSign size={13} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/admin/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor={theme === "dark" ? "#fde68a" : "#92400e"} C={C} />
         <Kpi icon={<Bell size={13} />} label="Activity" value={String(notifications.length)} sub={`${unread} unread`} href="/admin/notifications" C={C} />
       </div>
 
@@ -293,7 +293,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
                   {[
-                    { label: "Collected", val: fmt(collected), color: "#fde68a" },
+                    { label: "Collected", val: fmt(collected), color: theme === "dark" ? "#fde68a" : "#92400e" },
                     { label: "Outstanding", val: fmt(outstanding), color: C.amber },
                     { label: "Total Fees", val: fmt(totalFees), color: C.text },
                   ].map(s => (

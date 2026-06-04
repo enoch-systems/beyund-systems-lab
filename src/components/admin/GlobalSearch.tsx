@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { useTheme } from "@/lib/theme-context";
+import { getColors } from "@/lib/theme-colors";
 import {
   Search,
   User,
@@ -59,6 +61,8 @@ const categoryConfig: Record<SearchCategory, { label: string; icon: React.ReactN
 export default function GlobalSearch() {
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
+  const { theme } = useTheme();
+  const C = getColors(theme);
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -228,7 +232,7 @@ export default function GlobalSearch() {
       {open ? (
         <div className="flex items-center gap-2 flex-1">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: C.muted }} />
             <input
               ref={inputRef}
               type="text"
@@ -236,15 +240,41 @@ export default function GlobalSearch() {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search students, courses, payments..."
-              className="w-full pl-9 pr-3 py-2 rounded-[10px] bg-[#1e293b] border border-[#334155] text-sm text-white placeholder-[#94a3b8] focus:outline-none focus:ring-1 focus:ring-[#14b8a6]/40"
+              style={{
+                width: "100%",
+                paddingLeft: 36,
+                paddingRight: 12,
+                paddingTop: 8,
+                paddingBottom: 8,
+                borderRadius: 10,
+                background: C.card,
+                border: `1px solid ${C.border}`,
+                color: C.text,
+                fontSize: 14,
+                outline: "none",
+              }}
+              className="focus:ring-1"
+              onFocus={(e) => e.currentTarget.style.boxShadow = `0 0 0 1px ${C.teal}40`}
+              onBlur={(e) => e.currentTarget.style.boxShadow = "none"}
             />
             {loading && (
-              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 animate-spin text-neutral-400" />
+              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 animate-spin" style={{ color: C.muted }} />
             )}
           </div>
           <button
             onClick={() => { setOpen(false); setQuery(""); }}
-            className="text-sm text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            style={{
+              fontSize: 14,
+              color: C.muted,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              minWidth: 44,
+              minHeight: 44,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             Cancel
           </button>
@@ -252,11 +282,20 @@ export default function GlobalSearch() {
       ) : (
         <button
           onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
-          className="hidden sm:flex items-center gap-2 w-full px-3 py-2 rounded-[10px] bg-[#1e293b] border border-[#334155] text-[#94a3b8] text-sm hover:bg-[#1e293b] hover:border-[#475569] transition-colors"
+          className="hidden sm:flex items-center gap-2 w-full px-3 py-2 rounded-[10px] transition-colors"
+          style={{
+            background: C.card,
+            border: `1px solid ${C.border}`,
+            color: C.muted,
+            fontSize: 14,
+          }}
         >
           <Search className="w-3.5 h-3.5 shrink-0" />
           <span className="truncate">Search students, courses...</span>
-          <kbd className="ml-auto text-[10px] font-mono text-neutral-400 dark:text-neutral-600 bg-neutral-200/50 dark:bg-neutral-700/50 px-1.5 py-0.5 rounded hidden lg:inline">
+          <kbd className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded hidden lg:inline" style={{
+            color: C.dim,
+            background: C.sidebarActive,
+          }}>
             ⌘K
           </kbd>
         </button>
@@ -264,14 +303,20 @@ export default function GlobalSearch() {
 
       {/* ── Dropdown ── */}
       {open && searched && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-[#1e293b] border border-[#334155] rounded-[14px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+        <div
+          className="absolute top-full left-0 right-0 mt-2 rounded-[14px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200"
+          style={{
+            background: C.card,
+            border: `1px solid ${C.border}`,
+          }}
+        >
           {results.length === 0 && !loading ? (
             <div className="flex flex-col items-center py-10 text-center px-4">
-          <div className="w-10 h-10 rounded-full bg-[#0f172a] flex items-center justify-center mb-3">
-            <Search className="w-5 h-5 text-[#475569]" />
-          </div>
-          <p className="text-[13px] font-medium text-[#94a3b8]">No matching records found</p>
-          <p className="text-[11px] text-[#64748b] mt-1">Try a different search term</p>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ background: C.sidebarActive }}>
+                <Search className="w-5 h-5" style={{ color: C.dim }} />
+              </div>
+              <p className="text-[13px] font-medium" style={{ color: C.muted }}>No matching records found</p>
+              <p className="text-[11px] mt-1" style={{ color: C.dim }}>Try a different search term</p>
             </div>
           ) : (
             <div className="max-h-[400px] overflow-y-auto py-2">
@@ -284,11 +329,10 @@ export default function GlobalSearch() {
                     key={result.id}
                     onClick={() => navigateTo(result)}
                     onMouseEnter={() => setSelectedIndex(index)}
-              className={`w-full flex items-start gap-3 px-4 py-2.5 text-left transition-colors ${
-                isSelected
-                  ? "bg-[#0f172a]"
-                  : "hover:bg-[#0f172a]/60"
-              }`}
+                    className="w-full flex items-start gap-3 px-4 py-2.5 text-left transition-colors"
+                    style={{
+                      background: isSelected ? C.sidebarActive : "transparent",
+                    }}
                   >
                     {/* Category icon */}
                     <div className={`w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0 mt-0.5 ${cfg.color}`}>
@@ -298,14 +342,14 @@ export default function GlobalSearch() {
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                      <p className="text-[13px] font-medium text-[#f8fafc] truncate">
+                        <p className="text-[13px] font-medium truncate" style={{ color: C.text }}>
                           {result.title}
                         </p>
                         <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-[4px] shrink-0 ${cfg.color}`}>
                           {cfg.label}
                         </span>
                       </div>
-                      <p className="text-[11px] text-[#94a3b8] mt-0.5 truncate">
+                      <p className="text-[11px] mt-0.5 truncate" style={{ color: C.muted }}>
                         {result.subtitle}
                       </p>
                     </div>
@@ -313,11 +357,11 @@ export default function GlobalSearch() {
                     {/* Right metadata */}
                     <div className="shrink-0 flex items-center gap-1.5">
                       {result.metadata && (
-                        <span className="text-[10px] text-neutral-400 dark:text-neutral-600 capitalize">
+                        <span className="text-[10px] capitalize" style={{ color: C.dim }}>
                           {result.metadata}
                         </span>
                       )}
-                      <ArrowUpRight className="w-3 h-3 text-neutral-300 dark:text-neutral-600" />
+                      <ArrowUpRight className="w-3 h-3" style={{ color: C.dim }} />
                     </div>
                   </button>
                 );
@@ -326,20 +370,20 @@ export default function GlobalSearch() {
           )}
 
           {/* Footer hint */}
-                  <div className="flex items-center justify-between px-4 py-2 border-t border-[#334155]">
+          <div className="flex items-center justify-between px-4 py-2 border-t" style={{ borderColor: C.border }}>
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1 text-[10px] text-[#64748b]">
-                <kbd className="px-1 py-0.5 rounded bg-[#0f172a] font-mono text-[9px] text-[#94a3b8]">↑</kbd>
-                <kbd className="px-1 py-0.5 rounded bg-[#0f172a] font-mono text-[9px] text-[#94a3b8]">↓</kbd>
+              <span className="flex items-center gap-1 text-[10px]" style={{ color: C.dim }}>
+                <kbd className="px-1 py-0.5 rounded font-mono text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↑</kbd>
+                <kbd className="px-1 py-0.5 rounded font-mono text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↓</kbd>
                 Navigate
               </span>
-              <span className="flex items-center gap-1 text-[10px] text-[#64748b]">
-                <kbd className="px-1 py-0.5 rounded bg-[#0f172a] font-mono text-[9px] text-[#94a3b8]">↵</kbd>
+              <span className="flex items-center gap-1 text-[10px]" style={{ color: C.dim }}>
+                <kbd className="px-1 py-0.5 rounded font-mono text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↵</kbd>
                 Open
               </span>
             </div>
-            <span className="flex items-center gap-1 text-[10px] text-[#64748b]">
-              <kbd className="px-1 py-0.5 rounded bg-[#0f172a] font-mono text-[9px] text-[#94a3b8]">esc</kbd>
+            <span className="flex items-center gap-1 text-[10px]" style={{ color: C.dim }}>
+              <kbd className="px-1 py-0.5 rounded font-mono text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>esc</kbd>
               Close
             </span>
           </div>
@@ -350,7 +394,19 @@ export default function GlobalSearch() {
       {!open && (
         <button
           onClick={() => { setOpen(true); }}
-          className="sm:hidden w-9 h-9 rounded-lg flex items-center justify-center text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          style={{
+            display: "none",
+            width: 36,
+            height: 36,
+            borderRadius: 8,
+            alignItems: "center",
+            justifyContent: "center",
+            color: C.muted,
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+          }}
+          className="sm:hidden"
         >
           <Search className="w-5 h-5" />
         </button>
