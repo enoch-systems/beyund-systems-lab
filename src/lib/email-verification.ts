@@ -125,14 +125,14 @@ async function verifyWithAbstractApi(email: string): Promise<EmailVerificationRe
   }
 }
 
-// ---------- SMTP fallback verification ----------
+// ---------- SMTP fallback verification (fast) ----------
 
 function verifyMailboxViaSmtp(email: string, mxHost: string): Promise<boolean | null> {
   return new Promise((resolve) => {
     const socket = net.createConnection(25, mxHost);
     let step = 0;
     let output = "";
-    const timeout = setTimeout(() => { socket.destroy(); resolve(null); }, 10000);
+    const timeout = setTimeout(() => { socket.destroy(); resolve(null); }, 3000);
 
     const finish = (result: boolean | null) => {
       clearTimeout(timeout);
@@ -269,10 +269,77 @@ async function verifyWithSmtpFallback(email: string): Promise<EmailVerificationR
  * Tries Abstract API first, falls back to SMTP verification.
  */
 export async function verifyEmail(email: string): Promise<EmailVerificationResult> {
-  // 1. Try Abstract API
-  const abstractResult = await verifyWithAbstractApi(email);
-  if (abstractResult) return abstractResult;
+  // Wrap everything in a 5-second timeout so registration never hangs
+  const timeoutPromise = new Promise<EmailVerificationResult>((resolve) => {
+    setTimeout(() => {
+      resolve({
+        deliverable: true, qualityScore: 0.5, isDisposable: false, isCatchAll: false,
+        mailboxExists: null,
+        message: "Email verification timed out. Registration accepted.",
+        provider: "timeout-fallback", quality: "medium",
+      });
+    }, 5000);
+  });
 
-  // 2. Fallback to SMTP
-  return verifyWithSmtpFallback(email);
+  const verifyPromise = (async (): Promise<EmailVerificationResult> => {
+    // 1. Try Abstract API
+    const abstractResult = await verifyWithAbstractApi(email);
+    if (abstractResult) return abstractResult;
+
+    // 2. Fallback to SMTP (fast path: skip RCPT TO, just check MX + disposable)
+    const domain = email.split("@")[1];
+
+    // Quick disposable check
+    if (DISPOSABLE_DOMAINS.has(domain)) {
+      return {
+        deliverable: false, qualityScore: 0, isDisposable: true, isCatchAll: false,
+        mailboxExists: false,
+        message: "Disposable or temporary email addresses are not accepted.",
+        provider: "smtp-fallback", quality: "invalid",
+      };
+    }
+
+    // Check domain + MX only (skip slow RCPT TO)
+    try {
+      await new Promise<void>((resolve, reject) => {
+        dns.resolve(domain, (err) => (err ? reject(err) : resolve()));
+      });
+    } catch {
+      return {
+        deliverable: false, qualityScore: 0, isDisposable: false, isCatchAll: false,
+        mailboxExists: false,
+        message: "This email domain does not exist. Please check for typos.",
+        provider: "smtp-fallback", quality: "invalid",
+      };
+    }
+
+    try {
+      const mxRecords = await resolveMx(domain);
+      if (!mxRecords || mxRecords.length === 0) {
+        return {
+          deliverable: false, qualityScore: 0, isDisposable: false, isCatchAll: false,
+          mailboxExists: false,
+          message: "This email domain cannot receive emails.",
+          provider: "smtp-fallback", quality: "invalid",
+        };
+      }
+    } catch {
+      return {
+        deliverable: false, qualityScore: 0, isDisposable: false, isCatchAll: false,
+        mailboxExists: false,
+        message: "Could not verify email domain.",
+        provider: "smtp-fallback", quality: "invalid",
+      };
+    }
+
+    // MX exists — accept it (fast path, skip RCPT TO)
+    return {
+      deliverable: true, qualityScore: 0.7, isDisposable: false, isCatchAll: false,
+      mailboxExists: null,
+      message: "Email verified successfully.",
+      provider: "mx-check", quality: "medium",
+    };
+  })();
+
+  return Promise.race([verifyPromise, timeoutPromise]);
 }
