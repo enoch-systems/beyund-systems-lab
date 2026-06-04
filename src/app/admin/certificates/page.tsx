@@ -98,8 +98,8 @@ export default function CertificatesPage() {
     return (
       <div className="space-y-5">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">Certificates</h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">Manage course completion and certificate issuance.</p>
+          <h1 className="text-[28px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">Certificates</h1>
+          <p className="text-[15px] text-neutral-500 dark:text-neutral-400 mt-1">Manage course completion and certificate issuance.</p>
         </div>
         <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/30">
           <div className="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4">
@@ -118,8 +118,8 @@ export default function CertificatesPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">Certificates</h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">Manage course completion and certificate issuance.</p>
+          <h1 className="text-[28px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">Certificates</h1>
+          <p className="text-[15px] text-neutral-500 dark:text-neutral-400 mt-1">Manage course completion and certificate issuance.</p>
         </div>
         <button className="px-3 py-2 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors flex items-center gap-2">
           <Download className="w-4 h-4" /> Bulk Issue

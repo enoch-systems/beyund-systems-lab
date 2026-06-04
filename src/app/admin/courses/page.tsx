@@ -61,7 +61,7 @@ export default function CoursesPage() {
       <div className="hidden lg:flex items-center justify-between gap-5">
         {/* Title */}
         <div className="shrink-0">
-          <h1 className="text-[28px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.02em] leading-tight">
+          <h1 className="text-[28px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
             Courses
           </h1>
           <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-0.5">
@@ -103,7 +103,7 @@ export default function CoursesPage() {
       <div className="hidden md:flex lg:hidden flex-col gap-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-[26px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.02em] leading-tight">
+            <h1 className="text-[26px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
               Courses
             </h1>
             <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-0.5">
@@ -141,7 +141,7 @@ export default function CoursesPage() {
       {/* Mobile (< md): full-width stacked */}
       <div className="md:hidden flex flex-col gap-3">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.02em] leading-tight">
+          <h1 className="text-[24px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
             Courses
           </h1>
           <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-0.5">
