@@ -127,9 +127,9 @@ export default function StudentsPage() {
         </div>
         <button
           onClick={() => setShowExportModal(true)}
-          className="inline-flex items-center gap-2 h-[42px] px-5 rounded-[10px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[13px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] cursor-pointer shadow-sm shrink-0"
+          className="inline-flex items-center gap-1.5 h-[34px] px-3.5 rounded-[8px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[12px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] cursor-pointer shadow-sm shrink-0"
         >
-          <Download className="w-4 h-4" />
+          <Download className="w-3.5 h-3.5" />
           Export PDF
         </button>
       </div>
