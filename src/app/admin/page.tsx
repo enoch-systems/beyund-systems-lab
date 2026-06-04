@@ -176,7 +176,7 @@ export default function AdminDashboardPage() {
       {/* ── Top Bar ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${C.border}` }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <span style={{ fontSize: 22, fontWeight: 700, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.2 }}>Welcome, {adminFirstName || "Admin"}</span>
+          <span style={{ fontSize: 22, fontWeight: 400, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.2 }}>Welcome, {adminFirstName || "Admin"}</span>
           <span style={{ fontSize: 12, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", opacity: 0.7 }}>{now}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
