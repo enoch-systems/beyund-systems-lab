@@ -118,10 +118,10 @@ export default function StudentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-[18px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
+          <h1 className="text-[15px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
             Students
           </h1>
-          <p className="text-[12px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+          <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
             {students.filter((s) => s.status === "enrolled").length} active · {students.filter((s) => s.status === "pending").length} pending · {students.length} total
           </p>
         </div>
