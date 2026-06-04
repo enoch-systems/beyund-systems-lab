@@ -31,9 +31,9 @@ const nDate = (s: string) => {
 const initials = (n: string) => n.split(" ").map(s => s[0]).join("").toUpperCase().slice(0, 2);
 const ts = () => {
   const d = new Date();
-  return d.toLocaleString("en-NG", {
+  return d.toLocaleString("en-US", {
     weekday: "short", day: "numeric", month: "short",
-    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true,
   });
 };
 
@@ -175,9 +175,9 @@ export default function AdminDashboardPage() {
 
       {/* ── Top Bar ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${C.border}` }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          <span style={{ fontSize: 15, fontWeight: 700, color: C.text, letterSpacing: "-0.01em" }}>Welcome, {adminFirstName || "Admin"}</span>
-          <span style={{ fontSize: 11, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{now}</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <span style={{ fontSize: 22, fontWeight: 700, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.2 }}>Welcome, {adminFirstName || "Admin"}</span>
+          <span style={{ fontSize: 12, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", opacity: 0.7 }}>{now}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, color: C.muted }}>
