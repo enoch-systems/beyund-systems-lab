@@ -154,13 +154,6 @@ export default function AdminDashboardPage() {
     return { day, label: d.toLocaleDateString("en-NG", { weekday: "short", day: "numeric" }), ...data };
   });
 
-  // ── Methods ──
-  const methods = [
-    { method: "Transfer", count: 10 },
-    { method: "POS", count: 1 },
-  ];
-  const MCOLORS: Record<string, string> = { Transfer: C.accent, Card: "#a855f7", Pos: C.green, Cash: C.amber, Ussd: C.red };
-
   if (loading) return (
     <div className="flex items-center justify-center min-h-[100vh]" style={{ background: C.bg }}>
       <div className="flex flex-col items-center gap-3">
@@ -346,18 +339,6 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* Methods */}
-              {methods.length > 0 && (
-                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                  {methods.map(m => (
-                    <div key={m.method} style={{ display: "flex", alignItems: "center", gap: 4, background: C.card, borderRadius: 3, padding: "3px 6px", border: `1px solid ${C.border}` }}>
-                      <span style={{ width: 5, height: 5, borderRadius: "50%", background: MCOLORS[m.method] || C.muted }} />
-                      <span style={{ fontSize: 9, color: C.text, fontWeight: 500 }}>{m.method}</span>
-                      <span style={{ fontSize: 8, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{m.count}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
 
               {/* Latest */}
               {transactions.length > 0 && (
