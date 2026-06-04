@@ -466,7 +466,7 @@ export default function PaymentsPage() {
             placeholder="Search students, courses, or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
 
@@ -498,7 +498,7 @@ export default function PaymentsPage() {
         <EmptyState hasSearch={!!search} />
       ) : (
         <>
-        <div className="hidden md:block rounded-[16px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] overflow-hidden">
+        <div className="hidden md:block rounded-[16px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px]">
               <thead>
@@ -797,12 +797,12 @@ function KpiCard({
   };
 
   return (
-    <div className="rounded-[12px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-4 transition-all duration-300 hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)]">
+    <div className="rounded-[12px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4 transition-all duration-300 hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)]">
       <div className="flex items-center justify-between mb-3">
         <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
           {label}
         </span>
-        <div className="w-7 h-7 rounded-[8px] bg-neutral-50 dark:bg-neutral-800/60 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+        <div className="w-7 h-7 rounded-[8px] border border-[#e2e8f0] dark:border-[#1e293b] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center text-neutral-500 dark:text-neutral-400">
           {icon}
         </div>
       </div>
@@ -994,7 +994,7 @@ function MobilePaymentCard({
   const config = statusConfig[status];
 
   return (
-    <div className="rounded-[14px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-4 space-y-3">
+    <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4 space-y-3">
       {/* Top: avatar + name + status */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neutral-600 to-neutral-400 dark:from-neutral-500 dark:to-neutral-300 flex items-center justify-center text-xs font-semibold text-white shrink-0">
@@ -1074,7 +1074,7 @@ function MobilePaymentCard({
 
 function EmptyState({ hasSearch }: { hasSearch: boolean }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e]">
+    <div className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
       <div className="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4">
         <Wallet className="w-8 h-8 text-neutral-400" />
       </div>
@@ -1107,7 +1107,7 @@ function Modal({
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          className="w-full max-w-md bg-white dark:bg-[#1c1c1e] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-neutral-200/60 dark:border-neutral-800/60 overflow-hidden animate-in zoom-in-95 duration-200"
+          className="w-full max-w-md bg-white dark:bg-[#111827] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e2e8f0] dark:border-[#1e293b] overflow-hidden animate-in zoom-in-95 duration-200"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between px-6 pt-5 pb-3">
