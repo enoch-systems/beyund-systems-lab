@@ -71,20 +71,20 @@ export default function CoursesPage() {
 
         {/* Search — centered, max-width constrained */}
         <div className="relative flex-1 max-w-[420px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#86868b] pointer-events-none" />
           <input
             type="text"
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[42px] pl-10 pr-10 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[14px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[34px] pl-8 pr-8 rounded-[8px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[12px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
             </button>
           )}
         </div>
@@ -92,9 +92,9 @@ export default function CoursesPage() {
         {/* Action */}
         <button
           onClick={() => setShowCreate(true)}
-          className="shrink-0 inline-flex items-center justify-center gap-2 h-[42px] px-5 rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-[34px] px-3.5 rounded-[8px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[12px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           New Course
         </button>
       </div>
@@ -112,27 +112,27 @@ export default function CoursesPage() {
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="inline-flex items-center justify-center gap-2 h-[40px] px-4 rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+            className="inline-flex items-center justify-center gap-1.5 h-[34px] px-3.5 rounded-[8px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[12px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             New Course
           </button>
         </div>
         <div className="relative w-full max-w-lg">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#86868b] pointer-events-none" />
           <input
             type="text"
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[42px] pl-10 pr-10 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[14px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[34px] pl-8 pr-8 rounded-[8px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[12px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
             </button>
           )}
         </div>
@@ -149,28 +149,28 @@ export default function CoursesPage() {
           </p>
         </div>
         <div className="relative w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#86868b] pointer-events-none" />
           <input
             type="text"
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[42px] pl-10 pr-10 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[14px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[34px] pl-8 pr-8 rounded-[8px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[12px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
             </button>
           )}
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="w-full inline-flex items-center justify-center gap-2 h-[42px] rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+          className="w-full inline-flex items-center justify-center gap-1.5 h-[34px] rounded-[8px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[12px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           New Course
         </button>
       </div>
