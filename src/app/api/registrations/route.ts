@@ -72,6 +72,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Create a notification for the new registration
+    const { error: notifError } = await supabase
+      .from("notifications")
+      .insert({
+        title: "New Student Registration",
+        message: `${full_name.trim()} registered for ${course_applying_for}`,
+        category: "student",
+        status: "unread",
+        student_id: data.id,
+        link: "/admin/students",
+      });
+
+    if (notifError) {
+      console.error("Notification insert error:", notifError);
+      // Don't fail the registration if notification fails
+    }
+
     return NextResponse.json(
       { message: "Registration submitted successfully", data },
       { status: 201 }

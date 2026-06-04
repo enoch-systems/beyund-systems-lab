@@ -262,6 +262,45 @@ function MobileTabBar({ onMenuOpen, C }: { onMenuOpen: () => void; C: Colors }) 
 /* ── Top Bar ── */
 function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () => void; collapsed: boolean; C: Colors }) {
   const { theme, toggleTheme } = useTheme();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const supabase = createSupabaseBrowserClient();
+
+  useEffect(() => {
+    async function loadCount() {
+      const { count } = await supabase
+        .from("notifications")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "unread")
+        .in("category", ["student", "payment"]);
+      if (count !== null) setUnreadCount(count);
+    }
+    loadCount();
+
+    // Live subscription for real-time count updates
+    const channel = supabase
+      .channel("notifications-count")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications" },
+        () => { setUnreadCount((prev) => prev + 1); }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "notifications" },
+        () => {
+          // Re-fetch count on update (e.g. marking as read)
+          supabase
+            .from("notifications")
+            .select("*", { count: "exact", head: true })
+            .eq("status", "unread")
+            .in("category", ["student", "payment"])
+            .then(({ count }) => { if (count !== null) setUnreadCount(count); });
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [supabase]);
 
   return (
     <header style={{
@@ -297,7 +336,19 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
           </button>
           <Link href="/admin/notifications" style={{ position: "relative", background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted, display: "flex", textDecoration: "none" }}>
             <Bell size={13} />
-            <span style={{ position: "absolute", top: 1, right: 1, width: 5, height: 5, borderRadius: "50%", background: C.red }} />
+            {unreadCount > 0 ? (
+              <span style={{
+                position: "absolute", top: -3, right: -3, minWidth: 14, height: 14,
+                borderRadius: 7, background: C.red, color: "#fff",
+                fontSize: 8, fontWeight: 700, fontFamily: "'JetBrains Mono','SF Mono',monospace",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                padding: "0 3px", lineHeight: 1,
+              }}>
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            ) : (
+              <span style={{ position: "absolute", top: 1, right: 1, width: 5, height: 5, borderRadius: "50%", background: C.dim }} />
+            )}
           </Link>
           <Link href="/admin/settings" style={{
             width: 24, height: 24, borderRadius: "50%", background: C.card,
