@@ -77,7 +77,7 @@ export default function CoursesPage() {
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[11px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
           {search && (
             <button
@@ -92,7 +92,7 @@ export default function CoursesPage() {
         {/* Action */}
         <button
           onClick={() => setShowCreate(true)}
-          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[11px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[11px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] shadow-sm"
         >
           <Plus className="w-3 h-3" />
           New Course
@@ -112,7 +112,7 @@ export default function CoursesPage() {
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="inline-flex items-center justify-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[11px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+            className="inline-flex items-center justify-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[11px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] shadow-sm"
           >
             <Plus className="w-3 h-3" />
             New Course
@@ -125,7 +125,7 @@ export default function CoursesPage() {
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[11px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
           {search && (
             <button
@@ -155,7 +155,7 @@ export default function CoursesPage() {
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[11px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
           {search && (
             <button
@@ -168,7 +168,7 @@ export default function CoursesPage() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="w-full inline-flex items-center justify-center gap-1.5 h-[30px] rounded-[6px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[11px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+          className="w-full inline-flex items-center justify-center gap-1.5 h-[30px] rounded-[6px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[11px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] shadow-sm"
         >
           <Plus className="w-3 h-3" />
           New Course
@@ -196,7 +196,7 @@ export default function CoursesPage() {
           {!search && (
             <button
               onClick={() => setShowCreate(true)}
-              className="mt-6 inline-flex items-center gap-2 h-[42px] px-5 rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+              className="mt-6 inline-flex items-center gap-2 h-[42px] px-5 rounded-[10px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[13px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] shadow-sm"
             >
               <Plus className="w-4 h-4" />
               Create Course
@@ -209,10 +209,10 @@ export default function CoursesPage() {
             <button
               key={course.id}
               onClick={() => setViewCourse(course.id)}
-              className="group text-left rounded-[12px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-4 hover:border-[#d0d0d5] dark:hover:border-[#4a4a4c] hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.3)] transition-all duration-200 active:scale-[0.99]"
+              className="group text-left rounded-[12px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4 hover:border-[#d0d0d5] dark:hover:border-[#4a4a4c] hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.3)] transition-all duration-200 active:scale-[0.99]"
             >
               <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="w-8 h-8 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center group-hover:bg-[#e8e8ed] dark:group-hover:bg-[#38383a] transition-colors">
+                <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center group-hover:bg-[#e8e8ed] dark:group-hover:bg-[#38383a] transition-colors">
                   <BookOpen className="w-4 h-4 text-[#8940fa]" />
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-[#d0d0d5] dark:text-[#4a4a4c] group-hover:text-[#86868b] transition-colors shrink-0 mt-1" />
@@ -234,7 +234,7 @@ export default function CoursesPage() {
                 </span>
               </div>
               {/* Status indicator dot */}
-              <div className="mt-2 pt-2.5 border-t border-[#f2f2f7] dark:border-[#2c2c2e] flex items-center gap-2">
+              <div className="mt-2 pt-2.5 border-t border-[#e2e8f0] dark:border-[#1e293b] flex items-center gap-2">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
                     course.status === "active"
