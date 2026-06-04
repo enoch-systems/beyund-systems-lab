@@ -14,13 +14,13 @@ export async function POST(request: NextRequest) {
     const { full_name, email, phone_whatsapp, sex, country, state, course_applying_for, employment_status, has_laptop, heard_about_us, learning_reason } = body;
 
     // Validate required fields
-    if (!full_name || !email || !phone_whatsapp || !sex || !country || !course_applying_for || !employment_status || !has_laptop || !heard_about_us || !learning_reason) {
+    if (!full_name || !email || !phone_whatsapp || !sex || !country || !course_applying_for || !employment_status || !has_laptop || !heard_about_us) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
-
+  
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         employment_status,
         has_laptop,
         heard_about_us,
-        learning_reason: learning_reason.trim(),
+        learning_reason: (learning_reason || "").trim(),
       })
       .select()
       .single();
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       .from("notifications")
       .insert({
         title: "New Student Registration",
-        message: `${full_name.trim()} registered for ${course_applying_for}`,
+        message: `${full_name.trim()} registered for ${course_applying_for}${learning_reason ? ` — "${learning_reason.trim()}"` : ""}`,
         category: "student",
         status: "unread",
         student_id: data.id,
