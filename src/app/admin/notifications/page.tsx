@@ -122,7 +122,7 @@ export default function NotificationsPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e]">
+      <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
           <div className="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-3">
             <CreditCard className="w-6 h-6 text-neutral-400" />
           </div>
@@ -136,7 +136,7 @@ export default function NotificationsPage() {
             return (
               <div
                 key={item.id}
-                className={`rounded-[12px] border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1c1c1e] p-4 transition-all hover:shadow-sm ${
+                className={`rounded-[12px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4 transition-all hover:shadow-sm ${
                   item.status === "unread" ? "border-l-[3px] border-l-blue-500" : ""
                 }`}
               >

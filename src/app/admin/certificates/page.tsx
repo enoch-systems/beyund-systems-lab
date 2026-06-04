@@ -101,7 +101,7 @@ export default function CertificatesPage() {
           <h1 className="text-[20px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">Certificates</h1>
           <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">Manage course completion and certificate issuance.</p>
         </div>
-        <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/30">
+        <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
           <div className="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4">
             <Users className="w-8 h-8 text-neutral-400" />
           </div>
@@ -134,7 +134,7 @@ export default function CertificatesPage() {
             placeholder="Search students..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
         <div className="flex items-center gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/50 rounded-[8px]">
@@ -158,7 +158,7 @@ export default function CertificatesPage() {
         {filtered.map((c) => (
           <div
             key={c.student.id}
-            className="rounded-[12px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-4"
+            className="rounded-[12px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4"
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ export default function CertificatesPage() {
               )}
             </div>
             {c.issued && (
-              <div className="flex items-center gap-4 text-[10px] text-neutral-400 dark:text-neutral-600 mt-2 pt-2.5 border-t border-neutral-100 dark:border-neutral-800/50">
+              <div className="flex items-center gap-4 text-[10px] text-neutral-400 dark:text-neutral-600 mt-2 pt-2.5 border-t border-[#e2e8f0] dark:border-[#1e293b]">
                 <span>
                   Cert ID: <span className="font-mono">{c.certId}</span>
                 </span>
