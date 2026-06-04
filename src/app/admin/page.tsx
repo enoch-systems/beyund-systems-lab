@@ -12,6 +12,8 @@ import {
   AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+import { useTheme } from "@/lib/theme-context";
+import { getColors, type Colors } from "@/lib/theme-colors";
 
 /* ── Types ── */
 type Student = { id: string; full_name: string; email: string; course_applying_for: string; status: string; country: string; state?: string; created_at: string; };
@@ -19,14 +21,6 @@ type Course = { id: string; title: string; total_weeks: number; status: string; 
 type PaymentProfile = { id: string; student_id: string; total_fee: number; amount_paid: number; balance: number; payment_status: string; };
 type PaymentTx = { id: string; student_id: string; amount: number; payment_method: string; created_at: string; };
 type Notification = { id: string; title: string; message: string; category: string; status: string; created_at: string; };
-
-/* ── Colors (dark & black-touch, no blue) ── */
-const C = {
-  teal: "#14b8a6", accent: "#6b7280", slate: "#64748b",
-  green: "#22c55e", amber: "#eab308", red: "#ef4444",
-  bg: "#080c1a", card: "#080c1a", border: "#1e293b",
-  text: "#f8fafc", muted: "#94a3b8", dim: "#475569",
-};
 
 /* ── Helpers ── */
 const fmt = (n: number) => n === 0 ? "₦0" : `₦${n.toLocaleString()}`;
@@ -57,6 +51,8 @@ export default function AdminDashboardPage() {
   const [showOutstanding, setShowOutstanding] = useState(true);
   const [showTotalFees, setShowTotalFees] = useState(true);
   const [now, setNow] = useState(ts());
+  const { theme } = useTheme();
+  const C = getColors(theme);
 
   useEffect(() => { document.title = "Admin LMS — Beyund Labs Academy"; }, []);
 
@@ -188,16 +184,16 @@ export default function AdminDashboardPage() {
 
       {/* ── KPI Row ── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 12 }}>
-        <Kpi icon={<GraduationCap size={13} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/admin/students" />
-        <Kpi icon={<BookOpen size={13} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/admin/courses" />
-        <Kpi icon={<DollarSign size={13} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/admin/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor="#fde68a" />
-        <Kpi icon={<Bell size={13} />} label="Activity" value={String(notifications.length)} sub={`${unread} unread`} href="/admin/notifications" />
+        <Kpi icon={<GraduationCap size={13} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/admin/students" C={C} />
+        <Kpi icon={<BookOpen size={13} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/admin/courses" C={C} />
+        <Kpi icon={<DollarSign size={13} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/admin/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor="#fde68a" C={C} />
+        <Kpi icon={<Bell size={13} />} label="Activity" value={String(notifications.length)} sub={`${unread} unread`} href="/admin/notifications" C={C} />
       </div>
 
       {/* ── Main Chart Row ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
         {/* Growth */}
-        <Card title="Registrations" sub="14d" icon={<TrendingUp size={12} />}>
+        <Card title="Registrations" sub="14d" icon={<TrendingUp size={12} />} C={C}>
           <div style={{ height: 160 }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={gd} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
@@ -210,7 +206,7 @@ export default function AdminDashboardPage() {
                 <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="label" tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} interval={1} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CTip />} />
+                <Tooltip content={<CTip C={C} />} />
                 <Area type="monotone" dataKey="count" stroke={C.teal} strokeWidth={1.5} fill="url(#gg)" name="New" dot={total > 0 ? { r: 2, fill: C.teal, stroke: "none" } : false} />
               </AreaChart>
             </ResponsiveContainer>
@@ -218,14 +214,14 @@ export default function AdminDashboardPage() {
         </Card>
       
         {/* Status */}
-        <Card title="Registration Status" sub={sd.filter(d => d.value > 0).length + " statuses"} icon={<BarChart3 size={12} />}>
+        <Card title="Registration Status" sub={sd.filter(d => d.value > 0).length + " statuses"} icon={<BarChart3 size={12} />} C={C}>
           <div style={{ height: 160, display: "flex", alignItems: "center" }}>
             <ResponsiveContainer width="100%" height="100%">
               <RePieChart>
                 <Pie data={displaySD} cx="50%" cy="50%" innerRadius={40} outerRadius={60} paddingAngle={2} dataKey="value">
                   {displaySD.map((e, i) => <Cell key={i} fill={e.color} stroke="transparent" />)}
                 </Pie>
-                <Tooltip content={<CTip />} />
+                <Tooltip content={<CTip C={C} />} />
               </RePieChart>
             </ResponsiveContainer>
             <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 8 }}>
@@ -244,7 +240,7 @@ export default function AdminDashboardPage() {
       {/* ── Secondary Chart Row ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
         {/* Region */}
-        <Card title="Enrollment by Region" sub="Top 5 states" icon={<BarChart3 size={12} />}>
+        <Card title="Enrollment by Region" sub="Top 5 states" icon={<BarChart3 size={12} />} C={C}>
           {regionData.length === 0 ? (
             <div style={{ height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ fontSize: 11, color: C.muted }}>No data</span>
@@ -256,7 +252,7 @@ export default function AdminDashboardPage() {
                   <CartesianGrid stroke={C.border} strokeDasharray="3 3" horizontal={false} />
                   <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
                   <YAxis type="category" dataKey="region" tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} width={75} />
-                  <Tooltip content={<CTip />} />
+                  <Tooltip content={<CTip C={C} />} />
                   <Bar dataKey="count" radius={[0, 2, 2, 0]} name="Students" barSize={14} label={{ position: 'center', fill: '#f8fafc', fontSize: 9, fontWeight: 700, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
                     {regionData.map((e, i) => <Cell key={i} fill={e.fill} fillOpacity={e.fillOpacity} />)}
                   </Bar>
@@ -267,7 +263,7 @@ export default function AdminDashboardPage() {
         </Card>
 
         {/* Payment Analytics */}
-        <Card title="Payment Analytics" sub={`${transactions.length} tx`} icon={<DollarSign size={12} />}>
+        <Card title="Payment Analytics" sub={`${transactions.length} tx`} icon={<DollarSign size={12} />} C={C}>
           {paymentProfiles.length === 0 ? (
             <div style={{ height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ fontSize: 11, color: C.muted }}>No data</span>
@@ -334,7 +330,7 @@ export default function AdminDashboardPage() {
                       <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="label" tick={{ fontSize: 8, fill: C.muted }} axisLine={false} tickLine={false} />
                       <YAxis hide />
-                      <Tooltip content={<CTip />} />
+                      <Tooltip content={<CTip C={C} />} />
                       <Area type="monotone" dataKey="amount" stroke={C.teal} strokeWidth={1.5} fill="url(#pg)" name="Amount" dot={{ r: 2, fill: C.teal, stroke: "none" }} />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -381,9 +377,9 @@ export default function AdminDashboardPage() {
 
 /* ── Components ── */
 
-function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor }: {
+function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor, C }: {
   icon: React.ReactNode; label: string; value: string; sub: string; href: string;
-  onToggle?: () => void; showEye?: boolean; valueColor?: string;
+  onToggle?: () => void; showEye?: boolean; valueColor?: string; C: Colors;
 }) {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
@@ -407,7 +403,7 @@ function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor }: {
   );
 }
 
-function Card({ title, sub, icon, children }: { title: string; sub: string; icon: React.ReactNode; children: React.ReactNode }) {
+function Card({ title, sub, icon, children, C }: { title: string; sub: string; icon: React.ReactNode; children: React.ReactNode; C: Colors }) {
   return (
     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: 10 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
@@ -420,10 +416,10 @@ function Card({ title, sub, icon, children }: { title: string; sub: string; icon
   );
 }
 
-function CTip({ active, payload, label }: any) {
+function CTip({ active, payload, label, C }: any) {
   if (!active || !payload) return null;
   return (
-    <div style={{ background: "#1e293b", border: `1px solid ${C.border}`, borderRadius: 4, padding: "6px 8px", boxShadow: "0 4px 12px rgba(0,0,0,0.4)" }}>
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: "6px 8px", boxShadow: "0 4px 12px rgba(0,0,0,0.4)" }}>
       {label && <p style={{ fontSize: 9, color: C.muted, margin: "0 0 2px" }}>{label}</p>}
       {payload.map((p: any, i: number) => (
         <p key={i} style={{ fontSize: 10, fontWeight: 600, color: C.text, margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
@@ -434,7 +430,7 @@ function CTip({ active, payload, label }: any) {
   );
 }
 
-function SBadge({ status }: { status: string }) {
+function SBadge({ status, C }: { status: string; C: Colors }) {
   const map: Record<string, string> = {
     enrolled: C.green, pending: C.amber, contacted: C.accent, rejected: C.red,
   };

@@ -23,13 +23,7 @@ import BeyundLogo from "@/components/BeyundLogo";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
 import { ProfileProvider, useProfile } from "@/lib/profile-context";
 import GlobalSearch from "@/components/admin/GlobalSearch";
-
-/* ── Enterprise Color Palette ── */
-const C = {
-  teal: "#14b8a6", accent: "#6b7280", green: "#22c55e", amber: "#eab308", red: "#ef4444",
-  bg: "#080c1a", card: "#080c1a", border: "#1e293b",
-  text: "#f8fafc", muted: "#94a3b8", dim: "#475569",
-};
+import { getColors, type Colors } from "@/lib/theme-colors";
 
 /* ── Types ── */
 interface NavItem {
@@ -81,14 +75,14 @@ function useActiveRoute() {
 }
 
 /* ── Desktop Sidebar ── */
-function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: {
-  collapsed: boolean; setCollapsed: (v: boolean) => void; onNavigate: () => void;
+function DesktopSidebar({ collapsed, setCollapsed, onNavigate, C }: {
+  collapsed: boolean; setCollapsed: (v: boolean) => void; onNavigate: () => void; C: Colors;
 }) {
   const isActive = useActiveRoute();
   return (
     <aside style={{
       position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 30,
-      background: "#080c1a", borderRight: `1px solid ${C.border}`,
+      background: C.sidebarBg, borderRight: `1px solid ${C.border}`,
       width: collapsed ? 56 : 220, transition: "width 0.2s",
     }} className="hidden lg:flex lg:flex-col">
       {/* Logo */}
@@ -145,7 +139,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: {
                     justifyContent: collapsed ? "center" : "flex-start",
                     borderRadius: 3, textDecoration: "none",
                     fontSize: 11, fontWeight: 500,
-                    background: active ? C.card : "transparent",
+                    background: active ? C.sidebarActive : "transparent",
                     color: active ? C.text : C.muted,
                     border: active ? `1px solid ${C.border}` : "1px solid transparent",
                     marginBottom: 2,
@@ -153,7 +147,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: {
                     cursor: "pointer",
                   }}
                   title={collapsed ? item.label : undefined}
-                  onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = C.card; e.currentTarget.style.color = C.text; } }}
+                  onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = C.sidebarActive; e.currentTarget.style.color = C.text; } }}
                   onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.muted; } }}
                 >
                   <span style={{ display: "flex", flexShrink: 0 }}>{item.icon}</span>
@@ -179,7 +173,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: {
 }
 
 /* ── Mobile Drawer ── */
-function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+function MobileDrawer({ open, onClose, C }: { open: boolean; onClose: () => void; C: Colors }) {
   const isActive = useActiveRoute();
   const router = useRouter();
   const handleNav = (href: string) => { router.push(href); onClose(); };
@@ -189,7 +183,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
       {open && <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 50 }} className="lg:hidden" onClick={onClose} />}
       <div style={{
         position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 51,
-        width: 260, background: "#080c1a", borderRight: `1px solid ${C.border}`,
+        width: 260, background: C.sidebarBg, borderRight: `1px solid ${C.border}`,
         transform: open ? "translateX(0)" : "translateX(-100%)",
         transition: "transform 0.25s",
       }} className="lg:hidden">
@@ -211,7 +205,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
                       display: "flex", alignItems: "center", gap: 8, width: "100%",
                       padding: "7px 8px", borderRadius: 3, border: "none",
                       fontSize: 11, fontWeight: 500, cursor: "pointer",
-                      background: active ? C.card : "transparent",
+                      background: active ? C.sidebarActive : "transparent",
                       color: active ? C.text : C.muted,
                       marginBottom: 2, textAlign: "left",
                     }}>
@@ -232,13 +226,13 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
 }
 
 /* ── Mobile Tab Bar ── */
-function MobileTabBar({ onMenuOpen }: { onMenuOpen: () => void }) {
+function MobileTabBar({ onMenuOpen, C }: { onMenuOpen: () => void; C: Colors }) {
   const isActive = useActiveRoute();
   const tabs = allNavItems.slice(0, 5);
   return (
     <nav style={{
       display: "none", position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, height: 52,
-      background: C.bg, borderTop: `1px solid ${C.border}`,
+      background: C.sidebarBg, borderTop: `1px solid ${C.border}`,
     }} className="lg:hidden">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", padding: "0 4px" }}>
         {tabs.map((item) => {
@@ -266,7 +260,7 @@ function MobileTabBar({ onMenuOpen }: { onMenuOpen: () => void }) {
 }
 
 /* ── Top Bar ── */
-function AdminTopbar({ onMobileMenuOpen, collapsed }: { onMobileMenuOpen: () => void; collapsed: boolean }) {
+function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () => void; collapsed: boolean; C: Colors }) {
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -340,6 +334,8 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createSupabaseBrowserClient();
+  const { theme } = useTheme();
+  const C = getColors(theme);
 
   const isLoginPage = pathname === "/admin/login";
 
@@ -366,8 +362,8 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.text }}>
-      <DesktopSidebar collapsed={collapsed} setCollapsed={setCollapsed} onNavigate={() => {}} />
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <DesktopSidebar collapsed={collapsed} setCollapsed={setCollapsed} onNavigate={() => {}} C={C} />
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} C={C} />
 
       <div style={{
         display: "flex", flexDirection: "column", minWidth: 0,
@@ -375,7 +371,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         marginLeft: collapsed ? 56 : 220,
         paddingBottom: 56,
       }} className="lg:pb-0 lg:ml-auto-style">
-        <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} collapsed={collapsed} />
+        <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} collapsed={collapsed} C={C} />
         <main style={{ flex: 1, overflow: "auto", width: "100%" }}>
           <div style={{ padding: "12px" }}>
             {children}
@@ -383,7 +379,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         </main>
       </div>
 
-      <MobileTabBar onMenuOpen={() => setDrawerOpen(true)} />
+      <MobileTabBar onMenuOpen={() => setDrawerOpen(true)} C={C} />
     </div>
   );
 }
