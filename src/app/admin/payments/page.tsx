@@ -401,10 +401,10 @@ export default function PaymentsPage() {
       {/* ──────── PAGE HEADER ──────── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-[28px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
+          <h1 className="text-[20px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
             Payments
           </h1>
-          <p className="text-[15px] text-neutral-500 dark:text-neutral-400 mt-1">
+          <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
             Track tuition payments and manage student balances.
           </p>
         </div>
@@ -417,9 +417,9 @@ export default function PaymentsPage() {
             setPaymentNotes("");
             setShowPaymentModal(true);
           }}
-          className="inline-flex items-center gap-2 h-[42px] px-5 rounded-[10px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[13px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] cursor-pointer shadow-sm shrink-0"
+          className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[11px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] cursor-pointer shadow-sm shrink-0"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3 h-3" />
           Record Payment
         </button>
       </div>
@@ -460,23 +460,23 @@ export default function PaymentsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         {/* Search */}
         <div className="relative flex-1 w-full sm:max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-neutral-400" />
           <input
             type="text"
             placeholder="Search students, courses, or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[44px] pl-10 pr-4 rounded-[10px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
 
         {/* Status tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-neutral-100/80 dark:bg-neutral-800/50 rounded-[10px] shrink-0">
+        <div className="flex items-center gap-1 p-1 bg-neutral-100/80 dark:bg-neutral-800/50 rounded-[8px] shrink-0">
           {(["all", "paid", "pending", "installment"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setStatusFilter(tab)}
-              className={`px-4 py-2 rounded-[8px] text-[13px] font-medium transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-[6px] text-[11px] font-medium transition-all cursor-pointer ${
                 statusFilter === tab
                   ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-sm"
                   : "text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
@@ -488,7 +488,7 @@ export default function PaymentsPage() {
         </div>
 
         {/* Record count */}
-        <p className="text-[13px] text-neutral-400 dark:text-neutral-500 shrink-0 ml-auto sm:ml-0">
+        <p className="text-[11px] text-neutral-400 dark:text-neutral-500 shrink-0 ml-auto sm:ml-0">
           {sortedStudents.length} student{sortedStudents.length !== 1 ? "s" : ""}
         </p>
       </div>
@@ -509,7 +509,7 @@ export default function PaymentsPage() {
                   <Th label="Balance" field="balance" sortField={sortField} sortDir={sortDir} onSort={() => handleSort("balance")} className="text-right" />
                   <Th label="Status" field="status" sortField={sortField} sortDir={sortDir} onSort={() => handleSort("status")} />
                   <Th label="Last Payment" field="date" sortField={sortField} sortDir={sortDir} onSort={() => handleSort("date")} />
-                  <th className="py-3.5 pr-6 text-right text-[11px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
+                  <th className="py-2.5 pr-5 text-right text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
                     Actions
                   </th>
                 </tr>
@@ -797,19 +797,19 @@ function KpiCard({
   };
 
   return (
-    <div className="rounded-[16px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-5 sm:p-6 transition-all duration-300 hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)]">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
+    <div className="rounded-[12px] border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-[#1c1c1e] p-4 transition-all duration-300 hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)]">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
           {label}
         </span>
-        <div className="w-9 h-9 rounded-[10px] bg-neutral-50 dark:bg-neutral-800/60 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+        <div className="w-7 h-7 rounded-[8px] bg-neutral-50 dark:bg-neutral-800/60 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
           {icon}
         </div>
       </div>
-      <p className="text-[26px] sm:text-[28px] font-semibold tracking-[-0.03em] text-neutral-900 dark:text-white mb-1.5">
+      <p className="text-[20px] font-semibold tracking-[-0.03em] text-neutral-900 dark:text-white mb-1">
         {value}
       </p>
-      <p className={`text-[12px] font-medium ${trendColors[trendType]}`}>
+      <p className={`text-[11px] font-medium ${trendColors[trendType]}`}>
         {trend}
       </p>
     </div>
@@ -835,7 +835,7 @@ function Th({
   return (
     <th
       onClick={onSort}
-      className={`py-3.5 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500 cursor-pointer select-none hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors group ${className}`}
+      className={`py-2.5 px-3 text-left text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500 cursor-pointer select-none hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors group ${className}`}
     >
       <span className="inline-flex items-center gap-1.5">
         {label}
@@ -871,38 +871,38 @@ function TableRow({
 
   return (
     <tr className="border-b border-neutral-50 dark:border-neutral-800/40 hover:bg-neutral-50/50 dark:hover:bg-white/[0.02] transition-colors group">
-      <td className="py-3.5 pl-6 pr-4">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-neutral-600 to-neutral-400 dark:from-neutral-500 dark:to-neutral-300 flex items-center justify-center text-xs font-semibold text-white shrink-0">
+      <td className="py-2.5 pl-5 pr-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-neutral-600 to-neutral-400 dark:from-neutral-500 dark:to-neutral-300 flex items-center justify-center text-[10px] font-semibold text-white shrink-0">
             {getInitials(student.full_name)}
           </div>
           <div className="min-w-0">
-            <p className="text-[14px] font-semibold text-neutral-900 dark:text-white truncate">
+            <p className="text-[12px] font-semibold text-neutral-900 dark:text-white truncate">
               {student.full_name}
             </p>
-            <p className="text-[11px] text-neutral-400 dark:text-neutral-500 truncate">
+            <p className="text-[10px] text-neutral-400 dark:text-neutral-500 truncate">
               {student.email}
             </p>
           </div>
         </div>
       </td>
-      <td className="py-3.5 px-4">
+      <td className="py-2.5 px-3">
         <div className="flex items-center gap-1.5">
-          <GraduationCap className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
-          <span className="text-[13px] text-neutral-700 dark:text-neutral-300 truncate">
+          <GraduationCap className="w-3 h-3 text-neutral-400 shrink-0" />
+          <span className="text-[11px] text-neutral-700 dark:text-neutral-300 truncate">
             {student.course_applying_for}
           </span>
         </div>
       </td>
-      <td className="py-3.5 px-4 text-right">
+      <td className="py-2.5 px-3 text-right">
         <div>
-          <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">
+          <p className="text-[12px] font-semibold text-neutral-900 dark:text-white">
             {formatCurrency(amountPaid)}
           </p>
           {/* Mini progress bar */}
           {profile && (
-            <div className="flex items-center justify-end gap-2 mt-1">
-              <div className="w-16 h-1 rounded-full bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
+            <div className="flex items-center justify-end gap-2 mt-0.5">
+              <div className="w-14 h-1 rounded-full bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
                     paidPercentage >= 100
@@ -914,58 +914,58 @@ function TableRow({
                   style={{ width: `${paidPercentage}%` }}
                 />
               </div>
-              <span className="text-[11px] text-neutral-400 font-mono">{paidPercentage}%</span>
+              <span className="text-[10px] text-neutral-400 font-mono">{paidPercentage}%</span>
             </div>
           )}
         </div>
       </td>
-      <td className="py-3.5 px-4 text-right">
-        <p className="text-[14px] font-semibold text-neutral-900 dark:text-white">
+      <td className="py-2.5 px-3 text-right">
+        <p className="text-[12px] font-semibold text-neutral-900 dark:text-white">
           {formatCurrency(balance)}
         </p>
-        <p className="text-[11px] text-neutral-400 mt-0.5">
+        <p className="text-[10px] text-neutral-400 mt-0.5">
           of {formatCurrency(totalFee)}
         </p>
       </td>
-      <td className="py-3.5 px-4">
-        <span className={`inline-flex items-center gap-1.5 text-[12px] font-semibold px-2.5 py-1 rounded-[8px] ${config.bg} ${config.text}`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
+      <td className="py-2.5 px-3">
+        <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-[6px] ${config.bg} ${config.text}`}>
+          <span className={`w-1 h-1 rounded-full ${config.dot}`} />
           {config.label}
         </span>
       </td>
-      <td className="py-3.5 px-4">
+      <td className="py-2.5 px-3">
         <div className="flex items-center gap-1.5">
-          <CalendarDays className="w-3.5 h-3.5 text-neutral-400" />
-          <span className="text-[13px] text-neutral-600 dark:text-neutral-400">
+          <CalendarDays className="w-3 h-3 text-neutral-400" />
+          <span className="text-[11px] text-neutral-600 dark:text-neutral-400">
             {lastPaymentDate ? formatDate(lastPaymentDate) : "—"}
           </span>
         </div>
       </td>
-      <td className="py-3.5 pr-6 text-right">
+      <td className="py-2.5 pr-5 text-right">
         <div className="flex items-center justify-end gap-1">
           <button
             onClick={onRecordPayment}
-            className="w-8 h-8 rounded-[8px] flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+            className="w-7 h-7 rounded-[6px] flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
             title="Add Payment"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
           </button>
           {balance > 0 && (
             <button
               onClick={onMarkPaid}
-              className="w-8 h-8 rounded-[8px] flex items-center justify-center text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer"
+              className="w-7 h-7 rounded-[6px] flex items-center justify-center text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer"
               title="Mark Fully Paid"
             >
-              <CheckCircle className="w-4 h-4" />
+              <CheckCircle className="w-3.5 h-3.5" />
             </button>
           )}
           {payments.length > 0 && (
             <button
               onClick={onViewHistory}
-              className="w-8 h-8 rounded-[8px] flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+              className="w-7 h-7 rounded-[6px] flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
               title="View History"
             >
-              <Receipt className="w-4 h-4" />
+              <Receipt className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
