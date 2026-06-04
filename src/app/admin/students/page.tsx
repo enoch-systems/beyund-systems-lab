@@ -118,18 +118,18 @@ export default function StudentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
+          <h1 className="text-[13px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
             Students
           </h1>
-          <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+          <p className="text-[10px] text-neutral-500 dark:text-neutral-400 mt-0.5">
             {students.filter((s) => s.status === "enrolled").length} active · {students.filter((s) => s.status === "pending").length} pending · {students.length} total
           </p>
         </div>
         <button
           onClick={() => setShowExportModal(true)}
-          className="inline-flex items-center gap-1.5 h-[34px] px-3.5 rounded-[8px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[12px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] cursor-pointer shadow-sm shrink-0"
+          className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[11px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] cursor-pointer shadow-sm shrink-0"
         >
-          <Download className="w-3.5 h-3.5" />
+          <Download className="w-3 h-3" />
           Export PDF
         </button>
       </div>
@@ -137,19 +137,19 @@ export default function StudentsPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-neutral-400" />
           <input
             type="text"
             placeholder="Search students..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-[34px] pl-8 pr-3 rounded-[8px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[12px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="h-[34px] px-3 rounded-[8px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[12px] text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all cursor-pointer shrink-0"
+          className="h-[30px] px-3 rounded-[6px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[11px] text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all cursor-pointer shrink-0"
           style={{ colorScheme: "dark" }}
         >
           <option value="all">All Status</option>
@@ -159,7 +159,7 @@ export default function StudentsPage() {
             </option>
           ))}
         </select>
-        <p className="text-[11px] text-neutral-400 dark:text-neutral-500 shrink-0 self-center ml-auto sm:ml-0 hidden sm:block">
+        <p className="text-[10px] text-neutral-400 dark:text-neutral-500 shrink-0 self-center ml-auto sm:ml-0 hidden sm:block">
           {filteredStudents.length} student{filteredStudents.length !== 1 ? "s" : ""}
         </p>
       </div>
@@ -170,57 +170,57 @@ export default function StudentsPage() {
           <table className="w-full min-w-[900px]">
             <thead>
               <tr className="border-b border-neutral-100 dark:border-neutral-800">
-                <th className="px-5 py-3.5 text-left text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Student</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em] hidden sm:table-cell">Phone</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em] hidden lg:table-cell">Country</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Course</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Status</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em] hidden lg:table-cell">Date</th>
-                <th className="px-5 pr-6 py-3.5 text-right text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Actions</th>
+              <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Student</th>
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em] hidden sm:table-cell">Phone</th>
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em] hidden lg:table-cell">Country</th>
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Course</th>
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Status</th>
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em] hidden lg:table-cell">Date</th>
+                <th className="px-4 pr-5 py-2.5 text-right text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-50 dark:divide-neutral-800/40">
               {filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-16 text-center text-neutral-400 dark:text-neutral-600">
+                  <td colSpan={7} className="px-4 py-12 text-center text-[12px] text-neutral-400 dark:text-neutral-600">
                     No students found.
                   </td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => (
                   <tr key={student.id} className="hover:bg-neutral-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500/20 to-indigo-500/20 dark:from-violet-500/10 dark:to-indigo-500/10 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-xs font-semibold text-neutral-700 dark:text-neutral-300 shrink-0">
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500/20 to-indigo-500/20 dark:from-violet-500/10 dark:to-indigo-500/10 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-[10px] font-semibold text-neutral-700 dark:text-neutral-300 shrink-0">
                           {getInitials(student.full_name)}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[14px] font-semibold text-neutral-900 dark:text-white truncate">
+                          <p className="text-[12px] font-semibold text-neutral-900 dark:text-white truncate">
                             {student.full_name}
                           </p>
-                          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 truncate">
+                          <p className="text-[10px] text-neutral-400 dark:text-neutral-500 truncate">
                             {student.email}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden sm:table-cell">
+                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden sm:table-cell">
                       {student.phone_whatsapp}
                     </td>
-                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden lg:table-cell">
+                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden lg:table-cell">
                       {student.country}
                     </td>
-                    <td className="px-5 py-3.5 text-[13px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
+                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
                       {student.course_applying_for}
                     </td>
-                    <td className="px-5 py-3.5">
-                      <select
+                    <td className="px-4 py-2.5">
+                    <select
                         value={student.status}
                         onChange={(e) =>
                           updateStatus(student.id, e.target.value as StudentRegistration["status"])
                         }
                         disabled={updatingId === student.id}
-                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-[8px] border-0 cursor-pointer focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 ${statusStyles[student.status] || ""}`}
+                        className={`text-[10px] font-semibold px-2 py-0.5 rounded-[6px] border-0 cursor-pointer focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 ${statusStyles[student.status] || ""}`}
                         style={{ colorScheme: "dark" }}
                       >
                         {statusOptions.map((status) => (
@@ -230,19 +230,19 @@ export default function StudentsPage() {
                         ))}
                       </select>
                     </td>
-                    <td className="px-5 py-3.5 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap hidden lg:table-cell">
+                    <td className="px-4 py-2.5 text-[11px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap hidden lg:table-cell">
                       {new Date(student.created_at).toLocaleDateString("en-US", {
                         day: "numeric",
                         month: "short",
                         year: "numeric",
                       })}
                     </td>
-                    <td className="px-5 pr-6 py-3.5 text-right">
+                    <td className="px-4 pr-5 py-2.5 text-right">
                       <button
                         onClick={() => setSelectedStudent(student)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] border border-neutral-200 dark:border-neutral-700 text-[12px] font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[6px] border border-neutral-200 dark:border-neutral-700 text-[11px] font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
                       >
-                        <Eye className="w-3.5 h-3.5" />
+                        <Eye className="w-3 h-3" />
                         <span className="hidden sm:inline">View</span>
                       </button>
                     </td>
@@ -289,7 +289,7 @@ export default function StudentsPage() {
                     updateStatus(student.id, e.target.value as StudentRegistration["status"])
                   }
                   disabled={updatingId === student.id}
-                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-[8px] border-0 cursor-pointer ${statusStyles[student.status] || ""}`}
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-[6px] border-0 cursor-pointer ${statusStyles[student.status] || ""}`}
                   style={{ colorScheme: "dark" }}
                 >
                   {statusOptions.map((status) => (

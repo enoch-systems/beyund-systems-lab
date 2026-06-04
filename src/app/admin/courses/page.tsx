@@ -61,23 +61,23 @@ export default function CoursesPage() {
       <div className="hidden lg:flex items-center justify-between gap-5">
         {/* Title */}
         <div className="shrink-0">
-          <h1 className="text-[28px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
+          <h1 className="text-[20px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
             Courses
           </h1>
-          <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-0.5">
+          <p className="text-[11px] text-[#86868b] dark:text-[#98989d] mt-0.5">
             {courses.length} course{courses.length !== 1 ? "s" : ""}
           </p>
         </div>
 
         {/* Search — centered, max-width constrained */}
         <div className="relative flex-1 max-w-[420px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#86868b] pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[#86868b] pointer-events-none" />
           <input
             type="text"
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[34px] pl-8 pr-8 rounded-[8px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[12px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[11px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
           />
           {search && (
             <button
@@ -92,9 +92,9 @@ export default function CoursesPage() {
         {/* Action */}
         <button
           onClick={() => setShowCreate(true)}
-          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-[34px] px-3.5 rounded-[8px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[12px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[11px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-3 h-3" />
           New Course
         </button>
       </div>
@@ -103,29 +103,29 @@ export default function CoursesPage() {
       <div className="hidden md:flex lg:hidden flex-col gap-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-[26px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
+            <h1 className="text-[20px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
               Courses
             </h1>
-            <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-0.5">
+            <p className="text-[11px] text-[#86868b] dark:text-[#98989d] mt-0.5">
               {courses.length} course{courses.length !== 1 ? "s" : ""}
             </p>
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="inline-flex items-center justify-center gap-1.5 h-[34px] px-3.5 rounded-[8px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[12px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+            className="inline-flex items-center justify-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[11px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-3 h-3" />
             New Course
           </button>
         </div>
         <div className="relative w-full max-w-lg">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#86868b] pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[#86868b] pointer-events-none" />
           <input
             type="text"
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[34px] pl-8 pr-8 rounded-[8px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[12px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[11px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
           />
           {search && (
             <button
@@ -141,21 +141,21 @@ export default function CoursesPage() {
       {/* Mobile (< md): full-width stacked */}
       <div className="md:hidden flex flex-col gap-3">
         <div>
-          <h1 className="text-[24px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
+          <h1 className="text-[20px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em] leading-tight">
             Courses
           </h1>
-          <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-0.5">
+          <p className="text-[11px] text-[#86868b] dark:text-[#98989d] mt-0.5">
             {courses.length} course{courses.length !== 1 ? "s" : ""}
           </p>
         </div>
         <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#86868b] pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[#86868b] pointer-events-none" />
           <input
             type="text"
             placeholder="Search courses…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[34px] pl-8 pr-8 rounded-[8px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[12px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
+            className="w-full h-[30px] pl-8 pr-8 rounded-[6px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[11px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/25 focus:border-[#8940fa]/40 transition-all"
           />
           {search && (
             <button
@@ -168,9 +168,9 @@ export default function CoursesPage() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="w-full inline-flex items-center justify-center gap-1.5 h-[34px] rounded-[8px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[12px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
+          className="w-full inline-flex items-center justify-center gap-1.5 h-[30px] rounded-[6px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[11px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.12)]"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-3 h-3" />
           New Course
         </button>
       </div>
@@ -209,24 +209,24 @@ export default function CoursesPage() {
             <button
               key={course.id}
               onClick={() => setViewCourse(course.id)}
-              className="group text-left rounded-[14px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-5 hover:border-[#d0d0d5] dark:hover:border-[#4a4a4c] hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.3)] transition-all duration-200 active:scale-[0.99]"
+              className="group text-left rounded-[12px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-4 hover:border-[#d0d0d5] dark:hover:border-[#4a4a4c] hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.3)] transition-all duration-200 active:scale-[0.99]"
             >
-              <div className="flex items-start justify-between gap-3 mb-4">
-                <div className="w-10 h-10 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center group-hover:bg-[#e8e8ed] dark:group-hover:bg-[#38383a] transition-colors">
-                  <BookOpen className="w-5 h-5 text-[#8940fa]" />
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="w-8 h-8 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center group-hover:bg-[#e8e8ed] dark:group-hover:bg-[#38383a] transition-colors">
+                  <BookOpen className="w-4 h-4 text-[#8940fa]" />
                 </div>
-                <ChevronRight className="w-4 h-4 text-[#d0d0d5] dark:text-[#4a4a4c] group-hover:text-[#86868b] transition-colors shrink-0 mt-1.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-[#d0d0d5] dark:text-[#4a4a4c] group-hover:text-[#86868b] transition-colors shrink-0 mt-1" />
               </div>
-              <h3 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-white leading-snug line-clamp-2">
+              <h3 className="text-[13px] font-semibold text-[#1d1d1f] dark:text-white leading-snug line-clamp-2">
                 {course.title}
               </h3>
-              <div className="flex items-center gap-3 mt-3">
-                <div className="flex items-center gap-1.5 text-[12px] text-[#86868b] dark:text-[#98989d]">
-                  <CalendarDays className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-3 mt-2">
+                <div className="flex items-center gap-1.5 text-[11px] text-[#86868b] dark:text-[#98989d]">
+                  <CalendarDays className="w-3 h-3" />
                   {course.total_weeks} week{course.total_weeks !== 1 ? "s" : ""}
                 </div>
-                <span className="text-[12px] text-[#d0d0d5] dark:text-[#4a4a4c]">·</span>
-                <span className="text-[12px] text-[#86868b] dark:text-[#98989d]">
+                <span className="text-[11px] text-[#d0d0d5] dark:text-[#4a4a4c]">·</span>
+                <span className="text-[11px] text-[#86868b] dark:text-[#98989d]">
                   {new Date(course.created_at).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -234,7 +234,7 @@ export default function CoursesPage() {
                 </span>
               </div>
               {/* Status indicator dot */}
-              <div className="mt-3 pt-3 border-t border-[#f2f2f7] dark:border-[#2c2c2e] flex items-center gap-2">
+              <div className="mt-2 pt-2.5 border-t border-[#f2f2f7] dark:border-[#2c2c2e] flex items-center gap-2">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
                     course.status === "active"
@@ -244,7 +244,7 @@ export default function CoursesPage() {
                       : "bg-[#86868b]"
                   }`}
                 />
-                <span className="text-[11px] font-medium text-[#86868b] dark:text-[#98989d] capitalize">
+                <span className="text-[10px] font-medium text-[#86868b] dark:text-[#98989d] capitalize">
                   {course.status}
                 </span>
               </div>
