@@ -548,7 +548,7 @@ export default function PaymentsPage() {
             placeholder="Search students, courses, or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#121212] border border-[#e2e8f0] dark:border-[#1a1a1a] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
 
@@ -580,7 +580,7 @@ export default function PaymentsPage() {
         <EmptyState hasSearch={!!search} />
       ) : (
         <>
-        <div className="hidden md:block rounded-[16px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] overflow-hidden">
+        <div className="hidden md:block rounded-[16px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px]">
               <thead>
@@ -672,7 +672,7 @@ export default function PaymentsPage() {
                     );
                     setSelectedStudent(found || null);
                   }}
-                  className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
+                  className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
                 >
                   <option value="">Select a student...</option>
                   {students.map((s) => (
@@ -685,7 +685,7 @@ export default function PaymentsPage() {
             ) : (
               <>
                 {/* Selected student info */}
-                <div className="flex items-center gap-3 p-3 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e]">
+                <div className="flex items-center gap-3 p-3 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818]">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neutral-600 to-neutral-400 dark:from-neutral-500 dark:to-neutral-300 flex items-center justify-center text-sm font-semibold text-white shrink-0">
                     {getInitials(selectedStudent.student.full_name)}
                   </div>
@@ -714,7 +714,7 @@ export default function PaymentsPage() {
                     placeholder="0"
                     value={paymentAmount}
                     onChange={(e) => setPaymentAmount(e.target.value)}
-                    className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
+                    className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
                   />
                 </div>
 
@@ -725,7 +725,7 @@ export default function PaymentsPage() {
                   <select
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
+                    className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
                   >
                     <option value="transfer">Bank Transfer</option>
                     <option value="cash">Cash</option>
@@ -745,7 +745,7 @@ export default function PaymentsPage() {
                     placeholder="e.g. PAY-001"
                     value={paymentRef}
                     onChange={(e) => setPaymentRef(e.target.value)}
-                    className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
+                    className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
                   />
                 </div>
 
@@ -758,14 +758,14 @@ export default function PaymentsPage() {
                     placeholder="e.g. First installment"
                     value={paymentNotes}
                     onChange={(e) => setPaymentNotes(e.target.value)}
-                    className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
+                    className="w-full h-[44px] px-3.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 text-[14px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15"
                   />
                 </div>
 
                 <div className="flex items-center gap-2.5 pt-2">
                   <button
                     onClick={() => { setShowPaymentModal(false); setSelectedStudent(null); }}
-                    className="flex-1 h-[44px] rounded-[10px] text-[13px] font-medium text-neutral-500 bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
+                    className="flex-1 h-[44px] rounded-[10px] text-[13px] font-medium text-neutral-500 bg-[#f2f2f7] dark:bg-[#181818] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -795,7 +795,7 @@ export default function PaymentsPage() {
         <Modal onClose={() => { setShowHistoryModal(false); setHistoryStudent(null); }} title={`Payment History — ${historyStudent.student.full_name}`}>
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] text-center">
+              <div className="p-3 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] text-center">
                 <p className="text-[10px] text-neutral-500 uppercase tracking-wider">Fee</p>
                 <p className="text-[14px] font-semibold text-neutral-900 dark:text-white mt-1">
                   {formatCurrency(historyStudent.profile?.total_fee || 150000)}
@@ -825,7 +825,7 @@ export default function PaymentsPage() {
                 {historyStudent.payments.map((p) => (
                   <div
                     key={p.id}
-                    className="flex items-center justify-between p-3 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e]"
+                    className="flex items-center justify-between p-3 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818]"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-white dark:bg-neutral-700 flex items-center justify-center text-sm">
@@ -883,12 +883,12 @@ function KpiCard({
   };
 
   return (
-    <div className="rounded-[12px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4 transition-all duration-300 hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)]">
+    <div className="rounded-[12px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-4 transition-all duration-300 hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)]">
       <div className="flex items-center justify-between mb-3">
         <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
           {label}
         </span>
-        <div className="w-7 h-7 rounded-[8px] border border-[#e2e8f0] dark:border-[#1e293b] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+        <div className="w-7 h-7 rounded-[8px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center text-neutral-500 dark:text-neutral-400">
           {icon}
         </div>
       </div>
@@ -1086,7 +1086,7 @@ function MobilePaymentCard({
   const config = statusConfig[status];
 
   return (
-    <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-4 space-y-3">
+    <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-4 space-y-3">
       {/* Top: avatar + name + status */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neutral-600 to-neutral-400 dark:from-neutral-500 dark:to-neutral-300 flex items-center justify-center text-xs font-semibold text-white shrink-0">
@@ -1127,7 +1127,7 @@ function MobilePaymentCard({
 
       {/* Amounts row */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="p-2.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e]">
+        <div className="p-2.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818]">
           <p className="text-[10px] text-neutral-400 uppercase tracking-wider">Paid</p>
           <p className="text-[14px] font-semibold text-neutral-900 dark:text-white mt-0.5">
             {formatCurrency(amountPaid)}
@@ -1165,7 +1165,7 @@ function MobilePaymentCard({
 
 function EmptyState({ hasSearch }: { hasSearch: boolean }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
+    <div className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
       <div className="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4">
         <Wallet className="w-8 h-8 text-neutral-400" />
       </div>
@@ -1198,7 +1198,7 @@ function Modal({
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          className="w-full max-w-md bg-white dark:bg-[#111827] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e2e8f0] dark:border-[#1e293b] overflow-hidden animate-in zoom-in-95 duration-200"
+          className="w-full max-w-md bg-white dark:bg-[#121212] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e2e8f0] dark:border-[#1a1a1a] overflow-hidden animate-in zoom-in-95 duration-200"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between px-6 pt-5 pb-3">
@@ -1207,7 +1207,7 @@ function Modal({
             </h3>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center text-neutral-400 hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
+              className="w-8 h-8 rounded-full bg-[#f2f2f7] dark:bg-[#181818] flex items-center justify-center text-neutral-400 hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -1281,7 +1281,7 @@ function StatusMenu({
           <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
         </button>
         {open && (
-          <div className="absolute right-0 bottom-full mb-1 w-56 rounded-[10px] bg-white dark:bg-[#1c1c1e] border border-[#e2e8f0] dark:border-[#1e293b] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.4)] z-30 overflow-hidden">
+          <div className="absolute right-0 bottom-full mb-1 w-56 rounded-[10px] bg-white dark:bg-[#181818] border border-[#e2e8f0] dark:border-[#1a1a1a] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.4)] z-30 overflow-hidden">
             <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
               Set Status
             </div>
@@ -1327,7 +1327,7 @@ function StatusMenu({
         <MoreVertical className="w-3.5 h-3.5" />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-60 rounded-[10px] bg-white dark:bg-[#1c1c1e] border border-[#e2e8f0] dark:border-[#1e293b] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.4)] z-30 overflow-hidden">
+        <div className="absolute right-0 top-full mt-1 w-60 rounded-[10px] bg-white dark:bg-[#181818] border border-[#e2e8f0] dark:border-[#1a1a1a] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.4)] z-30 overflow-hidden">
           <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
             Set Status
           </div>

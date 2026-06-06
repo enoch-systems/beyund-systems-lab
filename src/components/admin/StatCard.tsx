@@ -25,7 +25,7 @@ export default function StatCard({
         <span className={`${apple.text.micro} uppercase tracking-[0.04em]`}>
           {title}
         </span>
-        <div className="w-8 h-8 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center text-[#86868b] dark:text-[#98989d]">
+        <div className="w-8 h-8 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] flex items-center justify-center text-[#86868b] dark:text-[#98989d]">
           {icon}
         </div>
       </div>
@@ -40,7 +40,7 @@ export default function StatCard({
                 ? "bg-[#30b94e]/10 text-[#30b94e] dark:bg-[#30d158]/15 dark:text-[#30d158]"
                 : changeType === "negative"
                   ? "bg-[#d6453e]/10 text-[#d6453e] dark:bg-[#ff453a]/15 dark:text-[#ff453a]"
-                  : "bg-[#f2f2f7] dark:bg-[#2c2c2e] text-[#86868b] dark:text-[#98989d]"
+                  : "bg-[#f2f2f7] dark:bg-[#181818] text-[#86868b] dark:text-[#98989d]"
             }`}
           >
             {changeType === "positive" ? "↑" : changeType === "negative" ? "↓" : "→"} {change}

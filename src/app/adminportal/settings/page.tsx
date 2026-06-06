@@ -138,7 +138,7 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* ── Admin Profile Card ── */}
-        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-5 lg:row-span-2">
+        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5 lg:row-span-2">
           <div className="mb-4">
             <h2 className="text-[13px] font-semibold text-neutral-900 dark:text-white">
               Admin Profile
@@ -156,7 +156,7 @@ export default function SettingsPage() {
             onChange={handleImageChange}
             className="hidden"
           />
-          <div className="flex items-center gap-3 mb-4 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-3">
+          <div className="flex items-center gap-3 mb-4 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-3">
             <div
               role="button"
               tabIndex={0}
@@ -168,10 +168,10 @@ export default function SettingsPage() {
                 <img
                   src={profileImage}
                   alt="Profile"
-                  className="w-14 h-14 rounded-full object-cover border-2 border-[#e2e8f0] dark:border-[#1e293b]"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-[#e2e8f0] dark:border-[#1a1a1a]"
                 />
               ) : (
-                <div className="w-14 h-14 rounded-full bg-[#f1f5f9] dark:bg-[#1e293b] border-2 border-[#e2e8f0] dark:border-[#1e293b] flex items-center justify-center overflow-hidden">
+                <div className="w-14 h-14 rounded-full bg-[#f1f5f9] dark:bg-[#1e293b] border-2 border-[#e2e8f0] dark:border-[#1a1a1a] flex items-center justify-center overflow-hidden">
                   <Camera className="w-5 h-5 text-neutral-400" />
                 </div>
               )}
@@ -189,7 +189,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="space-y-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-3">
+          <div className="space-y-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-3">
             {/* Name */}
             <div>
               <label className="block text-[11px] font-medium text-neutral-900 dark:text-white mb-1">
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                 type="text"
                 value={adminName}
                 onChange={(e) => setAdminName(e.target.value)}
-                className="w-full h-[36px] px-3 rounded-[8px] bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-neutral-800 text-[12px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+                className="w-full h-[36px] px-3 rounded-[8px] bg-white dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 text-[12px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
               />
             </div>
 
@@ -246,9 +246,9 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Password Card ── */}
-        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-5">
+        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center">
               <Lock className="w-4 h-4 text-neutral-400" />
             </div>
             <div>
@@ -273,9 +273,9 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Appearance Card ── */}
-        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-5">
+        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center">
               <Palette className="w-4 h-4 text-amber-500" />
             </div>
             <div>
@@ -288,7 +288,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
+          <div className="flex items-center justify-between p-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
             <div className="flex items-center gap-3">
               {theme === "dark" ? (
                 <Moon className="w-4 h-4 text-neutral-500" />
@@ -318,7 +318,7 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Account Card ── */}
-        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827] p-5 lg:col-span-1">
+        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5 lg:col-span-1">
           <div className="mb-3">
             <h2 className="text-[13px] font-semibold text-neutral-900 dark:text-white">
               Account
@@ -328,7 +328,7 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          <div className="p-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#111827]">
+          <div className="p-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
             <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mb-2.5">
               Sign out from your admin account. You will need to sign in again.
             </p>
@@ -352,7 +352,7 @@ export default function SettingsPage() {
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-              className="w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
+              className="w-full max-w-sm bg-white dark:bg-[#181818] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 pb-0 flex flex-col items-center text-center">
@@ -371,7 +371,7 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2.5 p-6 pt-5">
                 <button
                   onClick={() => setShowResetModal(false)}
-                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
+                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#181818] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -407,7 +407,7 @@ export default function SettingsPage() {
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-              className="w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
+              className="w-full max-w-sm bg-white dark:bg-[#181818] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 pb-0 flex flex-col items-center text-center">
@@ -424,7 +424,7 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2.5 p-6 pt-5">
                 <button
                   onClick={() => setShowSignOutModal(false)}
-                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
+                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#181818] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

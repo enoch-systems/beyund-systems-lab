@@ -76,7 +76,7 @@ export default function ExportReportModal({ open, onClose, students, exportedBy 
       >
         <div
           ref={modalRef}
-          className="w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-[18px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+          className="w-full max-w-sm bg-white dark:bg-[#121212] rounded-[18px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
         >
           <div className="p-7">
             {/* Header */}
@@ -91,7 +91,7 @@ export default function ExportReportModal({ open, onClose, students, exportedBy 
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center text-[#8e8e93] hover:bg-[#e5e5ea] dark:hover:bg-[#38383a] transition-colors shrink-0"
+                className="w-8 h-8 rounded-full bg-[#f2f2f7] dark:bg-[#181818] flex items-center justify-center text-[#8e8e93] hover:bg-[#e5e5ea] dark:hover:bg-[#38383a] transition-colors shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -99,17 +99,17 @@ export default function ExportReportModal({ open, onClose, students, exportedBy 
 
             {/* Metadata */}
             <div className="space-y-3 mb-6">
-              <div className="flex items-center justify-between py-2.5 px-4 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e]">
+              <div className="flex items-center justify-between py-2.5 px-4 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818]">
                 <span className="text-[13px] text-[#8e8e93] dark:text-[#98989d]">Date</span>
                 <span className="text-[13px] font-medium text-[#1d1d1f] dark:text-white">
                   {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                 </span>
               </div>
-              <div className="flex items-center justify-between py-2.5 px-4 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e]">
+              <div className="flex items-center justify-between py-2.5 px-4 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818]">
                 <span className="text-[13px] text-[#8e8e93] dark:text-[#98989d]">Format</span>
                 <span className="text-[13px] font-medium text-[#1d1d1f] dark:text-white">A4 PDF</span>
               </div>
-              <div className="flex items-center justify-between py-2.5 px-4 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e]">
+              <div className="flex items-center justify-between py-2.5 px-4 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818]">
                 <span className="text-[13px] text-[#8e8e93] dark:text-[#98989d]">Students</span>
                 <span className="text-[13px] font-medium text-[#1d1d1f] dark:text-white">{students.length}</span>
               </div>
@@ -117,7 +117,7 @@ export default function ExportReportModal({ open, onClose, students, exportedBy 
 
             {/* Success */}
             {success && (
-              <div className="flex items-center gap-2 px-4 py-3 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] mb-4">
+              <div className="flex items-center gap-2 px-4 py-3 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] mb-4">
                 <CheckCircle className="w-4 h-4 text-[#30d158] shrink-0" />
                 <span className="text-[13px] font-medium text-[#1d1d1f] dark:text-white flex-1">{success}</span>
                 <button

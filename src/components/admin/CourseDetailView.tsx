@@ -135,13 +135,13 @@ export default function CourseDetailView({ courseId, onBack, onUpdated }: Props)
         <ArrowLeft className="w-4 h-4" /> Back to Courses
       </button>
 
-      <div className="rounded-[16px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-6">
+      <div className="rounded-[16px] border border-[#e5e5ea] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             {editingTitle ? (
               <div className="flex items-center gap-2">
                 <input type="text" value={titleValue} onChange={(e) => setTitleValue(e.target.value)}
-                  className="flex-1 px-3 py-2 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[20px] font-semibold text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30" autoFocus onKeyDown={(e) => e.key === "Enter" && handleSaveTitle()} />
+                  className="flex-1 px-3 py-2 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-[#e5e5ea] dark:border-[#1a1a1a] text-[20px] font-semibold text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30" autoFocus onKeyDown={(e) => e.key === "Enter" && handleSaveTitle()} />
                 <button onClick={handleSaveTitle} className="w-9 h-9 rounded-[10px] bg-[#1d1d1f] dark:bg-white flex items-center justify-center text-white dark:text-[#1d1d1f] hover:bg-[#2d2d2f] transition-colors"><Save className="w-4 h-4" /></button>
               </div>
             ) : (
@@ -160,14 +160,14 @@ export default function CourseDetailView({ courseId, onBack, onUpdated }: Props)
         </div>
       </div>
 
-      <div className="rounded-[16px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] p-6">
+      <div className="rounded-[16px] border border-[#e5e5ea] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center"><CalendarDays className="w-4 h-4 text-[#86868b]" /></div>
+          <div className="w-8 h-8 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] flex items-center justify-center"><CalendarDays className="w-4 h-4 text-[#86868b]" /></div>
           <div><h3 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-white">Course Duration</h3><p className="text-[12px] text-[#86868b] dark:text-[#98989d]">Set the number of weeks</p></div>
         </div>
         <div className="flex items-center gap-3">
           <input type="number" min={1} max={52} value={weekCountInput} onChange={(e) => setWeekCountInput(e.target.value)}
-            className="w-24 px-3 py-2.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[15px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30" placeholder="Weeks" />
+            className="w-24 px-3 py-2.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-[#e5e5ea] dark:border-[#1a1a1a] text-[15px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30" placeholder="Weeks" />
           <button onClick={handleSetWeeks} disabled={settingWeeks}
             className="px-4 py-2.5 rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all disabled:opacity-40">
             {settingWeeks ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
@@ -185,7 +185,7 @@ export default function CourseDetailView({ courseId, onBack, onUpdated }: Props)
           {weeks.sort((a, b) => a.week_number - b.week_number).map((week) => {
             const isOpen = expandedWeek === week.week_number;
             return (
-              <div key={week.id} className="rounded-[14px] border border-[#e5e5ea] dark:border-[#38383a] bg-white dark:bg-[#1c1c1e] overflow-hidden">
+              <div key={week.id} className="rounded-[14px] border border-[#e5e5ea] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] overflow-hidden">
                 <button onClick={() => setExpandedWeek(isOpen ? null : week.week_number)}
                   className="w-full flex items-center gap-3 px-5 py-4 hover:bg-[#f9f9f9] dark:hover:bg-white/[0.02] transition-colors text-left">
                   <div className="w-8 h-8 rounded-[10px] flex items-center justify-center cursor-pointer"
@@ -199,14 +199,14 @@ export default function CourseDetailView({ courseId, onBack, onUpdated }: Props)
                   {isOpen ? <ChevronDown className="w-4 h-4 text-[#86868b]" /> : <ChevronRight className="w-4 h-4 text-[#86868b]" />}
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-5 space-y-4 border-t border-[#e5e5ea]/50 dark:border-[#38383a]/50 pt-4">
+                  <div className="px-5 pb-5 space-y-4 border-t border-[#e5e5ea]/50 dark:border-[#1a1a1a]/50 pt-4">
                     {/* Week Title */}
                     <div>
                       <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-wider mb-1.5">Week Title</label>
                       {editingWeek?.num === week.week_number && editingWeek.field === "title" ? (
                         <div className="flex items-center gap-2">
                           <input type="text" value={editValue} onChange={(e) => setEditValue(e.target.value)}
-                            className="flex-1 px-3 py-2 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[14px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30" autoFocus />
+                            className="flex-1 px-3 py-2 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-[#e5e5ea] dark:border-[#1a1a1a] text-[14px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30" autoFocus />
                           <button onClick={handleSaveWeek} className="w-8 h-8 rounded-[8px] bg-[#1d1d1f] dark:bg-white flex items-center justify-center text-white dark:text-[#1d1d1f]">
                             {savingWeek ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                           </button>
@@ -224,7 +224,7 @@ export default function CourseDetailView({ courseId, onBack, onUpdated }: Props)
                       {editingWeek?.num === week.week_number && editingWeek.field === "scheme" ? (
                         <div className="space-y-2">
                           <textarea value={editValue} onChange={(e) => setEditValue(e.target.value)} rows={4}
-                            className="w-full px-3 py-2.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[13px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30 resize-none"
+                            className="w-full px-3 py-2.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-[#e5e5ea] dark:border-[#1a1a1a] text-[13px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30 resize-none"
                             placeholder="Describe what will be covered this week..." />
                           <button onClick={handleSaveWeek} className="px-3 py-1.5 rounded-[8px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[12px] font-medium">{savingWeek ? "Saving..." : "Save"}</button>
                         </div>
@@ -241,7 +241,7 @@ export default function CourseDetailView({ courseId, onBack, onUpdated }: Props)
                       {editingWeek?.num === week.week_number && editingWeek.field === "resources" ? (
                         <div className="space-y-2">
                           <textarea value={editValue} onChange={(e) => setEditValue(e.target.value)} rows={2}
-                            className="w-full px-3 py-2.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[13px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30 resize-none"
+                            className="w-full px-3 py-2.5 rounded-[10px] bg-[#f2f2f7] dark:bg-[#181818] border border-[#e5e5ea] dark:border-[#1a1a1a] text-[13px] text-[#1d1d1f] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30 resize-none"
                             placeholder="Links, files, or references..." />
                           <button onClick={handleSaveWeek} className="px-3 py-1.5 rounded-[8px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[12px] font-medium">{savingWeek ? "Saving..." : "Save"}</button>
                         </div>

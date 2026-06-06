@@ -48,10 +48,10 @@ export default function CreateCourseModal({ open, onClose, onCreated }: Props) {
     <>
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50" onClick={onClose} />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={(e) => e.target === e.currentTarget && onClose()}>
-        <div className="w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-[20px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="w-full max-w-sm bg-white dark:bg-[#121212] rounded-[20px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           <div className="p-7">
             {/* Icon */}
-            <div className="w-12 h-12 rounded-[14px] bg-[#f2f2f7] dark:bg-[#2c2c2e] flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 rounded-[14px] bg-[#f2f2f7] dark:bg-[#181818] flex items-center justify-center mx-auto mb-4">
               <BookOpen className="w-6 h-6 text-[#8940fa]" />
             </div>
 
@@ -70,7 +70,7 @@ export default function CreateCourseModal({ open, onClose, onCreated }: Props) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Full Stack Development"
-              className="w-full px-4 py-3 rounded-[12px] bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-[#e5e5ea] dark:border-[#38383a] text-[15px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30 focus:border-[#8940fa] transition-all"
+              className="w-full px-4 py-3 rounded-[12px] bg-[#f2f2f7] dark:bg-[#181818] border border-[#e5e5ea] dark:border-[#1a1a1a] text-[15px] text-[#1d1d1f] dark:text-white placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#8940fa]/30 focus:border-[#8940fa] transition-all"
               maxLength={120}
             />
             <p className="text-[11px] text-[#86868b] dark:text-[#98989d] mt-1.5 text-right">{title.length}/120</p>
