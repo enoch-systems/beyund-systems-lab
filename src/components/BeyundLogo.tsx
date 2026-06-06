@@ -11,7 +11,7 @@ export default function BeyundLogo({ className = "" }: { className?: string }) {
         }}
       />
       <div
-        className="flex items-baseline -ml-2 mix-blend-screen"
+        className="flex items-baseline -ml-2 mix-blend-screen text-[10px] sm:text-[13px] md:text-[15px] lg:text-base"
         style={{ textShadow: "0 0 30px rgba(255,255,255,0.08)" }}
       >
         <span className="text-white font-light tracking-wide">eyund</span>

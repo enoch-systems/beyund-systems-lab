@@ -383,7 +383,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
             className="lg:hidden shrink-0"
             style={{ display: "flex", alignItems: "center", padding: 4 }}
           >
-            <BeyundLogo className="h-4" />
+            <BeyundLogo className="h-3.5" />
           </Link>
           <div className="flex-1 min-w-0">
             <GlobalSearch />
