@@ -313,7 +313,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* ── KPI Row ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10, marginBottom: 16 }} className="sm:gap-4 sm:grid-cols-2 md:grid-cols-4">
+      <div style={{ display: "grid", gap: 10, marginBottom: 16 }} className="sm:gap-4 sm:grid-cols-2 md:grid-cols-4">
         <Kpi icon={<GraduationCap size={14} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/adminportal/students" C={C} />
         <Kpi icon={<BookOpen size={14} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/adminportal/courses" C={C} />
         <Kpi icon={<DollarSign size={14} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/adminportal/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor={theme === "dark" ? "#fde68a" : "#92400e"} C={C} />
@@ -321,7 +321,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* ── Main Chart Row ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10, marginBottom: 16 }} className="sm:gap-4 md:grid-cols-2">
+      <div style={{ display: "grid", gap: 10, marginBottom: 16 }} className="sm:gap-4 md:grid-cols-2">
         {/* Growth */}
         <Card title="Registrations" sub="14d" icon={<TrendingUp size={12} />} C={C}>
           <div style={{ height: 180 }} className="sm:h-[200px]">
@@ -368,7 +368,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* ── Secondary Chart Row ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10, marginBottom: 16 }} className="sm:gap-4 md:grid-cols-2">
+      <div style={{ display: "grid", gap: 10, marginBottom: 16 }} className="sm:gap-4 md:grid-cols-2">
         {/* Region */}
         <Card title="Enrollment by Region" sub={regionSubLabel} icon={<BarChart3 size={12} />} C={C}>
           <div
