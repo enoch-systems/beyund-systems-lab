@@ -52,8 +52,10 @@ export default function ProblemHook() {
         >
           You learn HTML, CSS, JavaScript. Maybe you know React or Next.js. You follow
           tutorials and they make sense. But the moment you try to build something on your
-          own&hellip; you get stuck. Authentication. Databases. Connecting a frontend to a
-          backend. Deploying so people can actually use it.
+          own&hellip; you get stuck. How do you connect your frontend to a real backend?
+          Where do you store user data? How do you handle authentication, background jobs,
+          file uploads, API versioning, webhooks, deployments? Each of these is a whole layer
+          of a real application. And no single tutorial teaches you all of them.
           The tutorials exist. <em className="text-white/80 not-italic">The confidence doesn't.</em>
         </p>
 
