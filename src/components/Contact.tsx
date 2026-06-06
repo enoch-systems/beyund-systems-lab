@@ -583,13 +583,13 @@ export default function Contact() {
           </p>
 
           {/* Pricing card */}
-          <div className="inline-flex items-center gap-3 md:gap-5 px-5 md:px-7 py-3 md:py-4 rounded-2xl border border-green-500/20 bg-green-500/5 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-3 md:gap-5 px-5 md:px-7 py-3 md:py-4 rounded-2xl border border-white/20 bg-white/[0.05] backdrop-blur-sm">
             <div className="text-left">
-              <p className="text-[10px] md:text-xs font-mono tracking-[0.25em] text-green-400/60 uppercase">
+              <p className="text-[10px] md:text-xs font-mono tracking-[0.25em] text-white/50 uppercase">
                 Cohort 1 pricing
               </p>
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-3xl md:text-4xl font-normal text-green-300">₦60,000</span>
+                <span className="text-3xl md:text-4xl font-normal text-white">₦60,000</span>
                 <span className="text-sm text-white/50">for 12 weeks</span>
               </div>
               <p className="text-xs text-white/40 mt-0.5">
@@ -1156,9 +1156,9 @@ export default function Contact() {
                 aria-label={`Go to step ${i + 1}: ${s.label}`}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   i + 1 === currentStep
-                    ? "bg-green-400 w-6"
+                    ? "bg-white/70 w-6"
                     : i + 1 < currentStep
-                    ? "bg-green-400/40 w-1.5 cursor-pointer hover:bg-green-400/60"
+                    ? "bg-white/40 w-1.5 cursor-pointer hover:bg-white/60"
                     : "bg-white/10 w-1.5 cursor-default"
                 }`}
               />
