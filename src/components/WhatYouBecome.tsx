@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const identityStatements = [
   {
-    from: "Following tutorials blindly",
+    from: "Following tutorials without understanding",
     to: "Building apps you can actually show off",
     title: "You build real apps, not just exercises",
     icon: (
@@ -14,9 +14,9 @@ const identityStatements = [
     ),
   },
   {
-    from: "Scared of authentication & databases",
-    to: "Adding auth, storing data, deploying confidently",
-    title: "You go from idea to deployed fullstack app",
+    from: "Scared of authentication and databases",
+    to: "Adding auth, storing data, deploying with confidence",
+    title: "You go from idea to deployed app",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 6.75v4.5m0-4.5h-4.5m4.5 0L15 15" />
@@ -24,8 +24,8 @@ const identityStatements = [
     ),
   },
   {
-    from: "Writing frontend-only code",
-    to: "Connecting frontend to Firebase & Supabase",
+    from: "Writing frontend only code",
+    to: "Connecting frontend to Firebase and Supabase",
     title: "You master the fullstack flow",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -34,9 +34,9 @@ const identityStatements = [
     ),
   },
   {
-    from: "No portfolio, no confidence",
-    to: "A portfolio of live apps + skills to freelance",
-    title: "You're ready to freelance or land a role",
+    from: "No portfolio and no confidence",
+    to: "A portfolio of live apps and skills to freelance",
+    title: "You become ready to freelance or land a role",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 016.835-5.665m0 0a60.44 60.44 0 0111.344 5.644m-11.344-5.644L12 2.25l3.18 3.618m-3.18-3.618v11.64M18 12a6 6 0 01-6 6m0 0a6 6 0 01-6-6" />
@@ -73,11 +73,11 @@ export default function WhatYouBecome() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              what you'll walk away with
+              what you will walk away with
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
               What{" "}
-              <span className="text-green-300">You'll Be Able to Do</span>
+              <span className="text-green-300">You Will Be Able to Do</span>
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
               Not what you learn. What you build.
@@ -131,9 +131,9 @@ export default function WhatYouBecome() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          This isn't about watching videos or passing quizzes. It's about
-          becoming the developer who can take an idea, build it, and put it live&mdash;
-          <span className="text-white/80 font-medium">on your own.</span>
+          This is not about watching videos or passing quizzes. It is about
+          becoming the developer who can take an idea, build it and put it live
+          <span className="text-white/80 font-medium">, on your own.</span>
         </p>
       </div>
     </section>

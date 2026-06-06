@@ -33,13 +33,13 @@ export default function MeetTheMentor() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              why enoch teaches this way
+              why Enoch created this program
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
               The Mentor
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              Who designed this path for you
+              Someone who has been where you are
             </p>
           </div>
         </div>
@@ -83,21 +83,21 @@ export default function MeetTheMentor() {
               Built for beginners, backed by real experience
             </h3>
             <p className="text-base md:text-lg text-white/70 leading-relaxed">
-              Enoch started exactly where you are — self-taught, building side projects, figuring
-              things out one error at a time. He's built and shipped systems across fintech,
-              logistics, identity, and enterprise. But more importantly, he's learned how to{" "}
+              Enoch started exactly where you are. Self taught. Building side projects. Figuring
+              things out one error at a time. He went on to build and ship systems across fintech,
+              logistics, identity and enterprise. But more importantly he has learned how to{" "}
               <strong className="text-white/90">teach what took him years to figure out.</strong>
             </p>
             <p className="text-base md:text-lg text-white/70 leading-relaxed">
-              His approach: you don't need to master everything at once. You start with the
-              frontend — something visual and rewarding — then layer in authentication, databases,
-              and deployment step by step. Firebase, Supabase, Next.js, Tailwind. Tools that
-              let you <em className="text-white/80">build real things without being overwhelmed.</em>
+            His approach is simple. You do not need to master everything at once. You start with the
+            frontend, something visual and rewarding. Then you layer in authentication, databases
+            and deployment step by step. Firebase, Supabase, Next.js, Tailwind. Tools that
+            let you <em className="text-white/80">build real things without feeling overwhelmed.</em>
             </p>
             <p className="text-base md:text-lg text-white/70 leading-relaxed">
-              At Beyund Labs Academy, he's built a curriculum that takes you from &ldquo;I can
-              follow a tutorial&rdquo; to &ldquo;I built this app from scratch and it's live.&rdquo;
-              No gatekeeping. No assumed knowledge. Just a clear path forward.
+            At Beyund Labs Academy he has built a curriculum that takes you from &ldquo;I can
+            follow a tutorial&rdquo; to &ldquo;I built this app from scratch and it is live.&rdquo;
+            No gatekeeping. No assumed knowledge. Just a clear path forward.
             </p>
 
             {/* Mentorship highlights */}

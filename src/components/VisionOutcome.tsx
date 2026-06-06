@@ -5,22 +5,22 @@ import { useEffect, useRef, useState } from "react";
 const studentProjects = [
   {
     title: "AI Flashcard App",
-    desc: "A fullstack flashcard app with AI-generated quizzes. Next.js frontend, Firebase Auth, Firestore for data — deployed live. Start to finish.",
+    desc: "A fullstack flashcard app with AI generated quizzes. Next.js frontend, Firebase Auth, Firestore for data. Deployed live. Start to finish.",
     tags: ["Next.js", "Firebase", "AI", "Auth"],
   },
   {
     title: "Recipe Social Platform",
-    desc: "Share, save, and discover recipes. Supabase for storage and real-time updates, Tailwind UI, user profiles with avatars. Looks like a real product.",
+    desc: "Share, save and discover recipes. Supabase for storage and real time updates, Tailwind UI, user profiles with avatars. It looks like a real product you would use every day.",
     tags: ["Supabase", "Tailwind", "Real-time", "Social"],
   },
   {
     title: "SaaS Dashboard Starter",
-    desc: "A beautiful admin dashboard with authentication, charts, user management — all wired to Firebase. The foundation every SaaS needs.",
+    desc: "A beautiful admin dashboard with authentication, charts and user management. All wired to Firebase. The foundation every SaaS needs.",
     tags: ["Dashboard", "Firebase", "SaaS", "Charts"],
   },
   {
     title: "Community Job Board",
-    desc: "A job board where anyone can post and apply. Supabase backend, search & filters, email notifications, admin panel. Real-world utility.",
+    desc: "A job board where anyone can post and apply. Supabase backend, search and filters, email notifications, admin panel. Real world utility that people actually use.",
     tags: ["Supabase", "Fullstack", "Search", "Notifications"],
   },
 ];
@@ -53,14 +53,14 @@ export default function VisionOutcome() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              what cohort 1 builders are shipping
+              what Cohort 1 builders are shipping
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
               Real Apps,{" "}
               <span className="text-green-300">From Day One</span>
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              No starter templates. No copy-paste. You build this.
+              No copy paste. You build this yourself.
             </p>
           </div>
         </div>
@@ -112,7 +112,7 @@ export default function VisionOutcome() {
           }`}
         >
           <p className="text-xs md:text-sm font-mono tracking-[0.25em] text-white/30 uppercase mb-4 text-center">
-            See how they learn
+            See how Cohort 1 learns
           </p>
           <div className="relative aspect-video rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden group cursor-pointer">
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
@@ -124,9 +124,9 @@ export default function VisionOutcome() {
               <p className="text-white/50 text-sm md:text-base text-center">
                 <span className="text-white/70 font-medium">VIDEO PLACEHOLDER</span>
                 <br />
-                Loom: 2–3 min — Enoch walking through a real project build (frontend + Firebase)
+                Loom: 2 to 3 minutes. Enoch walks through a real project build, frontend plus Firebase.
                 <br />
-                <span className="text-white/30 text-xs">See exactly how we go from idea to deployed app</span>
+                <span className="text-white/30 text-xs">See exactly how we go from idea to deployed app.</span>
               </p>
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />

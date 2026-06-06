@@ -106,14 +106,14 @@ export default function Layers() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              the architecture
+              the fullstack toolkit
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              The Full Stack{" "}
-              <span className="text-green-300">Stack</span>
+              Everything You Will{" "}
+              <span className="text-green-300">Learn to Use</span>
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              Every layer of a production system. You build them all.
+              From frontend to database. You touch every layer.
             </p>
           </div>
         </div>
@@ -125,9 +125,9 @@ export default function Layers() {
             <div className="h-8 w-1 rounded-full bg-gradient-to-b from-blue-400 via-green-400 to-purple-400" />
             <div>
               <p className="text-xs font-mono tracking-[0.2em] text-white/40 uppercase">
-                Production architecture
+                What you will learn
               </p>
-              <p className="text-xs text-white/30">Click any layer to explore what you build and learn</p>
+              <p className="text-xs text-white/30">Click any layer to see the tools and skills you will gain</p>
             </div>
           </div>
 

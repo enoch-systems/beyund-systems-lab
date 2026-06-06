@@ -25,7 +25,7 @@ export default function ProblemHook() {
           }`}
         >
           <span className="inline-block text-[10px] md:text-xs font-mono tracking-[0.35em] text-green-400/70 uppercase border border-green-400/20 px-4 py-2 rounded-full bg-green-400/5">
-            Beyund Labs Academy — Cohort 1
+            Beyund Labs Academy, Cohort 1
           </span>
         </div>
 
@@ -40,11 +40,7 @@ export default function ProblemHook() {
             <span className="text-green-300">real apps</span>.
           </span>
           <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-white/80 leading-[1.15] mt-3">
-            But most beginners{" "}
-            <span className="text-green-300 underline decoration-green-500/30 decoration-2 underline-offset-8">
-              never go beyond tutorials
-            </span>
-            .
+            Not just follow tutorials forever.
           </span>
         </h1>
 
@@ -54,10 +50,11 @@ export default function ProblemHook() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          You learn HTML, CSS, JavaScript, maybe React. You follow along with tutorials.
-          Then you try to build something on your own&hellip; and you're stuck.
-          Authentication. Databases. Deploying. The tutorials exist. 
-          <em className="text-white/80 not-italic"> The confidence doesn't.</em>
+          You learn HTML, CSS, JavaScript. Maybe you know React or Next.js. You follow
+          tutorials and they make sense. But the moment you try to build something on your
+          own&hellip; you get stuck. Authentication. Databases. Connecting a frontend to a
+          backend. Deploying so people can actually use it.
+          The tutorials exist. <em className="text-white/80 not-italic">The confidence doesn't.</em>
         </p>
 
         {/* Stats / credibility line */}
@@ -67,16 +64,16 @@ export default function ProblemHook() {
           }`}
         >
           <div>
-            <span className="text-2xl md:text-3xl font-bold text-white">80%</span>
-            <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[200px]">
-              of self-taught beginners never finish their first original project — they get stuck after the tutorial ends
+            <span className="text-2xl md:text-3xl font-bold text-white">80 out of 100</span>
+            <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[220px]">
+              beginners who try to learn alone never finish their first real project. They get stuck after the tutorial ends.
             </p>
           </div>
           <div className="hidden md:block w-px bg-white/10" />
           <div>
-            <span className="text-2xl md:text-3xl font-bold text-white">15</span>
-            <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[180px]">
-              builders per cohort. Guided, hands-on, no one left behind.
+            <span className="text-2xl md:text-3xl font-bold text-white">Only 15 spots</span>
+            <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[200px]">
+              per cohort so everyone gets guided hands on support. No one gets left behind.
             </p>
           </div>
         </div>
@@ -98,9 +95,9 @@ export default function ProblemHook() {
               <p className="text-white/50 text-sm md:text-base text-center">
                 <span className="text-white/70 font-medium">VIDEO PLACEHOLDER</span>
                 <br />
-                Loom: 60–90s — Enoch on screen explaining why most beginners stay stuck
+                Loom: 60 to 90 seconds. Enoch on screen explaining why most beginners stay stuck.
                 <br />
-                <span className="text-white/30 text-xs">Show a real project being built from scratch — frontend to Firebase</span>
+                <span className="text-white/30 text-xs">Show a real project being built from scratch, frontend to Firebase.</span>
               </p>
             </div>
             {/* Glow overlay */}
