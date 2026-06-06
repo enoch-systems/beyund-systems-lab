@@ -379,7 +379,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
             </button>
             <Link
               href="/adminportal"
-              className="sm:inline lg:hidden shrink-0 hidden"
+              className="inline sm:hidden shrink-0"
               style={{ display: "flex", alignItems: "center", padding: 2 }}
             >
               <BeyundLogo className="h-3.5" />
