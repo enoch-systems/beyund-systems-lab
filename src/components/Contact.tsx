@@ -91,8 +91,8 @@ function bestGuessCountry(): string {
 
 const STEPS = [
   { id: 1, label: "You",    heading: "Hey, what should we call you?",   subtext: "Just the basics so we can reach you." },
-  { id: 2, label: "About",  heading: "A few quick taps.",               subtext: "Tap to pick — no typing needed." },
-  { id: 3, label: "Done",   heading: "One last thing.",                 subtext: "Optional. You can always tell us later." },
+  { id: 2, label: "About",  heading: "A few quick taps.",               subtext: "Tap to pick, no typing needed." },
+  { id: 3, label: "Done",   heading: "One last thing.",                 subtext: "Optional, you can always tell us later." },
 ] as const;
 
 /* -------------------------------------------------------------------------- */
@@ -394,7 +394,7 @@ export default function Contact() {
       }
     } catch {
       alert(
-        "Network hiccup. Please check your connection and try again — your progress is saved."
+        "Network hiccup. Please check your connection and try again, your progress is saved."
       );
     } finally {
       setSubmitting(false);
@@ -579,7 +579,7 @@ export default function Contact() {
 
         <div className="max-w-xl mx-auto text-center mb-8">
           <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-            Cohort 1 is limited to 15 builders. No prior experience required — just
+            Cohort 1 is limited to 15 builders. No prior experience required, just
             the willingness to build. 60 seconds to apply.
           </p>
         </div>

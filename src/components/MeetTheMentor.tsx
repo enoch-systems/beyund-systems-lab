@@ -57,7 +57,7 @@ export default function MeetTheMentor() {
               <div className="relative h-full w-full rounded-3xl bg-white/[0.06] ring-1 ring-white/15 shadow-xl overflow-hidden backdrop-blur-sm">
                 <Image
                   src="https://res.cloudinary.com/djdbcoyot/image/upload/v1777316852/construction/about/eng3.png"
-                  alt="Enoch Chukwudi — Mentor"
+                  alt="Enoch Chukwudi, Mentor"
                   fill
                   className="object-contain"
                 />
