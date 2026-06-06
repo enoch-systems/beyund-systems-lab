@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="flex flex-col items-center gap-6">
           <div className="flex gap-6 text-sm text-slate-400">
             <a href="#about" className="hover:text-white transition">About</a>
-            <a href="#projects" className="hover:text-white transition">Projects</a>
+            <a href="#outcome" className="hover:text-white transition">What You Build</a>
             <a href="#contact" className="hover:text-white transition">Registration</a>
           </div>
 

@@ -46,7 +46,7 @@ export default function VisionOutcome() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-20 md:py-28">
+    <section id="outcome" ref={sectionRef} className="relative overflow-hidden py-20 md:py-28">
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-8">
         {/* Section header */}
         <div className="flex items-start gap-4 md:gap-6 mb-12 md:mb-16 max-w-2xl mx-auto">
