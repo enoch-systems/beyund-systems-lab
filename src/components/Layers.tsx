@@ -68,11 +68,35 @@ function Pill({ label }: { label: string }) {
 }
 
 export default function Layers() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0); // Start first open
 
   const toggle = (i: number) => {
     setOpenIndex(openIndex === i ? null : i);
   };
+
+  const layerColors = [
+    "from-blue-500/10 to-blue-500/5",
+    "from-cyan-500/10 to-cyan-500/5",
+    "from-teal-500/10 to-teal-500/5",
+    "from-emerald-500/10 to-emerald-500/5",
+    "from-green-500/10 to-green-500/5",
+    "from-yellow-500/10 to-yellow-500/5",
+    "from-orange-500/10 to-orange-500/5",
+    "from-red-500/10 to-red-500/5",
+    "from-purple-500/10 to-purple-500/5",
+  ];
+
+  const layerAccents = [
+    "border-blue-500/20 group-hover:border-blue-500/40",
+    "border-cyan-500/20 group-hover:border-cyan-500/40",
+    "border-teal-500/20 group-hover:border-teal-500/40",
+    "border-emerald-500/20 group-hover:border-emerald-500/40",
+    "border-green-500/20 group-hover:border-green-500/40",
+    "border-yellow-500/20 group-hover:border-yellow-500/40",
+    "border-orange-500/20 group-hover:border-orange-500/40",
+    "border-red-500/20 group-hover:border-red-500/40",
+    "border-purple-500/20 group-hover:border-purple-500/40",
+  ];
 
   return (
     <section id="layers" className="relative overflow-hidden">
@@ -82,32 +106,63 @@ export default function Layers() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              the stack
+              the architecture
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              LAYERS
+              The Full Stack{" "}
+              <span className="text-green-300">Stack</span>
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              relating how we teach
+              Every layer of a production system. You build them all.
             </p>
           </div>
         </div>
 
-        {/* Simple accordion list */}
-        <div className="max-w-2xl mx-auto space-y-4 md:space-y-5">
+        {/* Architecture stack — visual layers from bottom (storage) to top (client) */}
+        <div className="max-w-3xl mx-auto space-y-3 md:space-y-4">
+          {/* Visual stack indicator */}
+          <div className="flex items-center gap-3 mb-6 px-1">
+            <div className="h-8 w-1 rounded-full bg-gradient-to-b from-blue-400 via-green-400 to-purple-400" />
+            <div>
+              <p className="text-xs font-mono tracking-[0.2em] text-white/40 uppercase">
+                Production architecture
+              </p>
+              <p className="text-xs text-white/30">Click any layer to explore what you build and learn</p>
+            </div>
+          </div>
+
           {layersData.map((layer, i) => {
             const isOpen = openIndex === i;
             return (
-              <div key={layer.name} className="bg-white/[0.03] rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+              <div
+                key={layer.name}
+                className={`group rounded-2xl border bg-gradient-to-r ${layerColors[i]} backdrop-blur-sm overflow-hidden transition-all duration-300 ${
+                  isOpen ? layerAccents[i] : "border-white/10 hover:border-white/20"
+                }`}
+              >
                 <button
                   onClick={() => toggle(i)}
-                  className="w-full flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-left group"
+                  className="w-full flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-left"
                 >
-                  <span className={`text-sm md:text-base lg:text-lg font-medium tracking-[0.2em] md:tracking-[0.25em] uppercase transition-colors duration-200 ${isOpen ? "text-white" : "text-white/60 group-hover:text-white/90"}`}>
-                    {layer.name}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    {/* Layer number badge */}
+                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[11px] font-bold transition-all duration-300 ${
+                      isOpen
+                        ? "bg-white/20 text-white"
+                        : "bg-white/5 text-white/40 group-hover:bg-white/10 group-hover:text-white/70"
+                    }`}>
+                      {i + 1}
+                    </span>
+                    <span className={`text-sm md:text-base lg:text-lg font-medium tracking-[0.2em] md:tracking-[0.25em] uppercase transition-colors duration-200 ${
+                      isOpen ? "text-white" : "text-white/60 group-hover:text-white/90"
+                    }`}>
+                      {layer.name}
+                    </span>
+                  </div>
                   <svg
-                    className={`w-5 h-5 md:w-6 md:h-6 shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-white" : "text-white/50"}`}
+                    className={`w-5 h-5 md:w-6 md:h-6 shrink-0 transition-transform duration-300 ${
+                      isOpen ? "rotate-180 text-white" : "text-white/50"
+                    }`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

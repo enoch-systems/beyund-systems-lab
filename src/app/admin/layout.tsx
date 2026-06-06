@@ -266,15 +266,16 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
-    async function loadCount() {
+    const refetchUnreadCount = async () => {
       const { count } = await supabase
         .from("notifications")
         .select("*", { count: "exact", head: true })
         .eq("status", "unread")
         .in("category", ["student", "payment"]);
       if (count !== null) setUnreadCount(count);
-    }
-    loadCount();
+    };
+
+    refetchUnreadCount();
 
     // Live subscription for real-time count updates
     const channel = supabase
@@ -282,24 +283,33 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "notifications" },
-        () => { setUnreadCount((prev) => prev + 1); }
+        () => { refetchUnreadCount(); }
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "notifications" },
-        () => {
-          // Re-fetch count on update (e.g. marking as read)
-          supabase
-            .from("notifications")
-            .select("*", { count: "exact", head: true })
-            .eq("status", "unread")
-            .in("category", ["student", "payment"])
-            .then(({ count }) => { if (count !== null) setUnreadCount(count); });
-        }
+        () => { refetchUnreadCount(); }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "notifications" },
+        () => { refetchUnreadCount(); }
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    // Also listen for custom event dispatched from notifications page
+    const handleNotificationsUpdated = () => {
+      // Small delay to ensure the DB write is fully committed
+      // before refetching the count, avoiding race conditions
+      // with the real-time subscription firing prematurely
+      setTimeout(refetchUnreadCount, 100);
+    };
+    window.addEventListener("notifications-updated", handleNotificationsUpdated);
+
+    return () => {
+      supabase.removeChannel(channel);
+      window.removeEventListener("notifications-updated", handleNotificationsUpdated);
+    };
   }, [supabase]);
 
   return (

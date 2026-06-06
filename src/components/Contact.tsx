@@ -461,7 +461,7 @@ export default function Contact() {
     return (
       <section
         id="contact"
-        className="py-24 relative overflow-hidden min-h-screen flex items-center justify-center"
+        className="relative overflow-hidden min-h-screen flex items-center justify-center"
       >
         <div className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8 relative z-10 w-full flex flex-col items-center justify-center">
           <div className="text-center">
@@ -495,7 +495,7 @@ export default function Contact() {
     return (
       <section
         id="contact"
-        className="py-24 relative overflow-hidden min-h-screen flex items-center justify-center"
+        className="relative overflow-hidden min-h-screen flex items-center justify-center"
       >
         <div className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8 relative z-10 w-full flex flex-col items-center justify-center">
           <div className="text-center w-full max-w-md mx-auto">
@@ -565,23 +565,22 @@ export default function Contact() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              embrace clarity
+              take the next step
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              READY TO KICKOFF YOUR JOURNEY?
+              Ready to Architect{" "}
+              <span className="text-green-300">Systems That Scale?</span>
             </h2>
-            {/* Note: heading already ends with "?" not "'" so no escape needed here */}
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              Register Now
+              Get accepted to Cohort 1
             </p>
           </div>
         </div>
 
         <div className="max-w-xl mx-auto text-center mb-8">
           <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-            Ready to acquire building skills in software fullstack development at{" "}
-            <span className="text-white font-medium">Beyund Labs Academy</span>?
-            Takes about 60 seconds.
+            Cohort 1 is limited to 12–15 builders. We're selective — not to gatekeep,
+            but because depth requires it. 60 seconds to see if this matches where you're headed.
           </p>
         </div>
 

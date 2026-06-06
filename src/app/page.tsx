@@ -1,8 +1,10 @@
 import Navbar from "@/components/Navbar";
 import SocialSidebar from "@/components/SocialSidebar";
-import MeetTheMentor from "@/components/MeetTheMentor";
+import ProblemHook from "@/components/ProblemHook";
+import VisionOutcome from "@/components/VisionOutcome";
 import Layers from "@/components/Layers";
-import About from "@/components/About";
+import WhatYouBecome from "@/components/WhatYouBecome";
+import MeetTheMentor from "@/components/MeetTheMentor";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -33,15 +35,17 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
         <SocialSidebar />
+
+        {/* Outcome-first flow: Problem → Proof → Curriculum → Identity → Mentor → CTA */}
+        <ProblemHook />
+        <VisionOutcome />
+        <Layers />
+        <WhatYouBecome />
         <MeetTheMentor />
         <Contact />
-        <Layers />
-        <About />
-         <Contact />
         <Footer />
         <WhatsAppButton />
       </div>
     </main>
   );
 }
-

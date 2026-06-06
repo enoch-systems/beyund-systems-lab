@@ -103,6 +103,8 @@ export default function NotificationsPage() {
       .from("notifications")
       .update({ status: "read" })
       .eq("id", id);
+    // Notify the header to refresh its unread count
+    window.dispatchEvent(new CustomEvent("notifications-updated"));
   };
 
   // ── Mark all visible (unread) as read ──
@@ -122,6 +124,8 @@ export default function NotificationsPage() {
       .update({ status: "read" })
       .in("id", unreadIds);
     setMarkingAll(false);
+    // Notify the header to refresh its unread count
+    window.dispatchEvent(new CustomEvent("notifications-updated"));
   };
 
   const filtered = filter === "all"
