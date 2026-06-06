@@ -49,13 +49,8 @@ export default function WhatYouBecome() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalSlides = identityStatements.length;
 
-  // Slide right-to-left: next goes forward, so next=index+1
   const goNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % totalSlides);
-  }, [totalSlides]);
-
-  const goPrev = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
   }, [totalSlides]);
 
   const [isPaused, setIsPaused] = useState(false);
@@ -111,28 +106,6 @@ export default function WhatYouBecome() {
 
           {/* Slide area */}
           <div className="relative">
-            {/* Left Chevron */}
-            <button
-              onClick={goPrev}
-              className="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/15 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-all duration-200"
-              aria-label="Previous"
-            >
-              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            {/* Right Chevron */}
-            <button
-              onClick={goNext}
-              className="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/15 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-all duration-200"
-              aria-label="Next"
-            >
-              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-
             {/* Card */}
             <div
               key={currentIndex}
