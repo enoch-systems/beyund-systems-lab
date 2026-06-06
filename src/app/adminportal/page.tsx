@@ -345,7 +345,7 @@ export default function AdminDashboardPage() {
       
         {/* Status */}
         <Card title="Registration Status" sub={sd.filter(d => d.value > 0).length + " statuses"} icon={<BarChart3 size={12} />} C={C}>
-          <div style={{ height: 160, display: "flex", alignItems: "center" }}>
+          <div style={{ height: 180, display: "flex", alignItems: "center" }} className="sm:h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
               <RePieChart>
                 <Pie data={displaySD} cx="50%" cy="50%" innerRadius={40} outerRadius={60} paddingAngle={2} dataKey="value">
