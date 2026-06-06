@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const identityStatements = [
   {
@@ -46,27 +46,36 @@ const identityStatements = [
 ];
 
 export default function WhatYouBecome() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const totalSlides = identityStatements.length;
 
+  // Slide right-to-left: next goes forward, so next=index+1
+  const goNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
+  }, [totalSlides]);
+
+  const goPrev = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  }, [totalSlides]);
+
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Auto-slide right-to-left every 3 seconds
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    if (isPaused) return;
+    const interval = setInterval(goNext, 3000);
+    return () => clearInterval(interval);
+  }, [goNext, isPaused]);
+
+  const item = identityStatements[currentIndex];
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-20 md:py-28">
+    <section
+      id="what-you-become"
+      className="relative overflow-hidden py-20 md:py-28"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-8">
         {/* Section header */}
         <div className="flex items-start gap-4 md:gap-6 mb-12 md:mb-16 max-w-2xl mx-auto">
@@ -85,36 +94,75 @@ export default function WhatYouBecome() {
           </div>
         </div>
 
-        {/* Identity cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-          {identityStatements.map((item, i) => (
-            <div
-              key={item.title}
-              className={`group relative p-6 md:p-8 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] backdrop-blur-sm transition-all duration-700 ease-out hover:border-white/20 ${
-                visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: `${200 + i * 120}ms` }}
+        {/* Carousel container */}
+        <div className="max-w-3xl mx-auto">
+          {/* Progress bar */}
+          <div className="flex items-center gap-3 mb-6 px-1">
+            <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-blue-400 via-green-400 to-purple-400 transition-all duration-700 ease-in-out"
+                style={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}
+              />
+            </div>
+            <span className="text-xs font-mono text-white/40 whitespace-nowrap">
+              {currentIndex + 1} / {totalSlides}
+            </span>
+          </div>
+
+          {/* Slide area */}
+          <div className="relative">
+            {/* Left Chevron */}
+            <button
+              onClick={goPrev}
+              className="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/15 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-all duration-200"
+              aria-label="Previous"
             >
-              <div className="relative z-10">
-                {/* Icon */}
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/15 text-green-300 mb-4 group-hover:bg-green-500/20 group-hover:scale-110 transition-all duration-300">
-                  {item.icon}
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            {/* Right Chevron */}
+            <button
+              onClick={goNext}
+              className="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/15 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-all duration-200"
+              aria-label="Next"
+            >
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+
+            {/* Card */}
+            <div
+              key={currentIndex}
+              className="group relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] backdrop-blur-sm overflow-hidden transition-all duration-500 ease-in-out hover:border-white/20"
+            >
+              <div className="relative z-10 p-6 md:p-8 lg:p-10">
+                {/* Icon + Number */}
+                <div className="flex items-center gap-3 md:gap-4 mb-5">
+                  <span className="flex h-8 w-8 md:h-10 md:w-10 shrink-0 items-center justify-center rounded-xl bg-green-500/15 text-green-300 text-sm md:text-base font-normal">
+                    {currentIndex + 1}
+                  </span>
+                  <div className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-green-500/15 text-green-300">
+                    {item.icon}
+                  </div>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl md:text-2xl font-normal text-white mb-3 group-hover:text-green-200 transition-colors duration-300">
+                <h3 className="text-xl md:text-2xl lg:text-3xl font-normal text-white mb-5 group-hover:text-green-200 transition-colors duration-300">
                   {item.title}
                 </h3>
 
                 {/* From → To */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono tracking-wider text-white/30 uppercase w-12 shrink-0">From:</span>
-                    <span className="text-sm text-white/50 line-through">{item.from}</span>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] md:text-xs font-mono tracking-wider text-white/30 uppercase w-14 shrink-0">From:</span>
+                    <span className="text-sm md:text-base text-white/50 line-through">{item.from}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono tracking-wider text-green-400/60 uppercase w-12 shrink-0">To:</span>
-                    <span className="text-sm text-green-200/90 font-normal">{item.to}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] md:text-xs font-mono tracking-wider text-green-400/60 uppercase w-14 shrink-0">To:</span>
+                    <span className="text-sm md:text-base text-green-200/90 font-normal">{item.to}</span>
                   </div>
                 </div>
               </div>
@@ -122,15 +170,27 @@ export default function WhatYouBecome() {
               {/* Subtle border accent on hover */}
               <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-green-500/20 transition-colors duration-500 pointer-events-none" />
             </div>
-          ))}
+          </div>
+
+          {/* Dot indicators */}
+          <div className="flex items-center justify-center gap-2 mt-6">
+            {identityStatements.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`rounded-full transition-all duration-300 ${
+                  i === currentIndex
+                    ? "w-6 h-2 bg-white/70"
+                    : "w-2 h-2 bg-white/20 hover:bg-white/40"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Bottom note */}
-        <p
-          className={`mt-12 text-center text-sm md:text-base text-white/50 max-w-xl mx-auto transition-all duration-1000 ease-out delay-700 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-        >
+        <p className="mt-12 text-center text-sm md:text-base text-white/50 max-w-xl mx-auto">
           This is not about watching videos or passing quizzes. It is about
           becoming the developer who can take an idea, build it and put it live
           <span className="text-white/80 font-normal">, on your own.</span>
