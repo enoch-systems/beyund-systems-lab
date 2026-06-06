@@ -44,7 +44,7 @@ export default function PricingBadge() {
               <span className="text-[8px] md:text-[10px] font-mono tracking-[0.25em] text-green-400/60 uppercase leading-tight">
                 Cohort 1
               </span>
-              <span className="text-lg md:text-xl font-bold text-green-300 leading-tight tracking-tight">
+              <span className="text-lg md:text-xl font-normal text-green-300 leading-tight tracking-tight">
                 ₦60,000
               </span>
               <span className="text-[8px] md:text-[9px] text-white/40 font-mono tracking-wide leading-tight">

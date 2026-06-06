@@ -35,7 +35,7 @@ export default function MeetTheMentor() {
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
               why Enoch created this program
             </p>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-none">
               The Mentor
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
@@ -56,7 +56,7 @@ export default function MeetTheMentor() {
               <div className="absolute -inset-4 rounded-3xl bg-white/5 blur-2xl" />
               <div className="relative h-full w-full rounded-3xl bg-white/[0.06] ring-1 ring-white/15 shadow-xl overflow-hidden backdrop-blur-sm">
                 <Image
-                  src="https://res.cloudinary.com/djdbcoyot/image/upload/v1777316852/construction/about/eng3.png"
+                  src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780761367/p1jq9al0zrcd89wuah15.jpg"
                   alt="Enoch Chukwudi, Mentor"
                   fill
                   className="object-contain"
@@ -79,7 +79,7 @@ export default function MeetTheMentor() {
               visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
             }`}
           >
-            <h3 className="text-2xl md:text-3xl font-semibold text-white">
+            <h3 className="text-2xl md:text-3xl font-normal text-white">
               Built for beginners, backed by real experience
             </h3>
             <p className="text-base md:text-lg text-white/70 leading-relaxed">
@@ -117,7 +117,7 @@ export default function MeetTheMentor() {
                       {point.icon}
                     </span>
                     <div>
-                      <p className="text-sm font-semibold text-white mb-1">{point.title}</p>
+                      <p className="text-sm font-normal text-white mb-1">{point.title}</p>
                       <p className="text-xs text-white/60 leading-relaxed">{point.desc}</p>
                     </div>
                   </div>
@@ -133,7 +133,7 @@ export default function MeetTheMentor() {
             >
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 text-sm font-medium"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 text-sm font-normal"
               >
                 Join Cohort 1 and start building
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

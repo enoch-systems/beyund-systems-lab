@@ -61,7 +61,7 @@ const layersData = [
 
 function Pill({ label }: { label: string }) {
   return (
-    <span className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-medium rounded-full border border-white/15 bg-white/[0.07] text-white/70">
+    <span className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-normal rounded-full border border-white/15 bg-white/[0.07] text-white/70">
       {label}
     </span>
   );
@@ -108,7 +108,7 @@ export default function Layers() {
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
               the fullstack toolkit
             </p>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-none">
               Everything You Will{" "}
               <span className="text-green-300">Learn to Use</span>
             </h2>
@@ -146,14 +146,14 @@ export default function Layers() {
                 >
                   <div className="flex items-center gap-3">
                     {/* Layer number badge */}
-                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[11px] font-bold transition-all duration-300 ${
+                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[11px] font-normal transition-all duration-300 ${
                       isOpen
                         ? "bg-white/20 text-white"
                         : "bg-white/5 text-white/40 group-hover:bg-white/10 group-hover:text-white/70"
                     }`}>
                       {i + 1}
                     </span>
-                    <span className={`text-sm md:text-base lg:text-lg font-medium tracking-[0.2em] md:tracking-[0.25em] uppercase transition-colors duration-200 ${
+                    <span className={`text-sm md:text-base lg:text-lg font-normal tracking-[0.2em] md:tracking-[0.25em] uppercase transition-colors duration-200 ${
                       isOpen ? "text-white" : "text-white/60 group-hover:text-white/90"
                     }`}>
                       {layer.name}
@@ -190,7 +190,7 @@ export default function Layers() {
                       <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">tools you use</p>
                       <div className="flex flex-wrap gap-2">
                         {layer.tools.map((tool) => (
-                          <span key={tool} className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-medium rounded-full border border-green-500/30 bg-green-500/15 text-green-200">
+                          <span key={tool} className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-normal rounded-full border border-green-500/30 bg-green-500/15 text-green-200">
                             {tool}
                           </span>
                         ))}

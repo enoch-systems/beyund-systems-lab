@@ -35,11 +35,11 @@ export default function ProblemHook() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.1]">
+          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-normal tracking-tight text-white leading-[1.1]">
             You want to build{" "}
             <span className="text-green-300">real apps</span>.
           </span>
-          <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-white/80 leading-[1.15] mt-3">
+          <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-normal tracking-tight text-white/80 leading-[1.15] mt-3">
             Not just follow tutorials forever.
           </span>
         </h1>
@@ -65,14 +65,14 @@ export default function ProblemHook() {
           }`}
         >
           <div>
-            <span className="text-2xl md:text-3xl font-bold text-white">80 out of 100</span>
+            <span className="text-2xl md:text-3xl font-normal text-white">80 out of 100</span>
             <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[220px]">
               beginners who try to learn alone never finish their first real project. They get stuck after the tutorial ends.
             </p>
           </div>
           <div className="hidden md:block w-px bg-white/10" />
           <div>
-            <span className="text-2xl md:text-3xl font-bold text-green-300">₦60,000</span>
+            <span className="text-2xl md:text-3xl font-normal text-green-300">₦60,000</span>
             <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[200px]">
               for 12 weeks. That is ₦5,000 per week for all 9 layers with direct mentorship.
             </p>
@@ -94,7 +94,7 @@ export default function ProblemHook() {
                 </svg>
               </div>
               <p className="text-white/50 text-sm md:text-base text-center">
-                <span className="text-white/70 font-medium">VIDEO PLACEHOLDER</span>
+                <span className="text-white/70 font-normal">VIDEO PLACEHOLDER</span>
                 <br />
                 Loom: 60 to 90 seconds. Enoch on screen explaining why most beginners stay stuck.
                 <br />

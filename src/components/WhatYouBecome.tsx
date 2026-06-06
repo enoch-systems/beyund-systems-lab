@@ -75,7 +75,7 @@ export default function WhatYouBecome() {
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
               what you will walk away with
             </p>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-none">
               What{" "}
               <span className="text-green-300">You Will Be Able to Do</span>
             </h2>
@@ -102,7 +102,7 @@ export default function WhatYouBecome() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-green-200 transition-colors duration-300">
+                <h3 className="text-xl md:text-2xl font-normal text-white mb-3 group-hover:text-green-200 transition-colors duration-300">
                   {item.title}
                 </h3>
 
@@ -114,7 +114,7 @@ export default function WhatYouBecome() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono tracking-wider text-green-400/60 uppercase w-12 shrink-0">To:</span>
-                    <span className="text-sm text-green-200/90 font-medium">{item.to}</span>
+                    <span className="text-sm text-green-200/90 font-normal">{item.to}</span>
                   </div>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export default function WhatYouBecome() {
         >
           This is not about watching videos or passing quizzes. It is about
           becoming the developer who can take an idea, build it and put it live
-          <span className="text-white/80 font-medium">, on your own.</span>
+          <span className="text-white/80 font-normal">, on your own.</span>
         </p>
       </div>
     </section>

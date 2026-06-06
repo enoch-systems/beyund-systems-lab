@@ -12,27 +12,27 @@ export default function CaseStudies() {
               key={study.id}
               className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200"
             >
-              <h3 className="text-2xl font-bold text-slate-950 mb-4">{study.title}</h3>
+              <h3 className="text-2xl font-normal text-slate-950 mb-4">{study.title}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h4 className="font-semibold text-slate-950 mb-2">Problem</h4>
+                  <h4 className="font-normal text-slate-950 mb-2">Problem</h4>
                   <p className="text-slate-600 mb-4">{study.problem}</p>
-                  <h4 className="font-semibold text-slate-950 mb-2">Solution</h4>
+                  <h4 className="font-normal text-slate-950 mb-2">Solution</h4>
                   <p className="text-slate-600 mb-4">{study.solution}</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-950 mb-2">Technologies</h4>
+                  <h4 className="font-normal text-slate-950 mb-2">Technologies</h4>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {study.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700"
+                        className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm font-normal text-slate-700"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
-                  <h4 className="font-semibold text-slate-950 mb-2">Results</h4>
+                  <h4 className="font-normal text-slate-950 mb-2">Results</h4>
                   <ul className="space-y-2">
                     {study.results.map((result, index) => (
                       <li key={index} className="flex items-start gap-2 text-slate-600">

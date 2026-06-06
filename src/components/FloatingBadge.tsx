@@ -7,7 +7,7 @@ export default function FloatingBadge() {
             <path id="circlePath" d="M 60, 60 m -45, 0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0" />
           </defs>
           <circle cx="60" cy="60" r="45" fill="#f0f4f8" stroke="#cbd5e1" strokeWidth="2" />
-          <text className="text-[0.75rem] font-semibold fill-emerald-600" fontSize="9" letterSpacing="1.5" fontWeight="600">
+          <text className="text-[0.75rem] font-normal fill-emerald-600" fontSize="9" letterSpacing="1.5" fontWeight="400">
             <textPath href="#circlePath" startOffset="0%">
               COME ON, LET'S TALK
             </textPath>

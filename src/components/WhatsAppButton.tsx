@@ -143,7 +143,7 @@ export default function WhatsAppButton() {
                 </svg>
               </div>
               <div className="min-w-0">
-                <p className="text-white/90 text-xs font-semibold leading-tight tracking-wide">
+                <p className="text-white/90 text-xs font-normal leading-tight tracking-wide">
                   Speak to Enoch
                 </p>
                 <p className="text-white/45 text-[10px] mt-1 leading-snug">

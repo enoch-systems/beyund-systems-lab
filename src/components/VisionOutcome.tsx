@@ -55,7 +55,7 @@ export default function VisionOutcome() {
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
               what Cohort 1 builders are shipping
             </p>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-none">
               Real Apps,{" "}
               <span className="text-green-300">From Day One</span>
             </h2>
@@ -80,10 +80,10 @@ export default function VisionOutcome() {
 
               <div className="relative z-10">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/15 text-green-300 text-sm font-bold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/15 text-green-300 text-sm font-normal">
                     {i + 1}
                   </div>
-                  <h3 className="text-lg md:text-xl font-semibold text-white group-hover:text-green-200 transition-colors duration-300">
+                  <h3 className="text-lg md:text-xl font-normal text-white group-hover:text-green-200 transition-colors duration-300">
                     {project.title}
                   </h3>
                 </div>
@@ -99,6 +99,20 @@ export default function VisionOutcome() {
                       {tag}
                     </span>
                   ))}
+                </div>
+
+                {/* View project button */}
+                <div className="mt-4 pt-3 border-t border-white/5">
+                  <button
+                    type="button"
+                    className="w-full px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/25 text-green-400 text-xs font-mono tracking-wide hover:bg-green-500/20 hover:border-green-500/40 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    View this project
+                  </button>
                 </div>
               </div>
             </div>
@@ -122,7 +136,7 @@ export default function VisionOutcome() {
                 </svg>
               </div>
               <p className="text-white/50 text-sm md:text-base text-center">
-                <span className="text-white/70 font-medium">VIDEO PLACEHOLDER</span>
+                <span className="text-white/70 font-normal">VIDEO PLACEHOLDER</span>
                 <br />
                 Loom: 2 to 3 minutes. Enoch walks through a real project build, frontend plus Firebase.
                 <br />

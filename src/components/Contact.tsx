@@ -126,7 +126,7 @@ function Tile({ active, onClick, children, fullWidth, size = "md" }: TileProps) 
       {active && (
         <span className="absolute top-2.5 right-2.5 text-green-400 text-xs leading-none">✓</span>
       )}
-      <span className="block text-sm font-medium">{children}</span>
+      <span className="block text-sm font-normal">{children}</span>
     </button>
   );
 }
@@ -480,7 +480,7 @@ export default function Contact() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+            <h2 className="text-2xl sm:text-3xl font-normal text-white mb-2">
               Application approved!
             </h2>
             <p className="text-white/50 text-sm">Setting things up...</p>
@@ -514,12 +514,12 @@ export default function Contact() {
                 />
               </svg>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+            <h2 className="text-3xl sm:text-4xl font-normal text-white mb-2">
               You're in, {submitted.name.split(" ")[0]}.
             </h2>
             <p className="text-white/60 text-sm sm:text-base mb-10 max-w-md mx-auto">
               We'll reach you on WhatsApp within 24 hours with next steps for{" "}
-              <span className="text-white/90 font-medium">
+              <span className="text-white/90 font-normal">
                 {submitted.courseLabel}
               </span>
               .
@@ -536,7 +536,7 @@ export default function Contact() {
                   className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
                 >
                   <div className="text-xl mb-1.5">{item.icon}</div>
-                  <p className="text-white text-sm font-medium">{item.title}</p>
+                  <p className="text-white text-sm font-normal">{item.title}</p>
                   <p className="text-white/50 text-xs mt-0.5 leading-relaxed">
                     {item.body}
                   </p>
@@ -567,11 +567,11 @@ export default function Contact() {
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
               ready to start building?
             </p>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-none">
               Build Your First{" "}
               <span className="text-green-300">Real Fullstack App</span>
             </h2>
-            <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
+            <p className="text-xl sm:text-2xl md:text-3xl font-normal tracking-[0.2em] text-white/60 uppercase mt-1">
               Apply for Cohort 1
             </p>
           </div>
@@ -589,7 +589,7 @@ export default function Contact() {
                 Cohort 1 pricing
               </p>
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-3xl md:text-4xl font-bold text-green-300">₦60,000</span>
+                <span className="text-3xl md:text-4xl font-normal text-green-300">₦60,000</span>
                 <span className="text-sm text-white/50">for 12 weeks</span>
               </div>
               <p className="text-xs text-white/40 mt-0.5">
@@ -630,7 +630,7 @@ export default function Contact() {
           {/* Step content */}
           <div className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm">
             <div className="mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">
+              <h3 className="text-xl sm:text-2xl font-normal text-white mb-1">
                 {STEPS[currentStep - 1].heading}
               </h3>
               <p className="text-white/50 text-sm">
@@ -1092,7 +1092,7 @@ export default function Contact() {
                   type="button"
                   onClick={goNext}
                   disabled={currentStep === 2 && emailChecking}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-500 text-white text-sm font-normal hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {currentStep === 1 ? "Continue" : "Almost done"}
                   <svg
@@ -1114,7 +1114,7 @@ export default function Contact() {
                   type="button"
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-500 text-white text-sm font-normal hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? (
                     <>
