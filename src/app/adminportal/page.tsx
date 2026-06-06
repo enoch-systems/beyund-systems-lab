@@ -293,15 +293,15 @@ export default function AdminDashboardPage() {
   );
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", padding: "16px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif" }}>
+    <div style={{ background: C.bg, minHeight: "100vh", padding: "12px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif" }} className="sm:p-4">
 
       {/* ── Top Bar ── */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${C.border}` }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <span style={{ fontSize: 22, fontWeight: 400, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.2 }}>Welcome, {adminFirstName || "Admin"}</span>
-          <span style={{ fontSize: 12, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", opacity: 0.7 }}>{now}</span>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${C.border}`, flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0, flex: 1 }}>
+          <span style={{ fontSize: 18, fontWeight: 400, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.2 }} className="sm:text-[22px]">Welcome, {adminFirstName || "Admin"}</span>
+          <span style={{ fontSize: 11, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", opacity: 0.7 }} className="sm:text-[12px]">{now}</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, color: C.muted }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.green }} />
             System OK
@@ -314,15 +314,15 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* ── KPI Row ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 12 }}>
-        <Kpi icon={<GraduationCap size={13} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/admin/students" C={C} />
-        <Kpi icon={<BookOpen size={13} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/admin/courses" C={C} />
-        <Kpi icon={<DollarSign size={13} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/admin/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor={theme === "dark" ? "#fde68a" : "#92400e"} C={C} />
-        <Kpi icon={<Bell size={13} />} label="Activity" value={String(notifications.length)} sub={`${unread} unread`} href="/admin/notifications" C={C} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }} className="sm:gap-3 sm:grid-cols-2 md:grid-cols-4">
+        <Kpi icon={<GraduationCap size={13} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/adminportal/students" C={C} />
+        <Kpi icon={<BookOpen size={13} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/adminportal/courses" C={C} />
+        <Kpi icon={<DollarSign size={13} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/adminportal/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor={theme === "dark" ? "#fde68a" : "#92400e"} C={C} />
+        <Kpi icon={<Bell size={13} />} label="Activity" value={String(notifications.length)} sub={`${unread} unread`} href="/adminportal/notifications" C={C} />
       </div>
 
       {/* ── Main Chart Row ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 12 }} className="sm:gap-3 md:grid-cols-2">
         {/* Growth */}
         <Card title="Registrations" sub="14d" icon={<TrendingUp size={12} />} C={C}>
           <div style={{ height: 160 }}>
@@ -369,7 +369,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* ── Secondary Chart Row ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 12 }} className="sm:gap-3 md:grid-cols-2">
         {/* Region */}
         <Card title="Enrollment by Region" sub={regionSubLabel} icon={<BarChart3 size={12} />} C={C}>
           <div
@@ -599,7 +599,7 @@ export default function AdminDashboardPage() {
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
             <span style={{ color: C.muted, display: "flex" }}><Users size={12} /></span>
             <span style={{ fontSize: 11, fontWeight: 600, color: C.text }}>Recently Registered</span>
-            <Link href="/admin/students" style={{ marginLeft: "auto", fontSize: 9, color: C.teal, fontFamily: "'JetBrains Mono','SF Mono',monospace", textDecoration: "none", cursor: "pointer" }}>
+            <Link href="/adminportal/students" style={{ marginLeft: "auto", fontSize: 9, color: C.teal, fontFamily: "'JetBrains Mono','SF Mono',monospace", textDecoration: "none", cursor: "pointer" }}>
               See all →
             </Link>
           </div>

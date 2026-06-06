@@ -130,7 +130,7 @@ export default function GlobalSearch() {
             title: s.full_name,
             subtitle: s.email,
             category: "student",
-            href: "/admin/students",
+            href: "/adminportal/students",
             metadata: s.status,
           });
         });
@@ -150,7 +150,7 @@ export default function GlobalSearch() {
             title: c.title,
             subtitle: `${c.status} course`,
             category: "course",
-            href: "/admin/courses",
+            href: "/adminportal/courses",
             metadata: c.status,
           });
         });
@@ -170,7 +170,7 @@ export default function GlobalSearch() {
             title: `Payment ${p.reference || `#${p.id.slice(0, 8)}`}`,
             subtitle: `₦${p.amount.toLocaleString()} · ${p.payment_method}`,
             category: "payment",
-            href: "/admin/payments",
+            href: "/adminportal/payments",
             metadata: p.notes || "payment",
           });
         });
@@ -190,7 +190,7 @@ export default function GlobalSearch() {
             title: n.title,
             subtitle: n.message.length > 60 ? n.message.slice(0, 60) + "…" : n.message,
             category: "notification",
-            href: "/admin/notifications",
+            href: "/adminportal/notifications",
             metadata: n.category,
           });
         });
@@ -282,17 +282,18 @@ export default function GlobalSearch() {
       ) : (
         <button
           onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
-          className="hidden sm:flex items-center gap-2 w-full px-3 py-2 rounded-[10px] transition-colors"
+          className="flex items-center gap-1.5 sm:gap-2 w-full px-2 sm:px-3 py-2 rounded-[10px] transition-colors min-w-0"
           style={{
             background: C.card,
             border: `1px solid ${C.border}`,
             color: C.muted,
             fontSize: 14,
           }}
+          aria-label="Open search"
         >
           <Search className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">Search students, courses...</span>
-          <kbd className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded hidden lg:inline" style={{
+          <span className="truncate text-[11px] sm:text-[13px]">Search</span>
+          <kbd className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded hidden lg:inline shrink-0" style={{
             color: C.dim,
             background: C.sidebarActive,
           }}>
@@ -390,27 +391,6 @@ export default function GlobalSearch() {
         </div>
       )}
 
-      {/* Mobile search trigger */}
-      {!open && (
-        <button
-          onClick={() => { setOpen(true); }}
-          style={{
-            display: "none",
-            width: 36,
-            height: 36,
-            borderRadius: 8,
-            alignItems: "center",
-            justifyContent: "center",
-            color: C.muted,
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-          }}
-          className="sm:hidden"
-        >
-          <Search className="w-5 h-5" />
-        </button>
-      )}
     </div>
   );
 }

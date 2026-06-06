@@ -119,7 +119,7 @@ export default function SettingsPage() {
   const handleSignOut = async () => {
     setSigningOut(true);
     await supabase.auth.signOut();
-    window.location.href = "/admin/login";
+    window.location.href = "/adminportal/login";
   };
 
   return (

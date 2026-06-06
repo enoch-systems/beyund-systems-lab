@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
         category: "student",
         status: "unread",
         student_id: data.id,
-        link: "/admin/students",
+        link: "/adminportal/students",
       });
 
     if (notifError) {

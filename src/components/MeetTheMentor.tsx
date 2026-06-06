@@ -127,13 +127,13 @@ export default function MeetTheMentor() {
 
             {/* CTA */}
             <div
-              className={`pt-4 transition-all duration-1000 ease-out delay-[800ms] ${
+              className={`-pt-6 transition-all duration-1000 ease-out delay-[800ms] ${
                 visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
             >
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 text-sm font-normal"
+                className="inline-flex items-center gap-0 px-6 py-3 rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 text-sm font-normal"
               >
                 Join Cohort 1 and start building
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

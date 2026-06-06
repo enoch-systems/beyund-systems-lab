@@ -6,12 +6,18 @@ import type { NextRequest } from "next/server";
  *
  * Protects admin routes by checking for a Supabase auth session cookie.
  * Unauthenticated users are redirected to the login page.
+ *
+ * Note: Next.js 16 requires the proxy function to be exported as the
+ * `default` export of the module. The runtime adapter invokes
+ * `module.default(module.proxy, ...)` so the function must be the default
+ * export. We re-export it under the `proxy` name as well for consistency
+ * with the documented public API.
  */
-export function proxy(request: NextRequest) {
+function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Only protect admin routes (but not the login page itself)
-  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
+  if (pathname.startsWith("/adminportal") && pathname !== "/adminportal/login") {
     // Check for Supabase auth session cookie
     // Supabase SSR sets cookies like: sb-<project-ref>-auth-token
     const supabaseCookie = request.cookies.get("sb-auth-token");
@@ -23,7 +29,7 @@ export function proxy(request: NextRequest) {
 
     if (!supabaseCookie && !hasSupabaseAuth) {
       // No auth session found — redirect to login
-      const loginUrl = new URL("/admin/login", request.url);
+      const loginUrl = new URL("/adminportal/login", request.url);
       loginUrl.searchParams.set("redirectedFrom", pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -31,6 +37,9 @@ export function proxy(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+export default proxy;
+export { proxy };
 
 export const config = {
   matcher: [
@@ -40,6 +49,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (metadata file)
      */
-    "/admin/:path*",
+    "/adminportal/:path*",
   ],
 };
