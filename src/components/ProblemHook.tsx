@@ -36,13 +36,13 @@ export default function ProblemHook() {
           }`}
         >
           <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.1]">
-            You can code.{" "}
-            <span className="text-white/50">You can build.</span>
+            You want to build{" "}
+            <span className="text-green-300">real apps</span>.
           </span>
           <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-white/80 leading-[1.15] mt-3">
-            But most backend developers{" "}
+            But most beginners{" "}
             <span className="text-green-300 underline decoration-green-500/30 decoration-2 underline-offset-8">
-              never architect a system in production
+              never go beyond tutorials
             </span>
             .
           </span>
@@ -54,9 +54,10 @@ export default function ProblemHook() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          They learn Express, Databases, APIs. Then they hit a wall: versioning,
-          scaling, real-time systems, fraud logic, integrations. The tools exist.
-          <em className="text-white/80 not-italic"> The knowledge doesn't.</em>
+          You learn HTML, CSS, JavaScript, maybe React. You follow along with tutorials.
+          Then you try to build something on your own&hellip; and you're stuck.
+          Authentication. Databases. Deploying. The tutorials exist. 
+          <em className="text-white/80 not-italic"> The confidence doesn't.</em>
         </p>
 
         {/* Stats / credibility line */}
@@ -66,16 +67,16 @@ export default function ProblemHook() {
           }`}
         >
           <div>
-            <span className="text-2xl md:text-3xl font-bold text-white">50%</span>
-            <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[180px]">
-              of self-taught devs plateau within 2 years — they never see a production system get built
+            <span className="text-2xl md:text-3xl font-bold text-white">80%</span>
+            <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[200px]">
+              of self-taught beginners never finish their first original project — they get stuck after the tutorial ends
             </p>
           </div>
           <div className="hidden md:block w-px bg-white/10" />
           <div>
             <span className="text-2xl md:text-3xl font-bold text-white">15</span>
             <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[180px]">
-              builders per cohort. Deep work, not mass enrollment.
+              builders per cohort. Guided, hands-on, no one left behind.
             </p>
           </div>
         </div>
@@ -97,9 +98,9 @@ export default function ProblemHook() {
               <p className="text-white/50 text-sm md:text-base text-center">
                 <span className="text-white/70 font-medium">VIDEO PLACEHOLDER</span>
                 <br />
-                Loom: 60–90s — Enoch on screen explaining the problem from first principles
+                Loom: 60–90s — Enoch on screen explaining why most beginners stay stuck
                 <br />
-                <span className="text-white/30 text-xs">Show a real code screenshot or architecture diagram while talking</span>
+                <span className="text-white/30 text-xs">Show a real project being built from scratch — frontend to Firebase</span>
               </p>
             </div>
             {/* Glow overlay */}
@@ -114,7 +115,7 @@ export default function ProblemHook() {
           }`}
         >
           <span className="text-[10px] md:text-xs font-mono tracking-[0.3em] text-white/30 uppercase">
-            Scroll to see how Cohort 1 changes this
+            Scroll to see what Cohort 1 builders are shipping
           </span>
           <div className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center p-1.5">
             <div className="w-1 h-2 rounded-full bg-white/50 animate-bounce" />

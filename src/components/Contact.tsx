@@ -565,22 +565,22 @@ export default function Contact() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              take the next step
+              ready to start building?
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              Ready to Architect{" "}
-              <span className="text-green-300">Systems That Scale?</span>
+              Build Your First{" "}
+              <span className="text-green-300">Real Fullstack App</span>
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              Get accepted to Cohort 1
+              Apply for Cohort 1
             </p>
           </div>
         </div>
 
         <div className="max-w-xl mx-auto text-center mb-8">
           <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-            Cohort 1 is limited to 12–15 builders. We're selective — not to gatekeep,
-            but because depth requires it. 60 seconds to see if this matches where you're headed.
+            Cohort 1 is limited to 15 builders. No prior experience required — just
+            the willingness to build. 60 seconds to apply.
           </p>
         </div>
 
@@ -1108,7 +1108,7 @@ export default function Contact() {
                     </>
                   ) : (
                     <>
-                      Let's go
+                      Apply now
                       <svg
                         className="w-4 h-4"
                         fill="none"

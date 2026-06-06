@@ -80,21 +80,24 @@ export default function MeetTheMentor() {
             }`}
           >
             <h3 className="text-2xl md:text-3xl font-semibold text-white">
-              Why Enoch teaches this way
+              Built for beginners, backed by real experience
             </h3>
             <p className="text-base md:text-lg text-white/70 leading-relaxed">
-              Enoch has shipped production systems across fintech, logistics, identity, and enterprise
-              domains. He stopped taking client work to translate that real-world complexity into a
-              structured path for builders like you.
+              Enoch started exactly where you are — self-taught, building side projects, figuring
+              things out one error at a time. He's built and shipped systems across fintech,
+              logistics, identity, and enterprise. But more importantly, he's learned how to{" "}
+              <strong className="text-white/90">teach what took him years to figure out.</strong>
             </p>
             <p className="text-base md:text-lg text-white/70 leading-relaxed">
-              His teaching methodology is rooted in{" "}
-              <strong className="text-white/90">layered architecture</strong> — the same approach used
-              by top engineering teams. At Beyund Labs Academy, he teaches how systems{" "}
-              <em className="text-white/80">actually</em> fail and scale, because he's seen it.
-              You'll learn more than syntax. You'll learn how to{" "}
-              <strong className="text-white/90">think in systems</strong>, design for tradeoffs, and
-              ship code that survives production.
+              His approach: you don't need to master everything at once. You start with the
+              frontend — something visual and rewarding — then layer in authentication, databases,
+              and deployment step by step. Firebase, Supabase, Next.js, Tailwind. Tools that
+              let you <em className="text-white/80">build real things without being overwhelmed.</em>
+            </p>
+            <p className="text-base md:text-lg text-white/70 leading-relaxed">
+              At Beyund Labs Academy, he's built a curriculum that takes you from &ldquo;I can
+              follow a tutorial&rdquo; to &ldquo;I built this app from scratch and it's live.&rdquo;
+              No gatekeeping. No assumed knowledge. Just a clear path forward.
             </p>
 
             {/* Mentorship highlights */}
@@ -132,7 +135,7 @@ export default function MeetTheMentor() {
                 href="#contact"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 bg-white/10 text-white/70 hover:bg-white hover:text-black hover:border-white transition-all duration-200 text-sm font-medium"
               >
-                See if Cohort 1 is a fit for you
+                Join Cohort 1 and start building
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
@@ -140,8 +143,6 @@ export default function MeetTheMentor() {
             </div>
           </div>
         </div>
-
-
       </div>
     </section>
   );

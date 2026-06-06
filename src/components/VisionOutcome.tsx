@@ -4,24 +4,24 @@ import { useEffect, useRef, useState } from "react";
 
 const studentProjects = [
   {
-    title: "Student Wallet App",
-    desc: "Real transaction flows with fraud detection, balance management, and ledger history. Built with Node.js + PostgreSQL.",
-    tags: ["Fintech", "Transactions", "Fraud Detection"],
+    title: "AI Flashcard App",
+    desc: "A fullstack flashcard app with AI-generated quizzes. Next.js frontend, Firebase Auth, Firestore for data — deployed live. Start to finish.",
+    tags: ["Next.js", "Firebase", "AI", "Auth"],
   },
   {
-    title: "Payment Settlement System",
-    desc: "Connecting to Paystack, handling dispute logic, reconciliation, and idempotent retries for failed transactions.",
-    tags: ["Payments", "Paystack", "Idempotency"],
+    title: "Recipe Social Platform",
+    desc: "Share, save, and discover recipes. Supabase for storage and real-time updates, Tailwind UI, user profiles with avatars. Looks like a real product.",
+    tags: ["Supabase", "Tailwind", "Real-time", "Social"],
   },
   {
-    title: "Logistics API",
-    desc: "Full logistics backend consumed by other students' frontend teams — routes, delivery tracking, real-time status updates.",
-    tags: ["Logistics", "Real-time", "API Design"],
+    title: "SaaS Dashboard Starter",
+    desc: "A beautiful admin dashboard with authentication, charts, user management — all wired to Firebase. The foundation every SaaS needs.",
+    tags: ["Dashboard", "Firebase", "SaaS", "Charts"],
   },
   {
-    title: "Multi-tenant SaaS Backend",
-    desc: "Auth, role-based access, tenant isolation, billing webhooks — a production-ready SaaS backend scaffold.",
-    tags: ["SaaS", "Multi-tenant", "Auth"],
+    title: "Community Job Board",
+    desc: "A job board where anyone can post and apply. Supabase backend, search & filters, email notifications, admin panel. Real-world utility.",
+    tags: ["Supabase", "Fullstack", "Search", "Notifications"],
   },
 ];
 
@@ -53,14 +53,14 @@ export default function VisionOutcome() {
           <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
           <div>
             <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              what cohort 1 is building
+              what cohort 1 builders are shipping
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              Real Systems,{" "}
-              <span className="text-green-300">Not Tutorials</span>
+              Real Apps,{" "}
+              <span className="text-green-300">From Day One</span>
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              This is what learning looks like
+              No starter templates. No copy-paste. You build this.
             </p>
           </div>
         </div>
@@ -124,9 +124,9 @@ export default function VisionOutcome() {
               <p className="text-white/50 text-sm md:text-base text-center">
                 <span className="text-white/70 font-medium">VIDEO PLACEHOLDER</span>
                 <br />
-                Loom: 2–3 min — Enoch drawing out a system architecture on screen
+                Loom: 2–3 min — Enoch walking through a real project build (frontend + Firebase)
                 <br />
-                <span className="text-white/30 text-xs">Real pedagogy — layers, decisions, tradeoffs</span>
+                <span className="text-white/30 text-xs">See exactly how we go from idea to deployed app</span>
               </p>
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
