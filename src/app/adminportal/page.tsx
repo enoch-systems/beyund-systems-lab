@@ -602,7 +602,7 @@ export default function AdminDashboardPage() {
               See all →
             </Link>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <div style={{ display: "grid", gap: 4 }} className="md:grid-cols-2">
             {recentStudents.map((s) => (
               <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 8px", borderRadius: 3, background: C.bg, border: `1px solid ${C.border}` }}>
                 <div style={{ width: 24, height: 24, borderRadius: "50%", background: `linear-gradient(135deg, ${C.teal}33, ${C.accent}33)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 700, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>
