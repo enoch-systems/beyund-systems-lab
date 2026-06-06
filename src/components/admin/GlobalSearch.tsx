@@ -63,6 +63,7 @@ export default function GlobalSearch() {
   const supabase = createSupabaseBrowserClient();
   const { theme } = useTheme();
   const C = getColors(theme);
+  const iconBtnHover = theme === "dark" ? "#171717" : C.sidebarActive;
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -227,7 +228,7 @@ export default function GlobalSearch() {
   };
 
   return (
-    <div ref={dropdownRef} className="relative flex-1 max-w-[480px]">
+    <div ref={dropdownRef} className="relative flex-1 max-w-[480px] min-w-0">
       {/* ── Search input ── */}
       {open ? (
         <div className="flex items-center gap-2 flex-1">
@@ -280,26 +281,44 @@ export default function GlobalSearch() {
           </button>
         </div>
       ) : (
-        <button
-          onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
-          className="flex items-center gap-1.5 sm:gap-2 w-full px-2 sm:px-3 py-2 rounded-[10px] transition-colors min-w-0"
-          style={{
-            background: C.card,
-            border: `1px solid ${C.border}`,
-            color: C.muted,
-            fontSize: 14,
-          }}
-          aria-label="Open search"
-        >
-          <Search className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate text-[11px] sm:text-[13px]">Search</span>
-          <kbd className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded hidden lg:inline shrink-0" style={{
-            color: C.dim,
-            background: C.sidebarActive,
-          }}>
-            ⌘K
-          </kbd>
-        </button>
+        <>
+          {/* Mobile: icon-only trigger */}
+          <button
+            onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
+            className="sm:hidden flex items-center justify-center shrink-0"
+            aria-label="Open search"
+            style={{
+              width: 32, height: 32, borderRadius: 6,
+              background: "transparent", border: "none",
+              color: C.muted, cursor: "pointer", padding: 0,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = iconBtnHover)}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
+            <Search className="w-4 h-4" />
+          </button>
+          {/* Desktop: full search bar */}
+          <button
+            onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
+            className="hidden sm:flex items-center gap-2 w-full px-3 py-2 rounded-[10px] transition-colors min-w-0"
+            style={{
+              background: C.card,
+              border: `1px solid ${C.border}`,
+              color: C.muted,
+              fontSize: 14,
+            }}
+            aria-label="Open search"
+          >
+            <Search className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate text-[13px]">Search students, courses, payments...</span>
+            <kbd className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded hidden lg:inline shrink-0" style={{
+              color: C.dim,
+              background: C.sidebarActive,
+            }}>
+              ⌘K
+            </kbd>
+          </button>
+        </>
       )}
 
       {/* ── Dropdown ── */}

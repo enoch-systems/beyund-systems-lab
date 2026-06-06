@@ -339,28 +339,72 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
     };
   }, [supabase]);
 
+  // Header background matches the dark "view details" near-black
+  // (Tailwind neutral-900 #171717) for a polished dark-mode feel.
+  const headerBg = theme === "dark" ? "#0a0a0a" : C.bg;
+  const headerBorder = theme === "dark" ? "#1f1f1f" : C.border;
+  const iconBtnHover = theme === "dark" ? "#171717" : C.sidebarActive;
+
   return (
-    <header style={{
-      position: "sticky", top: 0, zIndex: 20, height: 48,
-      borderBottom: `1px solid ${C.border}`,
-      background: C.bg,
-    }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "100%", padding: "0 12px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
-          <button onClick={onMobileMenuOpen}
-            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted }}
-            className="lg:hidden">
-            <Menu size={14} />
+    <header
+      style={{
+        position: "sticky", top: 0, zIndex: 20,
+        height: 48,
+        borderBottom: `1px solid ${headerBorder}`,
+        background: headerBg,
+        backdropFilter: "saturate(140%) blur(6px)",
+      }}
+    >
+      <div
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          height: "100%", padding: "0 8px", gap: 4,
+        }}
+        className="sm:px-3 sm:gap-3"
+      >
+        {/* ── Left cluster: menu + logo + search ── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, minWidth: 0 }} className="sm:gap-2">
+          <button
+            onClick={onMobileMenuOpen}
+            aria-label="Open menu"
+            style={{
+              background: "transparent", border: "none", cursor: "pointer",
+              padding: 8, color: C.muted, display: "flex", alignItems: "center",
+              justifyContent: "center", borderRadius: 6, flexShrink: 0,
+            }}
+            className="lg:hidden"
+            onMouseEnter={(e) => (e.currentTarget.style.background = iconBtnHover)}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
+            <Menu size={16} />
           </button>
-          <Link href="/adminportal" className="lg:hidden">
-            <BeyundLogo className="h-5" />
+          <Link
+            href="/adminportal"
+            className="lg:hidden shrink-0"
+            style={{ display: "flex", alignItems: "center", padding: 4 }}
+          >
+            <BeyundLogo className="h-4" />
           </Link>
-          <GlobalSearch />
+          <div className="flex-1 min-w-0">
+            <GlobalSearch />
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={toggleTheme}
-            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted, display: "flex" }}
-            title="Toggle theme">
+
+        {/* ── Right cluster: theme + bell + avatar ── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }} className="sm:gap-2">
+          <button
+            onClick={toggleTheme}
+            title="Toggle theme"
+            aria-label="Toggle theme"
+            style={{
+              background: "transparent", border: "none", cursor: "pointer",
+              padding: 7, color: C.muted, display: "flex", alignItems: "center",
+              justifyContent: "center", borderRadius: 6,
+            }}
+            className="hidden sm:flex"
+            onMouseEnter={(e) => (e.currentTarget.style.background = iconBtnHover)}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
             {theme === "dark" ? (
               <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -371,11 +415,22 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
               </svg>
             )}
           </button>
-          <Link href="/adminportal/notifications" style={{ position: "relative", background: "transparent", border: "none", cursor: "pointer", padding: 4, color: C.muted, display: "flex", textDecoration: "none" }}>
-            <Bell size={13} />
+          <Link
+            href="/adminportal/notifications"
+            aria-label="Notifications"
+            style={{
+              position: "relative", background: "transparent", border: "none",
+              cursor: "pointer", padding: 7, color: C.muted, display: "flex",
+              alignItems: "center", justifyContent: "center", borderRadius: 6,
+              textDecoration: "none",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = iconBtnHover)}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
+            <Bell size={14} />
             {unreadCount > 0 ? (
               <span style={{
-                position: "absolute", top: -3, right: -3, minWidth: 14, height: 14,
+                position: "absolute", top: 2, right: 2, minWidth: 14, height: 14,
                 borderRadius: 7, background: C.red, color: "#fff",
                 fontSize: 8, fontWeight: 700, fontFamily: "'JetBrains Mono','SF Mono',monospace",
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -384,14 +439,21 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             ) : (
-              <span style={{ position: "absolute", top: 1, right: 1, width: 5, height: 5, borderRadius: "50%", background: C.dim }} />
+              <span style={{ position: "absolute", top: 4, right: 4, width: 5, height: 5, borderRadius: "50%", background: C.dim }} />
             )}
           </Link>
-          <Link href="/adminportal/settings" style={{
-            width: 24, height: 24, borderRadius: "50%", background: C.card,
-            border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center",
-            textDecoration: "none", color: C.muted, fontSize: 10, fontWeight: 600,
-          }}>
+          <Link
+            href="/adminportal/settings"
+            aria-label="Account"
+            style={{
+              width: 28, height: 28, borderRadius: "50%",
+              background: theme === "dark" ? "#171717" : C.card,
+              border: `1px solid ${headerBorder}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              textDecoration: "none", color: C.muted, fontSize: 10, fontWeight: 600,
+              flexShrink: 0,
+            }}
+          >
             <HeaderAvatar />
           </Link>
         </div>
