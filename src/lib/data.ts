@@ -6,9 +6,8 @@ export const personalData = {
   location: "Owerri, Nigeria",
   timezone: "WAT (UTC+1)",
   email: "enochc.official@gmail.com",
-  linkedin: "https://www.linkedin.com/in/enochchukwudi?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
-  github: "https://github.com/enoch-systems",
-  twitter: "https://x.com/_enochsystems?s=21",
+  facebook: "https://web.facebook.com/enochchukwudi",
+  instagram: "https://www.instagram.com/_enochsystems/",
   bio: [
     "Acquire building skills in software fullstack development at Beyund Labs Academy. We teach how to build real-world operational systems using modern web technologies, from APIs and backend logic to complete fullstack applications.",
     "You'll learn to design APIs, business workflows, transaction systems, authentication flows, and scalable backend architectures while also building clean frontend experiences.",
