@@ -594,25 +594,30 @@ export default function AdminDashboardPage() {
 
       {/* ── Recently Registered ── */}
       {recentStudents.length > 0 && (
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: 10 }} className="sm:p-4">
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-            <span style={{ color: C.muted, display: "flex" }}><Users size={12} /></span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: C.text }}>Recently Registered</span>
-            <Link href="/adminportal/students" style={{ marginLeft: "auto", fontSize: 9, color: C.teal, fontFamily: "'JetBrains Mono','SF Mono',monospace", textDecoration: "none", cursor: "pointer" }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 6, padding: 14, marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: C.bg, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: C.muted }}>
+              <Users size={13} />
+            </div>
+            <span style={{ fontSize: 12, fontWeight: 600, color: C.text, letterSpacing: "-0.01em" }}>Recently Registered</span>
+            <Link href="/adminportal/students" style={{ marginLeft: "auto", fontSize: 10, color: C.teal, fontFamily: "'JetBrains Mono','SF Mono',monospace", textDecoration: "none", cursor: "pointer", fontWeight: 500, opacity: 0.85, transition: "opacity 0.15s" }}>
               See all →
             </Link>
           </div>
-          <div style={{ display: "grid", gap: 4 }} className="md:grid-cols-2">
-            {recentStudents.map((s) => (
-              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 8px", borderRadius: 3, background: C.bg, border: `1px solid ${C.border}` }}>
-                <div style={{ width: 24, height: 24, borderRadius: "50%", background: `linear-gradient(135deg, ${C.teal}33, ${C.accent}33)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 700, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {recentStudents.map((s, idx) => (
+              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 5, background: C.bg, border: `1px solid ${C.border}`, transition: "border-color 0.15s" }}>
+                <div style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg, ${C.teal}22, ${C.teal}44)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: C.teal, flexShrink: 0 }}>
                   {initials(s.full_name)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 10, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.full_name}</p>
-                  <p style={{ fontSize: 9, color: C.muted, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.course_applying_for}</p>
+                  <p style={{ fontSize: 11, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.full_name}</p>
+                  <p style={{ fontSize: 9, color: C.muted, margin: "1px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.course_applying_for}</p>
                 </div>
-                <span style={{ fontSize: 8, color: C.dim, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>{nDate(s.created_at)}</span>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1, flexShrink: 0 }}>
+                  <span style={{ fontSize: 9, fontWeight: 600, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{nDate(s.created_at)}</span>
+                  <span style={{ fontSize: 7, fontWeight: 500, color: C.dim }}>{idx === 0 ? "Latest" : ""}</span>
+                </div>
               </div>
             ))}
           </div>
