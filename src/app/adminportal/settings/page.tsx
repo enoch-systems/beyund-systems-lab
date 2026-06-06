@@ -171,7 +171,7 @@ export default function SettingsPage() {
                   className="w-14 h-14 rounded-full object-cover border-2 border-[#e2e8f0] dark:border-[#1a1a1a]"
                 />
               ) : (
-                <div className="w-14 h-14 rounded-full bg-[#f1f5f9] dark:bg-[#1e293b] border-2 border-[#e2e8f0] dark:border-[#1a1a1a] flex items-center justify-center overflow-hidden">
+                <div className="w-14 h-14 rounded-full bg-[#f1f5f9] dark:bg-[#181818] border-2 border-[#e2e8f0] dark:border-[#1a1a1a] flex items-center justify-center overflow-hidden">
                   <Camera className="w-5 h-5 text-neutral-400" />
                 </div>
               )}
@@ -248,7 +248,7 @@ export default function SettingsPage() {
         {/* ── Password Card ── */}
         <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#181818] flex items-center justify-center">
               <Lock className="w-4 h-4 text-neutral-400" />
             </div>
             <div>
@@ -275,7 +275,7 @@ export default function SettingsPage() {
         {/* ── Appearance Card ── */}
         <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#181818] flex items-center justify-center">
               <Palette className="w-4 h-4 text-amber-500" />
             </div>
             <div>

@@ -888,7 +888,7 @@ function KpiCard({
         <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-neutral-400 dark:text-neutral-500">
           {label}
         </span>
-        <div className="w-7 h-7 rounded-[8px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#1e293b] flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+        <div className="w-7 h-7 rounded-[8px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#181818] flex items-center justify-center text-neutral-500 dark:text-neutral-400">
           {icon}
         </div>
       </div>

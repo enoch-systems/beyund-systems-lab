@@ -86,7 +86,7 @@ export default function StudentDetailDrawer({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500/20 to-indigo-500/20 dark:from-violet-500/10 dark:to-indigo-500/10 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-sm font-medium text-neutral-700 dark:text-neutral-300">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500/20 to-indigo-500/20 dark:bg-[#0a0a0a] border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-sm font-medium text-neutral-700 dark:text-neutral-300">
               {student.full_name.charAt(0)}
             </div>
             <div>
