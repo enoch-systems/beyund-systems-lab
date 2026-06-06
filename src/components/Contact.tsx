@@ -577,7 +577,7 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="max-w-xl mx-auto text-center mb-8 space-y-4">
+        <div className="max-w-xl mx-auto text-left mb-8 space-y-4">
           <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
             No prior experience required, just the willingness to build. 60 seconds to apply.
           </p>
