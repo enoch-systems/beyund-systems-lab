@@ -16,7 +16,7 @@ export default function Home() {
     <main className="relative min-h-screen bg-black pt-5">
       <ScrollToTop />
       {/* Fixed background covering entire page */}
-      <div className="fixed inset-0 bg-black/80" />
+      <div className="fixed inset-0 bg-black/90" />
       <div
         className="fixed inset-0"
         style={{
@@ -26,12 +26,12 @@ export default function Home() {
           backgroundRepeat: "no-repeat",
           backgroundAttachment: "fixed",
           filter: "blur(4px)",
-          opacity: 0.6,
+          opacity: 0.4,
           transform: "scale(1.05)",
         }}
       />
       {/* Fixed gradient overlay */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+      <div className="fixed inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
 
       <div className="relative z-10">
         <Navbar />
