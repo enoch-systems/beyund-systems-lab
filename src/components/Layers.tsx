@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const layersData = [
   {
@@ -61,45 +61,77 @@ const layersData = [
 
 function Pill({ label }: { label: string }) {
   return (
-    <span className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-normal rounded-full border border-white/15 bg-white/[0.07] text-white/70">
+    <span className="inline-block px-2.5 py-1 md:px-3 md:py-1.5 text-[10px] md:text-xs lg:text-sm font-normal rounded-full border border-white/15 bg-white/[0.07] text-white/70">
       {label}
     </span>
   );
 }
 
+const layerColors = [
+  "from-blue-500/10 to-blue-500/5",
+  "from-cyan-500/10 to-cyan-500/5",
+  "from-teal-500/10 to-teal-500/5",
+  "from-emerald-500/10 to-emerald-500/5",
+  "from-green-500/10 to-green-500/5",
+  "from-yellow-500/10 to-yellow-500/5",
+  "from-orange-500/10 to-orange-500/5",
+  "from-red-500/10 to-red-500/5",
+  "from-purple-500/10 to-purple-500/5",
+];
+
+const layerAccents = [
+  "border-blue-500/30",
+  "border-cyan-500/30",
+  "border-teal-500/30",
+  "border-emerald-500/30",
+  "border-green-500/30",
+  "border-yellow-500/30",
+  "border-orange-500/30",
+  "border-red-500/30",
+  "border-purple-500/30",
+];
+
+const numberColors = [
+  "bg-blue-500/20 text-blue-300",
+  "bg-cyan-500/20 text-cyan-300",
+  "bg-teal-500/20 text-teal-300",
+  "bg-emerald-500/20 text-emerald-300",
+  "bg-green-500/20 text-green-300",
+  "bg-yellow-500/20 text-yellow-300",
+  "bg-orange-500/20 text-orange-300",
+  "bg-red-500/20 text-red-300",
+  "bg-purple-500/20 text-purple-300",
+];
+
 export default function Layers() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0); // Start first open
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const totalSlides = layersData.length;
 
-  const toggle = (i: number) => {
-    setOpenIndex(openIndex === i ? null : i);
-  };
+  const goNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
+  }, [totalSlides]);
 
-  const layerColors = [
-    "from-blue-500/10 to-blue-500/5",
-    "from-cyan-500/10 to-cyan-500/5",
-    "from-teal-500/10 to-teal-500/5",
-    "from-emerald-500/10 to-emerald-500/5",
-    "from-green-500/10 to-green-500/5",
-    "from-yellow-500/10 to-yellow-500/5",
-    "from-orange-500/10 to-orange-500/5",
-    "from-red-500/10 to-red-500/5",
-    "from-purple-500/10 to-purple-500/5",
-  ];
+  const goPrev = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  }, [totalSlides]);
 
-  const layerAccents = [
-    "border-blue-500/20 group-hover:border-blue-500/40",
-    "border-cyan-500/20 group-hover:border-cyan-500/40",
-    "border-teal-500/20 group-hover:border-teal-500/40",
-    "border-emerald-500/20 group-hover:border-emerald-500/40",
-    "border-green-500/20 group-hover:border-green-500/40",
-    "border-yellow-500/20 group-hover:border-yellow-500/40",
-    "border-orange-500/20 group-hover:border-orange-500/40",
-    "border-red-500/20 group-hover:border-red-500/40",
-    "border-purple-500/20 group-hover:border-purple-500/40",
-  ];
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(goNext, 4000);
+    return () => clearInterval(interval);
+  }, [goNext, isPaused]);
+
+  const layer = layersData[currentIndex];
 
   return (
-    <section id="layers" className="relative overflow-hidden">
+    <section
+      id="layers"
+      className="relative overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-16 md:py-20 lg:px-8">
         {/* Title */}
         <div className="flex items-start gap-4 md:gap-6 mb-10 md:mb-14 max-w-2xl mx-auto">
@@ -118,97 +150,109 @@ export default function Layers() {
           </div>
         </div>
 
-        {/* Architecture stack — visual layers from bottom (storage) to top (client) */}
-        <div className="max-w-3xl mx-auto space-y-3 md:space-y-4">
-          {/* Visual stack indicator */}
+        {/* Carousel container */}
+        <div className="max-w-5xl mx-auto">
+          {/* Progress bar */}
           <div className="flex items-center gap-3 mb-6 px-1">
-            <div className="h-8 w-1 rounded-full bg-gradient-to-b from-blue-400 via-green-400 to-purple-400" />
-            <div>
-              <p className="text-xs font-mono tracking-[0.2em] text-white/40 uppercase">
-                What you will learn
-              </p>
-              <p className="text-xs text-white/30">Click any layer to see the tools and skills you will gain</p>
+            <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-blue-400 via-green-400 to-purple-400 transition-all duration-700 ease-in-out"
+                style={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}
+              />
             </div>
+            <span className="text-xs font-mono text-white/40 whitespace-nowrap">
+              {currentIndex + 1} / {totalSlides}
+            </span>
           </div>
 
-          {layersData.map((layer, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <div
-                key={layer.name}
-                className={`group rounded-2xl border bg-gradient-to-r ${layerColors[i]} backdrop-blur-sm overflow-hidden transition-all duration-300 ${
-                  isOpen ? layerAccents[i] : "border-white/10 hover:border-white/20"
-                }`}
-              >
-                <button
-                  onClick={() => toggle(i)}
-                  className="w-full flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    {/* Layer number badge */}
-                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[11px] font-normal transition-all duration-300 ${
-                      isOpen
-                        ? "bg-white/20 text-white"
-                        : "bg-white/5 text-white/40 group-hover:bg-white/10 group-hover:text-white/70"
-                    }`}>
-                      {i + 1}
-                    </span>
-                    <span className={`text-sm md:text-base lg:text-lg font-normal tracking-[0.2em] md:tracking-[0.25em] uppercase transition-colors duration-200 ${
-                      isOpen ? "text-white" : "text-white/60 group-hover:text-white/90"
-                    }`}>
-                      {layer.name}
-                    </span>
-                  </div>
-                  <svg
-                    className={`w-5 h-5 md:w-6 md:h-6 shrink-0 transition-transform duration-300 ${
-                      isOpen ? "rotate-180 text-white" : "text-white/50"
-                    }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+          {/* Slide area */}
+          <div className="relative">
+            {/* Left Chevron */}
+            <button
+              onClick={goPrev}
+              className="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/15 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-all duration-200"
+              aria-label="Previous layer"
+            >
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
 
-                <div
-                  className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                    isOpen ? "max-h-[1200px] opacity-100" : "max-h-0 opacity-0"
-                  }`}
-                >
-                  <div className="px-5 md:px-7 pb-6 md:pb-7 space-y-4 md:space-y-5 border-t border-white/10 pt-4 md:pt-5">
-                    <div>
-                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">what you learn</p>
-                      <div className="flex flex-wrap gap-2">
-                        {layer.build.map((item) => (
-                          <Pill key={item} label={item} />
-                        ))}
-                      </div>
+            {/* Right Chevron */}
+            <button
+              onClick={goNext}
+              className="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/15 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-all duration-200"
+              aria-label="Next layer"
+            >
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+
+            {/* Card */}
+            <div
+              key={currentIndex}
+              className={`rounded-2xl border bg-gradient-to-r ${layerColors[currentIndex]} backdrop-blur-sm overflow-hidden transition-all duration-500 ease-in-out ${layerAccents[currentIndex]}`}
+            >
+              {/* Header */}
+              <div className="px-5 md:px-7 py-5 md:py-6">
+                <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5">
+                  <span className={`flex h-8 w-8 md:h-10 md:w-10 shrink-0 items-center justify-center rounded-xl text-sm md:text-base font-normal ${numberColors[currentIndex]}`}>
+                    {currentIndex + 1}
+                  </span>
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-normal tracking-[0.2em] md:tracking-[0.25em] uppercase text-white">
+                    {layer.name}
+                  </h3>
+                </div>
+
+                {/* Details */}
+                <div className="space-y-3 md:space-y-4">
+                  <div>
+                    <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2 font-mono">what you learn</p>
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                      {layer.build.map((item) => (
+                        <Pill key={item} label={item} />
+                      ))}
                     </div>
-                    <div>
-                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">tools you use</p>
-                      <div className="flex flex-wrap gap-2">
-                        {layer.tools.map((tool) => (
-                          <span key={tool} className="inline-block px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm lg:text-base font-normal rounded-full border border-green-500/30 bg-green-500/15 text-green-200">
-                            {tool}
-                          </span>
-                        ))}
-                      </div>
+                  </div>
+                  <div>
+                    <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2 font-mono">tools you use</p>
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                      {layer.tools.map((tool) => (
+                        <span key={tool} className="inline-block px-2.5 py-1 md:px-3 md:py-1.5 text-[10px] md:text-xs lg:text-sm font-normal rounded-full border border-green-500/30 bg-green-500/15 text-green-200">
+                          {tool}
+                        </span>
+                      ))}
                     </div>
-                    <div>
-                      <p className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2.5 font-mono">concepts you master</p>
-                      <div className="flex flex-wrap gap-2">
-                        {layer.concepts.map((concept) => (
-                          <Pill key={concept} label={concept} />
-                        ))}
-                      </div>
+                  </div>
+                  <div>
+                    <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/35 mb-2 font-mono">concepts you master</p>
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                      {layer.concepts.map((concept) => (
+                        <Pill key={concept} label={concept} />
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          </div>
+
+          {/* Dot indicators */}
+          <div className="flex items-center justify-center gap-2 mt-6">
+            {layersData.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`rounded-full transition-all duration-300 ${
+                  i === currentIndex
+                    ? "w-6 h-2 bg-white/70"
+                    : "w-2 h-2 bg-white/20 hover:bg-white/40"
+                }`}
+                aria-label={`Go to layer ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

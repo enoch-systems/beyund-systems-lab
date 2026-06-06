@@ -50,12 +50,8 @@ export default function ProblemHook() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          You understand or refresh the basics of HTML, CSS, JavaScript. That enables you
-          to use frameworks like React and Next.js for beautiful frontends. But from there,
-          a real app has many more layers. API layer, backend logic, data access, storage,
-          background jobs, integrations, monitoring, architecture. Nine layers total. Most
-          tutorials cover maybe two of them.
-          The tutorials exist. <em className="text-white/80 not-italic">The confidence doesn't.</em>
+           You understand or refresh the basics of HTML, CSS, JavaScript. That enables you
+           to use frameworks like React and Next.js for beautiful frontends.
         </p>
 
         {/* Stats / credibility line */}
