@@ -156,7 +156,7 @@ export default function Layers() {
           <div className="flex items-center gap-3 mb-6 px-1">
             <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-blue-400 via-green-400 to-purple-400 transition-all duration-700 ease-in-out"
+                className="h-full rounded-full bg-white/60 transition-all duration-700 ease-in-out"
                 style={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}
               />
             </div>
