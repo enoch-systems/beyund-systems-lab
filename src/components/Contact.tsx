@@ -621,7 +621,7 @@ export default function Contact() {
             </div>
             <div className="h-1 bg-white/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-green-400 rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-white/60 rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
