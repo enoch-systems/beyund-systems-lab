@@ -577,11 +577,26 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="max-w-xl mx-auto text-center mb-8">
+        <div className="max-w-xl mx-auto text-center mb-8 space-y-4">
           <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-            Cohort 1 is limited to 15 builders. No prior experience required, just
-            the willingness to build. 60 seconds to apply.
+            No prior experience required, just the willingness to build. 60 seconds to apply.
           </p>
+
+          {/* Pricing card */}
+          <div className="inline-flex items-center gap-3 md:gap-5 px-5 md:px-7 py-3 md:py-4 rounded-2xl border border-green-500/20 bg-green-500/5 backdrop-blur-sm">
+            <div className="text-left">
+              <p className="text-[10px] md:text-xs font-mono tracking-[0.25em] text-green-400/60 uppercase">
+                Cohort 1 pricing
+              </p>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-3xl md:text-4xl font-bold text-green-300">₦60,000</span>
+                <span className="text-sm text-white/50">for 12 weeks</span>
+              </div>
+              <p className="text-xs text-white/40 mt-0.5">
+                That is ₦5,000 per week for all 9 layers with direct mentorship.
+              </p>
+            </div>
+          </div>
         </div>
 
 

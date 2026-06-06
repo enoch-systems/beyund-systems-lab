@@ -69,6 +69,13 @@ export default function ProblemHook() {
               beginners who try to learn alone never finish their first real project. They get stuck after the tutorial ends.
             </p>
           </div>
+          <div className="hidden md:block w-px bg-white/10" />
+          <div>
+            <span className="text-2xl md:text-3xl font-bold text-green-300">₦60,000</span>
+            <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[200px]">
+              for 12 weeks. That is ₦5,000 per week for all 9 layers with direct mentorship.
+            </p>
+          </div>
         </div>
 
         {/* Video embed placeholder */}
