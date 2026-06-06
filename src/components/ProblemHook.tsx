@@ -50,12 +50,12 @@ export default function ProblemHook() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          You learn HTML, CSS, JavaScript. Maybe you know React or Next.js. You follow
-          tutorials and they make sense. But the moment you try to build something on your
-          own&hellip; you get stuck. How do you connect your frontend to a real backend?
-          Where do you store user data? How do you handle authentication, background jobs,
-          file uploads, API versioning, webhooks, deployments? Each of these is a whole layer
-          of a real application. And no single tutorial teaches you all of them.
+          You learn HTML, CSS, JavaScript. Maybe you know React or Next.js, enough for a
+          nice looking frontend. But a real app has many layers. The client layer is just
+          the beginning. There is the API layer, the backend logic layer, the data access
+          layer, the storage layer, the background jobs layer, the integration layer for
+          payments and auth, the monitoring layer, the architecture layer for deployment
+          and scaling. Nine layers total. Most tutorials cover maybe two.
           The tutorials exist. <em className="text-white/80 not-italic">The confidence doesn't.</em>
         </p>
 
