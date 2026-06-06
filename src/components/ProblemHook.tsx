@@ -69,13 +69,6 @@ export default function ProblemHook() {
               beginners who try to learn alone never finish their first real project. They get stuck after the tutorial ends.
             </p>
           </div>
-          <div className="hidden md:block w-px bg-white/10" />
-          <div>
-            <span className="text-2xl md:text-3xl font-bold text-white">Only 15 spots</span>
-            <p className="text-xs md:text-sm text-white/40 mt-1 max-w-[200px]">
-              per cohort so everyone gets guided hands on support. No one gets left behind.
-            </p>
-          </div>
         </div>
 
         {/* Video embed placeholder */}

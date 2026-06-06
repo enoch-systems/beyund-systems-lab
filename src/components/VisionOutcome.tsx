@@ -60,7 +60,7 @@ export default function VisionOutcome() {
               <span className="text-green-300">From Day One</span>
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl font-thin tracking-[0.2em] text-white/60 uppercase mt-1">
-              No copy paste. You build this yourself.
+              You build this yourself.
             </p>
           </div>
         </div>
