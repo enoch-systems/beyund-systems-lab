@@ -5,9 +5,11 @@ export default function Footer() {
     <footer className="border-t border-white/10 text-white py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-6">
-          <div className="flex gap-6 text-sm text-slate-400">
-            <a href="#about" className="hover:text-white transition">About</a>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-400">
+            <a href="#mentor" className="hover:text-white transition">Mentorship</a>
             <a href="#outcome" className="hover:text-white transition">What You Build</a>
+            <a href="#what-you-become" className="hover:text-white transition">What You Become</a>
+            <a href="#layers" className="hover:text-white transition">Fullstack Toolkit</a>
             <a href="#contact" className="hover:text-white transition">Registration</a>
           </div>
 
