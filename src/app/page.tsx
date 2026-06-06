@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import SocialSidebar from "@/components/SocialSidebar";
+import PricingBadge from "@/components/PricingBadge";
 import ProblemHook from "@/components/ProblemHook";
 import VisionOutcome from "@/components/VisionOutcome";
 import Layers from "@/components/Layers";
@@ -35,6 +36,7 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
         <SocialSidebar />
+        <PricingBadge />
 
         {/* Outcome-first flow: Problem → Proof → Curriculum → Identity → Mentor → CTA */}
         <ProblemHook />
