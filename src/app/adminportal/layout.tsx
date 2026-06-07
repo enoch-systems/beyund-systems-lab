@@ -481,7 +481,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
             onClick={toggleTheme}
             title="Toggle theme"
             aria-label="Toggle theme"
-            className="hidden sm:flex"
+            className="hidden lg:flex"
             style={{
               background: "transparent", border: "none", cursor: "pointer",
               padding: 7, color: C.muted, display: "flex", alignItems: "center",
