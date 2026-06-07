@@ -558,8 +558,9 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C, onRequestSignOut }: { onM
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-[120] h-12 lg:static lg:z-auto"
+      className="fixed top-0 left-0 right-0 z-[120] h-12"
       data-header="mobile-fixed"
+      data-collapsed={collapsed ? "true" : "false"}
       style={{
         borderBottom: `1px solid ${headerBorder}`,
         background: headerBg,
@@ -720,6 +721,8 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           @media (min-width: 1024px) {
             [data-collapsed="true"] { margin-left: 56px !important; }
             [data-collapsed="false"] { margin-left: 220px !important; }
+            header[data-collapsed="true"] { left: 56px !important; }
+            header[data-collapsed="false"] { left: 220px !important; }
           }
         `}</style>
         <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} collapsed={collapsed} C={C} onRequestSignOut={() => setSignOutOpen(true)} />
