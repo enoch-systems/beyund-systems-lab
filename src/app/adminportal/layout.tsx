@@ -19,6 +19,8 @@ import {
   Sparkles,
   LogOut,
   User as UserIcon,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import BeyundLogo from "@/components/BeyundLogo";
@@ -479,7 +481,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
         <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }} className="md:gap-3">
           <button
             onClick={toggleTheme}
-            title="Toggle theme"
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             aria-label="Toggle theme"
             className="hidden lg:flex"
             style={{
@@ -490,7 +492,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
             onMouseEnter={(e) => (e.currentTarget.style.background = iconBtnHover)}
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           >
-            {theme === "dark" ? "Light" : "Dark"}
+            {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
           </button>
           <Link
             href="/adminportal/notifications"
