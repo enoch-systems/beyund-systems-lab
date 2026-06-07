@@ -338,6 +338,8 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
           style={{
             position: "fixed", inset: 0, zIndex: 99998,
             background: "rgba(0,0,0,0.55)",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
             display: "flex", alignItems: "center", justifyContent: "center",
             padding: 16,
           }}

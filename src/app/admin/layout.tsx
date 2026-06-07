@@ -274,7 +274,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
         .in("category", ["student", "payment"]);
       if (count !== null) setUnreadCount(count);
     };
-
+  
     refetchUnreadCount();
 
     // Live subscription for real-time count updates
