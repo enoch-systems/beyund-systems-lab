@@ -323,10 +323,19 @@ export default function GlobalSearch() {
         </>
       )}
 
+      {/* Backdrop blur overlay on mobile */}
+      {open && searched && (
+        <div
+          className="fixed inset-0 sm:hidden z-40"
+          style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}
+          onClick={() => { setOpen(false); setQuery(""); }}
+        />
+      )}
+
       {/* ── Dropdown ── */}
       {open && searched && (
         <div
-          className="fixed sm:absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:translate-y-0 sm:translate-x-0 sm:top-full sm:left-0 sm:right-0 mt-0 sm:mt-2 w-[calc(100vw-32px)] sm:w-auto rounded-[14px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden z-50 animate-in fade-in duration-200"
+          className="fixed sm:absolute top-12 left-1/2 -translate-x-1/2 sm:translate-y-0 sm:translate-x-0 sm:top-full sm:left-0 sm:right-0 mt-2 sm:mt-2 w-[calc(100vw-32px)] sm:w-auto rounded-[14px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden z-50 animate-in fade-in duration-200"
           style={{
             background: C.card,
             border: `1px solid ${C.border}`,
@@ -341,7 +350,7 @@ export default function GlobalSearch() {
               <p className="text-[11px] mt-1" style={{ color: C.dim }}>Try a different search term</p>
             </div>
           ) : (
-          <div className="max-h-[400px] overflow-y-auto py-0.5 sm:py-2">
+          <div className="max-h-[280px] overflow-y-auto py-0.5 sm:py-2">
               {results.map((result, index) => {
                 const cfg = categoryConfig[result.category];
                 const isSelected = index === selectedIndex;
