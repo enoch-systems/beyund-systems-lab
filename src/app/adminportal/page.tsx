@@ -472,14 +472,14 @@ export default function AdminDashboardPage() {
 
       {/* ── Secondary Chart Row ── */}
       <div style={{ display: "grid", gap: 10, marginBottom: 16 }} className="sm:gap-4 md:grid-cols-2">
-        {/* Region */}
-        <Card title="Enrollment by Region" sub={regionSubLabel} icon={<BarChart3 size={12} />} C={C}>
+        {/* Region — now shows NG, US, CA, GH with 12 states each */}
+        <Card title="Enrollment by Region" sub={`${deepData.length} states · ${deepData.filter((d,i,a)=>a.findIndex(x=>x.shortCode===d.shortCode)===i).length} countries`} icon={<BarChart3 size={12} />} C={C}>
           <div
             style={{
               position: "relative",
               borderRadius: 4,
               overflow: "hidden",
-              minHeight: 170,
+              minHeight: 220,
             }}
           >
             {/* Globe background — blended softly behind the chart */}
@@ -500,22 +500,21 @@ export default function AdminDashboardPage() {
                 pointerEvents: "none",
               }}
             />
-            {regionData.length === 0 ? (
+            {deepData.length === 0 ? (
               <div style={{ position: "relative", height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontSize: 11, color: C.muted }}>No data</span>
               </div>
             ) : (
-              <div style={{ position: "relative", height: 170 }}>
+              <div style={{ position: "relative", height: Math.max(220, deepData.length * 28 + 10) }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={regionData}
+                    data={deepData}
                     margin={{ top: 4, right: isMobile ? 2 : 16, left: isMobile ? 0 : 4, bottom: 0 }}
                     layout="vertical"
                     barCategoryGap={2}
                   >
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" horizontal={false} />
                     <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
-                    {/* YAxis shows flag + short code (or just state if single country) */}
                     <YAxis
                       type="category"
                       dataKey="yLabel"
@@ -524,18 +523,16 @@ export default function AdminDashboardPage() {
                       width={isMobile ? 64 : 108}
                       tick={(props: any) => {
                         const { x, y, payload } = props;
-                        const item = regionData.find(d => d.yLabel === payload.value);
+                        const item = deepData.find(d => d.yLabel === payload.value);
                         const flagOffsetX = isMobile ? -58 : -100;
                         const textOffsetX = isMobile ? -40 : -78;
                         const fontSize = isMobile ? 7 : 9;
                         const flagW = isMobile ? 12 : 18;
                         const flagH = isMobile ? 8 : 12;
-                        const label = isSingleCountry
-                          ? item?.state || payload.value
-                          : item?.shortCode || payload.value;
+                        const label = item?.shortCode || payload.value;
                         return (
                           <g transform={`translate(${x},${y})`}>
-                            {!isSingleCountry && item?.flagUrl ? (
+                            {item?.flagUrl ? (
                               <image
                                 href={item.flagUrl}
                                 x={flagOffsetX}
@@ -545,14 +542,14 @@ export default function AdminDashboardPage() {
                                 preserveAspectRatio="xMidYMid meet"
                                 style={{ borderRadius: 1, outline: "1px solid rgba(255,255,255,0.15)" }}
                               />
-                            ) : !isSingleCountry ? (
+                            ) : (
                               <rect x={flagOffsetX} y={-6} width={flagW} height={flagH} fill={C.dim} opacity={0.3} rx={1} />
-                            ) : null}
+                            )}
                             <text
-                              x={isSingleCountry ? -4 : textOffsetX}
+                              x={textOffsetX}
                               y={0}
                               dy={3.5}
-                              textAnchor={isSingleCountry ? "end" : "start"}
+                              textAnchor="start"
                               fill={C.text}
                               fontSize={fontSize}
                               fontWeight={600}
@@ -564,11 +561,7 @@ export default function AdminDashboardPage() {
                         );
                       }}
                     />
-                    <Tooltip
-                      cursor={{ fill: "transparent" }}
-                      content={<CTip C={C} />}
-                    />
-                    {/* Bar center label: "State (N)" */}
+                    <Tooltip cursor={{ fill: "transparent" }} content={<CTip C={C} />} />
                     <Bar
                       dataKey="count"
                       radius={[0, 3, 3, 0]}
@@ -583,11 +576,11 @@ export default function AdminDashboardPage() {
                         fontFamily: "'JetBrains Mono','SF Mono',monospace",
                         content: (props: any) => {
                           const { index } = props;
-                          const item = regionData[index];
+                          const item = deepData[index];
                           if (!item) return null;
                           const label = isMobile
-                            ? `${item.state.length > 12 ? item.state.slice(0, 11) + "…" : item.state} (${item.count})`
-                            : item.barLabel;
+                            ? `${item.state.length > 8 ? item.state.slice(0, 7) + "…" : item.state} (${item.count})`
+                            : `${item.state} (${item.count})`;
                           return (
                             <text
                               x={props.x + props.width / 2}
@@ -605,7 +598,7 @@ export default function AdminDashboardPage() {
                         },
                       }}
                     >
-                      {regionData.map((e, i) => <Cell key={i} fill={e.fill} fillOpacity={e.fillOpacity} />)}
+                      {deepData.map((e, i) => <Cell key={i} fill={e.fill} fillOpacity={e.fillOpacity} />)}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
