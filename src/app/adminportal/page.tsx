@@ -353,7 +353,7 @@ export default function AdminDashboardPage() {
         <Card title="Registrations" sub="14d" icon={<TrendingUp size={12} />} C={C}>
           <div style={{ height: 180 }} className="sm:h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={gd} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
+              <AreaChart data={gd} margin={{ top: 4, right: 4, left: isMobile ? -20 : -16, bottom: 0 }}>
                 <defs>
                   <linearGradient id="gg" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={C.teal} stopOpacity={0.1} />
@@ -361,10 +361,10 @@ export default function AdminDashboardPage() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} interval={1} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 9, fill: C.muted }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="label" tick={{ fontSize: isMobile ? 7 : 9, fill: C.muted }} axisLine={false} tickLine={false} interval={isMobile ? 2 : 1} />
+                <YAxis allowDecimals={false} tick={{ fontSize: isMobile ? 7 : 9, fill: C.muted }} axisLine={false} tickLine={false} width={isMobile ? 24 : 36} />
                 <Tooltip content={<CTip C={C} />} />
-                <Area type="monotone" dataKey="count" stroke={C.teal} strokeWidth={1.5} fill="url(#gg)" name="New" dot={total > 0 ? { r: 2, fill: C.teal, stroke: "none" } : false} />
+                <Area type="monotone" dataKey="count" stroke={C.teal} strokeWidth={1.5} fill="url(#gg)" name="New" dot={total > 0 ? { r: isMobile ? 1.5 : 2, fill: C.teal, stroke: "none" } : false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -433,9 +433,9 @@ export default function AdminDashboardPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={regionData}
-                    margin={{ top: 4, right: isMobile ? 4 : 16, left: isMobile ? 4 : 4, bottom: 0 }}
+                    margin={{ top: 4, right: isMobile ? 2 : 16, left: isMobile ? 0 : 4, bottom: 0 }}
                     layout="vertical"
-                    barCategoryGap={6}
+                    barCategoryGap={4}
                   >
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" horizontal={false} />
                     <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
@@ -445,33 +445,34 @@ export default function AdminDashboardPage() {
                       dataKey="yLabel"
                       axisLine={false}
                       tickLine={false}
-                      width={isMobile ? 78 : 108}
+                      width={isMobile ? 64 : 108}
                       tick={(props: any) => {
                         const { x, y, payload } = props;
                         const item = regionData.find(d => d.yLabel === payload.value);
-                        // Responsive offsets: tighter on mobile to fit the smaller YAxis width
-                        const flagOffsetX = isMobile ? -72 : -100;
-                        const textOffsetX = isMobile ? -52 : -78;
-                        const fontSize = isMobile ? 8 : 9;
+                        const flagOffsetX = isMobile ? -58 : -100;
+                        const textOffsetX = isMobile ? -40 : -78;
+                        const fontSize = isMobile ? 7 : 9;
+                        const flagW = isMobile ? 12 : 18;
+                        const flagH = isMobile ? 8 : 12;
                         return (
                           <g transform={`translate(${x},${y})`}>
                             {item?.flagUrl ? (
                               <image
                                 href={item.flagUrl}
                                 x={flagOffsetX}
-                                y={-7}
-                                width={isMobile ? 14 : 18}
-                                height={isMobile ? 10 : 12}
+                                y={-6}
+                                width={flagW}
+                                height={flagH}
                                 preserveAspectRatio="xMidYMid meet"
                                 style={{ borderRadius: 1, outline: "1px solid rgba(255,255,255,0.15)" }}
                               />
                             ) : (
-                              <rect x={flagOffsetX} y={-7} width={isMobile ? 14 : 18} height={isMobile ? 10 : 12} fill={C.dim} opacity={0.3} rx={1} />
+                              <rect x={flagOffsetX} y={-6} width={flagW} height={flagH} fill={C.dim} opacity={0.3} rx={1} />
                             )}
                             <text
                               x={textOffsetX}
                               y={0}
-                              dy={4}
+                              dy={3.5}
                               textAnchor="start"
                               fill={C.text}
                               fontSize={fontSize}
@@ -488,17 +489,17 @@ export default function AdminDashboardPage() {
                       cursor={{ fill: "transparent" }}
                       content={<CTip C={C} />}
                     />
-                    {/* Bar center label: "State (N person(s))" */}
+                    {/* Bar center label: "State (N)" or shorter on mobile */}
                     <Bar
                       dataKey="count"
                       radius={[0, 3, 3, 0]}
                       name="Students"
-                      barSize={isMobile ? 14 : 16}
+                      barSize={isMobile ? 12 : 16}
                       isAnimationActive={false}
                       label={{
                         position: "center",
                         fill: "#f8fafc",
-                        fontSize: isMobile ? 8 : 9,
+                        fontSize: isMobile ? 7 : 9,
                         fontWeight: 700,
                         fontFamily: "'JetBrains Mono','SF Mono',monospace",
                         formatter: (v: any) => {
@@ -509,18 +510,22 @@ export default function AdminDashboardPage() {
                           const { index } = props;
                           const item = regionData[index];
                           if (!item) return null;
+                          // Truncate state name for mobile
+                          const label = isMobile
+                            ? `${item.state.length > 12 ? item.state.slice(0, 11) + "…" : item.state} (${item.count})`
+                            : item.barLabel;
                           return (
                             <text
                               x={props.x + props.width / 2}
                               y={props.y + props.height / 2}
                               fill="#f8fafc"
-                              fontSize={isMobile ? 8 : 9}
+                              fontSize={isMobile ? 7 : 9}
                               fontWeight={700}
                               fontFamily="'JetBrains Mono','SF Mono',monospace"
                               textAnchor="middle"
                               dominantBaseline="central"
                             >
-                              {item.barLabel}
+                              {label}
                             </text>
                           );
                         },

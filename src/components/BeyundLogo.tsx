@@ -19,7 +19,7 @@ export default function BeyundLogo({ className = "" }: { className?: string }) {
           className="text-slate-300/90 ml-1 font-mono"
           style={{ fontVariant: "small-caps" }}
         >
-          𝙻𝚊𝚋𝚜.
+          𝙻𝚊𝚋𝚜
         </span>
         <span className="ml-1 font-light tracking-widest uppercase flex items-baseline">
           <span className="text-green-400/80 text-[0.6em] font-normal">L</span>

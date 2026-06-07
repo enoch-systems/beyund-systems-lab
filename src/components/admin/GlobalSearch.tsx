@@ -243,16 +243,17 @@ export default function GlobalSearch() {
               placeholder="Search students, courses, payments..."
               style={{
                 width: "100%",
-                paddingLeft: 36,
-                paddingRight: 12,
-                paddingTop: 8,
-                paddingBottom: 8,
-                borderRadius: 10,
+                paddingLeft: 32,
+                paddingRight: 10,
+                paddingTop: 5,
+                paddingBottom: 5,
+                borderRadius: 8,
                 background: C.card,
                 border: `1px solid ${C.border}`,
                 color: C.text,
-                fontSize: 14,
+                fontSize: 13,
                 outline: "none",
+                height: 30,
               }}
               className="focus:ring-1"
               onFocus={(e) => e.currentTarget.style.boxShadow = `0 0 0 1px ${C.teal}40`}
@@ -288,30 +289,31 @@ export default function GlobalSearch() {
             className="sm:hidden flex items-center justify-center shrink-0"
             aria-label="Open search"
             style={{
-              width: 32, height: 32, borderRadius: 6,
+              width: 28, height: 28, borderRadius: 6,
               background: "transparent", border: "none",
               color: C.muted, cursor: "pointer", padding: 0,
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = iconBtnHover)}
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-3.5 h-3.5" />
           </button>
           {/* Desktop: full search bar */}
           <button
             onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
-            className="hidden sm:flex items-center gap-2 w-full px-3 py-2 rounded-[10px] transition-colors min-w-0"
+            className="hidden sm:flex items-center gap-2 w-full px-3 rounded-[8px] transition-colors min-w-0"
             style={{
               background: C.card,
               border: `1px solid ${C.border}`,
               color: C.muted,
-              fontSize: 14,
+              fontSize: 13,
+              height: 30,
             }}
             aria-label="Open search"
           >
             <Search className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate text-[13px]">Search students, courses, payments...</span>
-            <kbd className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded hidden lg:inline shrink-0" style={{
+            <span className="truncate text-[12px]">Search students, courses, payments...</span>
+            <kbd className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded hidden lg:inline shrink-0" style={{
               color: C.dim,
               background: C.sidebarActive,
             }}>
