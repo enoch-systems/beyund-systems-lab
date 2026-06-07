@@ -5,7 +5,10 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 import type { StudentRegistration } from "@/lib/types";
 import StudentDetailDrawer from "@/components/admin/StudentDetailDrawer";
 import ExportReportModal from "@/components/admin/ExportReportModal";
-import { Search, ChevronDown, Download, Eye, Mail, MapPin, Phone } from "lucide-react";
+import { Search, ChevronDown, Download, Eye, Mail, MapPin, Phone, ChevronLeft, ChevronRight } from "lucide-react";
+
+const ITEMS_PER_PAGE = 15;
+const VISIBLE_PAGE_COUNT = 5;
 
 const statusOptions = ["pending", "contacted", "enrolled", "rejected"] as const;
 
@@ -25,6 +28,7 @@ export default function StudentsPage() {
   const [selectedStudent, setSelectedStudent] = useState<StudentRegistration | null>(null);
   const [showExportModal, setShowExportModal] = useState(false);
   const [adminName, setAdminName] = useState("Admin");
+  const [currentPage, setCurrentPage] = useState(1);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -96,6 +100,46 @@ export default function StudentsPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const totalPages = Math.max(1, Math.ceil(filteredStudents.length / ITEMS_PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedStudents = filteredStudents.slice(
+    (safeCurrentPage - 1) * ITEMS_PER_PAGE,
+    safeCurrentPage * ITEMS_PER_PAGE
+  );
+
+  // Reset to page 1 when filters change
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
+    setCurrentPage(1);
+  };
+
+  // Sliding window page numbers
+  function getPageNumbers(): (number | "...")[] {
+    if (totalPages <= VISIBLE_PAGE_COUNT) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    let start = Math.max(1, safeCurrentPage - Math.floor(VISIBLE_PAGE_COUNT / 2));
+    let end = start + VISIBLE_PAGE_COUNT - 1;
+
+    if (end > totalPages) {
+      end = totalPages;
+      start = end - VISIBLE_PAGE_COUNT + 1;
+    }
+
+    const pages: (number | "...")[] = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  const pageNumbers = getPageNumbers();
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -133,13 +177,13 @@ export default function StudentsPage() {
             type="text"
             placeholder="Search students..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
               className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#121212] border border-[#e2e8f0] dark:border-[#1a1a1a] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={(e) => handleStatusFilterChange(e.target.value)}
           className="h-[30px] px-3 rounded-[6px] bg-white dark:bg-[#121212] border border-[#e2e8f0] dark:border-[#1a1a1a] text-[11px] text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all cursor-pointer shrink-0"
           style={{ colorScheme: "dark" }}
         >
@@ -171,19 +215,19 @@ export default function StudentsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-50 dark:divide-neutral-800/40">
-              {filteredStudents.length === 0 ? (
+              {paginatedStudents.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center text-[12px] text-neutral-400 dark:text-neutral-600">
                     No students found.
                   </td>
                 </tr>
               ) : (
-                filteredStudents.map((student, index) => (
+                paginatedStudents.map((student, index) => (
                   <tr key={student.id} className="hover:bg-neutral-50/50 dark:hover:bg-white/[0.02] transition-colors">
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2.5">
                         <span className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 shrink-0 w-5 text-right" style={{ fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
-                          #{filteredStudents.length - index}
+                          #{(safeCurrentPage - 1) * ITEMS_PER_PAGE + index + 1}
                         </span>
                         <div className="min-w-0">
                           <p className="text-[12px] font-semibold text-neutral-900 dark:text-white truncate">
@@ -247,7 +291,7 @@ export default function StudentsPage() {
 
       {/* ──────── MOBILE CARDS (< md) ──────── */}
       <div className="md:hidden space-y-3">
-        {filteredStudents.length === 0 ? (
+        {paginatedStudents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
             <div className="w-14 h-14 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-3">
               <Search className="w-6 h-6 text-neutral-400" />
@@ -256,7 +300,7 @@ export default function StudentsPage() {
             <p className="text-[12px] text-neutral-400 dark:text-neutral-500 mt-1">Try adjusting your search or filters</p>
           </div>
         ) : (
-          filteredStudents.map((student, index) => (
+          paginatedStudents.map((student, index) => (
             <div
               key={student.id}
               className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-4 space-y-3"
@@ -264,7 +308,7 @@ export default function StudentsPage() {
               {/* Top: name + status */}
               <div className="flex items-center gap-3">
                 <span className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 shrink-0" style={{ fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
-                  #{filteredStudents.length - index}
+                  #{(safeCurrentPage - 1) * ITEMS_PER_PAGE + index + 1}
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold text-neutral-900 dark:text-white truncate">
@@ -332,6 +376,53 @@ export default function StudentsPage() {
           ))
         )}
       </div>
+
+      {/* ──────── PAGINATION ──────── */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1 pt-1">
+          {/* Prev Button */}
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={safeCurrentPage === 1}
+            className="inline-flex items-center justify-center h-[30px] px-2.5 rounded-[6px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Page Numbers */}
+          {pageNumbers.map((page, idx) =>
+            page === "..." ? (
+              <span
+                key={`ellipsis-${idx}`}
+                className="inline-flex items-center justify-center h-[30px] px-1.5 text-[11px] text-neutral-400 dark:text-neutral-500"
+              >
+                …
+              </span>
+            ) : (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page as number)}
+                className={`inline-flex items-center justify-center h-[30px] min-w-[30px] px-2 rounded-[6px] text-[11px] font-medium transition-all cursor-pointer ${
+                  safeCurrentPage === page
+                    ? "bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-sm"
+                    : "border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                }`}
+              >
+                {page}
+              </button>
+            )
+          )}
+
+          {/* Next Button */}
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safeCurrentPage === totalPages}
+            className="inline-flex items-center justify-center h-[30px] px-2.5 rounded-[6px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Student Detail Drawer */}
       <StudentDetailDrawer
