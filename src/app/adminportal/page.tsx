@@ -329,10 +329,8 @@ export default function AdminDashboardPage() {
   ).length;
 
   // ── Recent Registrations ──
-  const [showAllRecent, setShowAllRecent] = useState(false);
-  const recentStudents = students.slice(0, showAllRecent ? students.length : 10);
+  const recentStudents = students;
   const recentTotal = students.length;
-  const recentDisplayed = recentStudents.length;
 
   // ── Status Data ──
   const sd = [
@@ -681,7 +679,7 @@ export default function AdminDashboardPage() {
             </div>
             <span style={{ fontSize: 12, fontWeight: 600, color: C.text, letterSpacing: "-0.01em" }}>
               Recently Registered
-              <span style={{ fontSize: 9, color: C.muted, fontWeight: 400, marginLeft: 6 }}>({recentDisplayed}{recentTotal > recentDisplayed ? ` of ${recentTotal}` : ""})</span>
+              <span style={{ fontSize: 9, color: C.muted, fontWeight: 400, marginLeft: 6 }}>({recentTotal})</span>
             </span>
             <Link href="/adminportal/students" style={{ marginLeft: "auto", fontSize: 10, color: C.teal, fontFamily: "'JetBrains Mono','SF Mono',monospace", textDecoration: "none", cursor: "pointer", fontWeight: 500, opacity: 0.85, transition: "opacity 0.15s" }}>
               See all →
@@ -690,42 +688,17 @@ export default function AdminDashboardPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {recentStudents.map((s, idx) => (
               <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 5, background: C.bg, border: `1px solid ${C.border}`, transition: "border-color 0.15s" }}>
-                <div style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg, ${C.teal}22, ${C.teal}44)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: C.teal, flexShrink: 0 }}>
-                  {initials(s.full_name)}
-                </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ fontSize: 11, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.full_name}</p>
                   <p style={{ fontSize: 9, color: C.muted, margin: "1px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.course_applying_for}</p>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1, flexShrink: 0 }}>
                   <span style={{ fontSize: 9, fontWeight: 600, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{nDate(s.created_at)}</span>
-                  <span style={{ fontSize: 7, fontWeight: 500, color: C.dim }}>{idx === 0 ? "Latest" : ""}</span>
+                  {idx === 0 && <span style={{ fontSize: 7, fontWeight: 500, color: C.dim }}>Latest</span>}
                 </div>
               </div>
             ))}
           </div>
-          {recentTotal > 10 && (
-            <button
-              onClick={() => setShowAllRecent(!showAllRecent)}
-              style={{
-                marginTop: 10,
-                width: "100%",
-                padding: "8px 0",
-                background: C.bg,
-                border: `1px solid ${C.border}`,
-                borderRadius: 5,
-                cursor: "pointer",
-                fontSize: 10,
-                fontWeight: 600,
-                color: C.teal,
-                fontFamily: "'JetBrains Mono','SF Mono',monospace",
-                textAlign: "center",
-                transition: "border-color 0.15s",
-              }}
-            >
-              {showAllRecent ? "Show less ↑" : `See more (${recentTotal - 10} more) ↓`}
-            </button>
-          )}
         </div>
       )}
 
