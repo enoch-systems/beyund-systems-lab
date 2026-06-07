@@ -1,5 +1,5 @@
 // ============================================================
-// Seed Script: Students (all Full Stack) + Payments + Transactions
+// Seed Script: 38 Students (all Full Stack) + 23 Enrolled with Payments + Notifications
 // ============================================================
 // Run: node scripts/seed-students.mjs
 // ============================================================
@@ -60,15 +60,18 @@ const firstNames = [
   "Chidi", "Amara", "Oluwaseun", "Fatima", "Kwame", "Zuri", "Tunde", "Ngozi",
   "Kofi", "Aisha", "Emeka", "Akua", "Babatunde", "Makena", "Yusuf", "Chioma",
   "Jide", "Esi", "Damilola", "Nadia", "Abubakar", "Wanjiku", "Ifeanyi", "Nneka",
-  "Suleiman", "Adaeze", "Kelechi",
+  "Suleiman", "Adaeze", "Kelechi", "Obinna", "Chinwe", "Ezinne", "Chibueze",
+  "Kemi", "Segun", "Toyin", "Rotimi", "Folake",
 ];
 const lastNames = [
   "Okonkwo", "Adebayo", "Osei", "Mensah", "Kamau", "Okafor", "Otieno",
   "Nwachukwu", "Asante", "Abdi", "Eze", "Boateng", "Ogunlade", "Njeri",
   "Hassan", "Diallo", "Obinna", "Quartey", "Akinlade", "Mwangi",
   "Bello", "Coker", "Oduya", "Eke", "Mohammed", "Igwe", "Akinyemi",
+  "Ogundele", "Balogun", "Afolabi", "Adepoju",
 ];
 const domains = ["gmail.com", "yahoo.com", "outlook.com", "protonmail.com", "icloud.com", "hotmail.com"];
+const paymentMethods = ["transfer", "card", "pos", "cash", "ussd"];
 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
@@ -111,39 +114,72 @@ function generateStudents(count) {
 }
 
 async function seed() {
-  console.log("🚀 Seeding 35 students (all Full Stack Development, 11 enrolled with payments)...\n");
+  console.log("🚀 Seeding 38 students (all Full Stack Development, 23 enrolled with payments)...\n");
 
-  // Clear everything
+  // Clear everything (children first)
+  await supabase.from("notification_seen").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabase.from("announcements").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabase.from("notifications").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   await supabase.from("payments").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   await supabase.from("student_payment_profiles").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   await supabase.from("student_registrations").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   console.log("🧹 Cleared existing records\n");
 
-  // Generate & insert students
-  const students = generateStudents(35);
-  const { data: insertedStudents, error: insErr } = await supabase.from("student_registrations").insert(students).select("id, full_name, status");
+  // Generate & insert students (38 total)
+  const students = generateStudents(38);
+  const { data: insertedStudents, error: insErr } = await supabase.from("student_registrations").insert(students).select("id, full_name, status, created_at, course_applying_for");
   if (insErr) { console.error("❌ Insert failed:", insErr.message); process.exit(1); }
   console.log(`✅ Inserted ${insertedStudents.length} students\n`);
 
-  // Pick 11 to enroll
-  const enrolled = insertedStudents.slice(0, 11);
-  const pending = insertedStudents.slice(11);
+  // Create registration notifications for ALL students
+  for (const s of insertedStudents) {
+    const { error: notifErr } = await supabase.from("notifications").insert({
+      title: "New Student Registration",
+      message: `${s.full_name} registered for ${s.course_applying_for}`,
+      category: "student",
+      status: "unread",
+      student_id: s.id,
+      created_at: s.created_at,
+    });
+    if (notifErr) console.error(`❌ Notification error for ${s.full_name}:`, notifErr.message);
+  }
+  console.log("📬 Created registration notifications for all students\n");
+
+  // Pick 23 to enroll (first 23)
+  const enrolled = insertedStudents.slice(0, 23);
+  const pendingStudents = insertedStudents.slice(23);
+
+  // Update status to enrolled and create enrollment notifications
   for (const s of enrolled) {
     await supabase.from("student_registrations").update({ status: "enrolled" }).eq("id", s.id);
+
+    // Create enrollment notification
+    const enrollDate = new Date(s.created_at);
+    enrollDate.setDate(enrollDate.getDate() + 1); // enrolled a day after registration
+    await supabase.from("notifications").insert({
+      title: "Student Enrolled",
+      message: `${s.full_name} has been enrolled in ${s.course_applying_for}`,
+      category: "student",
+      status: "unread",
+      student_id: s.id,
+      created_at: enrollDate.toISOString(),
+    });
   }
   console.log(`📌 Enrolled ${enrolled.length} students\n`);
 
   // Create payment profiles + transactions for enrolled students
-  // Spread over 4 days: 3, 4, 2, 2
-  const paidCounts = [3, 4, 2, 2];
+  // Spread payments across several days to simulate real activity
+  // 23 enrolled students, all paid in full
   let payIdx = 0;
-  for (let dayOffset = 4; dayOffset >= 1; dayOffset--) {
-    const count = paidCounts[4 - dayOffset];
+  // Distribute payments over 7 days
+  const paidDistribution = [4, 4, 4, 4, 3, 2, 2]; // total = 23
+  for (let dayOffset = 7; dayOffset >= 1; dayOffset--) {
+    const count = paidDistribution[7 - dayOffset];
     for (let j = 0; j < count && payIdx < enrolled.length; j++) {
       const student = enrolled[payIdx];
       const payDate = new Date();
       payDate.setDate(payDate.getDate() - dayOffset);
-      payDate.setHours(10 + j, 0, 0, 0);
+      payDate.setHours(9 + j, Math.floor(Math.random() * 60), 0, 0);
 
       // Create payment profile
       const { error: ppErr } = await supabase.from("student_payment_profiles").insert({
@@ -153,32 +189,49 @@ async function seed() {
         payment_status: "paid",
         updated_at: payDate.toISOString(),
       });
-      if (ppErr) { console.error(`❌ Payment profile error for ${student.full_name}:`, ppErr.message); continue; }
+      if (ppErr) { console.error(`❌ Payment profile error for ${student.full_name}:`, ppErr.message); payIdx++; continue; }
 
       // Create payment transaction
+      const method = pick(paymentMethods);
+      const ref = `PAY-${student.id.slice(0, 6).toUpperCase()}-${payDate.getTime()}`;
       const { error: txErr } = await supabase.from("payments").insert({
         student_id: student.id,
         amount: TUITION_FEE,
-        payment_method: pick(["transfer", "card", "pos", "cash", "ussd"]),
-        reference: `PAY-${student.id.slice(0, 6).toUpperCase()}-${payDate.getTime()}`,
+        payment_method: method,
+        reference: ref,
         notes: `Full Stack Development tuition - ${payDate.toLocaleDateString("en-NG")}`,
         created_at: payDate.toISOString(),
       });
-      if (txErr) { console.error(`❌ Transaction error for ${student.full_name}:`, txErr.message); continue; }
+      if (txErr) { console.error(`❌ Transaction error for ${student.full_name}:`, txErr.message); payIdx++; continue; }
 
-      console.log(`   💰 ${student.full_name} — ₦${TUITION_FEE.toLocaleString()} paid on ${payDate.toLocaleDateString("en-NG", { weekday: "short", month: "short", day: "numeric" })}`);
+      // Create payment notification
+      await supabase.from("notifications").insert({
+        title: "Payment Received",
+        message: `${student.full_name} paid ₦${TUITION_FEE.toLocaleString()} via ${method}`,
+        category: "payment",
+        status: "unread",
+        student_id: student.id,
+        created_at: payDate.toISOString(),
+      });
+
+      console.log(`   💰 ${student.full_name} — ₦${TUITION_FEE.toLocaleString()} paid on ${payDate.toLocaleDateString("en-NG", { weekday: "short", month: "short", day: "numeric" })} via ${method}`);
       payIdx++;
     }
   }
 
-  console.log(`\n🎉 Done! ${enrolled.length} enrolled students with payments totaling ₦${(enrolled.length * TUITION_FEE).toLocaleString()}`);
-  console.log(`📊 ${pending.length} pending students (no payments)`);
+  const totalRevenue = enrolled.length * TUITION_FEE;
+
+  console.log(`\n🎉 Done! ${enrolled.length} enrolled students with payments totaling ₦${totalRevenue.toLocaleString()}`);
+  console.log(`📊 ${pendingStudents.length} pending students (no payments)`);
+  console.log(`📊 Revenue (enrolled only): ₦${totalRevenue.toLocaleString()} from ${enrolled.length} paid students`);
 
   // Verify totals
   const { count: totalCount } = await supabase.from("student_registrations").select("*", { count: "exact", head: true });
   const { count: enrolledCount } = await supabase.from("student_registrations").select("*", { count: "exact", head: true }).eq("status", "enrolled");
   const { count: profileCount } = await supabase.from("student_payment_profiles").select("*", { count: "exact", head: true });
-  console.log(`\n📊 Verifications: ${totalCount} students, ${enrolledCount} enrolled, ${profileCount} payment profiles`);
+  const { count: notifCount } = await supabase.from("notifications").select("*", { count: "exact", head: true });
+  const { count: txCount } = await supabase.from("payments").select("*", { count: "exact", head: true });
+  console.log(`\n📊 Verifications: ${totalCount} students, ${enrolledCount} enrolled, ${profileCount} payment profiles, ${txCount} transactions, ${notifCount} notifications`);
 }
 
 seed().catch((err) => { console.error("❌ Error:", err.message); process.exit(1); });
