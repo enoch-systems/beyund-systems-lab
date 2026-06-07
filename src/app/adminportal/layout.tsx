@@ -318,7 +318,7 @@ function ProfileDropdown({ C, onClose, onRequestSignOut }: { C: Colors; onClose:
 
       {/* Theme toggle — HIDDEN on mobile only (sm and up only) */}
       <button
-        onClick={toggleTheme}
+        onClick={() => { toggleTheme(); onClose(); }}
                 className="hidden sm:flex"
         style={Object.assign({}, itemStyle, { justifyContent: "space-between" })}
         onMouseEnter={(e) => handleItemHover(e, true)}
