@@ -5,7 +5,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 import type { StudentRegistration } from "@/lib/types";
 import StudentDetailDrawer from "@/components/admin/StudentDetailDrawer";
 import ExportReportModal from "@/components/admin/ExportReportModal";
-import { Search, ChevronDown, Download, Eye, Mail, MapPin, Phone, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronDown, Download, Eye, Mail, MapPin, Phone, ChevronLeft, ChevronRight, ArrowUpDown } from "lucide-react";
 
 const ITEMS_PER_PAGE = 15;
 const VISIBLE_PAGE_COUNT = 5;
@@ -19,6 +19,15 @@ const statusStyles: Record<string, string> = {
   rejected: "bg-red-500/10 text-red-600 dark:text-red-400",
 };
 
+const sortOptions = [
+  { value: "last-to-join", label: "Last to Join" },
+  { value: "first-to-join", label: "First to Join" },
+  { value: "a-z", label: "A\u2013Z" },
+  { value: "z-a", label: "Z\u2013A" },
+] as const;
+
+type SortValue = (typeof sortOptions)[number]["value"];
+
 export default function StudentsPage() {
   const [students, setStudents] = useState<StudentRegistration[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +38,8 @@ export default function StudentsPage() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [adminName, setAdminName] = useState("Admin");
   const [currentPage, setCurrentPage] = useState(1);
-  const topRef = useRef<HTMLDivElement>(null);
+  const [sortBy, setSortBy] = useState<SortValue>("last-to-join");
+  const pageRef = useRef<HTMLDivElement>(null);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -87,6 +97,7 @@ export default function StudentsPage() {
     }
   }
 
+  // Filter
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
       searchQuery === "" ||
@@ -101,12 +112,31 @@ export default function StudentsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const totalPages = Math.max(1, Math.ceil(filteredStudents.length / ITEMS_PER_PAGE));
+  // Sort
+  const sortedStudents = [...filteredStudents].sort((a, b) => {
+    switch (sortBy) {
+      case "last-to-join":
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      case "first-to-join":
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      case "a-z":
+        return a.full_name.localeCompare(b.full_name);
+      case "z-a":
+        return b.full_name.localeCompare(a.full_name);
+      default:
+        return 0;
+    }
+  });
+
+  const totalPages = Math.max(1, Math.ceil(sortedStudents.length / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
-  const paginatedStudents = filteredStudents.slice(
+  const paginatedStudents = sortedStudents.slice(
     (safeCurrentPage - 1) * ITEMS_PER_PAGE,
     safeCurrentPage * ITEMS_PER_PAGE
   );
+
+  const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(safeCurrentPage * ITEMS_PER_PAGE, sortedStudents.length);
 
   // Reset to page 1 when filters change
   const handleSearchChange = (value: string) => {
@@ -115,6 +145,10 @@ export default function StudentsPage() {
   };
   const handleStatusFilterChange = (value: string) => {
     setStatusFilter(value);
+    setCurrentPage(1);
+  };
+  const handleSortChange = (value: SortValue) => {
+    setSortBy(value);
     setCurrentPage(1);
   };
 
@@ -143,7 +177,8 @@ export default function StudentsPage() {
 
   function goToPage(page: number) {
     setCurrentPage(page);
-    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Scroll to the very top of the page wrapper
+    pageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   // Reusable pagination component
@@ -176,7 +211,7 @@ export default function StudentsPage() {
               key={`ellipsis-${idx}`}
               className="inline-flex items-center justify-center h-[30px] px-1.5 text-[11px] text-neutral-400 dark:text-neutral-500"
             >
-              …
+              &hellip;
             </span>
           ) : (
             <button
@@ -214,7 +249,7 @@ export default function StudentsPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div ref={pageRef} className="space-y-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
@@ -222,20 +257,28 @@ export default function StudentsPage() {
             Students
           </h1>
           <p className="text-[10px] text-neutral-500 dark:text-neutral-400 mt-0.5">
-            {students.filter((s) => s.status === "enrolled").length} active · {students.filter((s) => s.status === "pending").length} pending · {students.length} total
+            {students.filter((s) => s.status === "enrolled").length} active &middot; {students.filter((s) => s.status === "pending").length} pending &middot; {students.length} total
           </p>
         </div>
-        <button
-          onClick={() => setShowExportModal(true)}
-          className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[11px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] cursor-pointer shadow-sm shrink-0"
-        >
-          <Download className="w-3 h-3" />
-          Export PDF
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Showing X of Y */}
+          {sortedStudents.length > 0 && (
+            <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-medium whitespace-nowrap">
+              Showing {startIndex}&ndash;{endIndex} of {sortedStudents.length}
+            </span>
+          )}
+          <button
+            onClick={() => setShowExportModal(true)}
+            className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[11px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all active:scale-[0.98] cursor-pointer shadow-sm shrink-0"
+          >
+            <Download className="w-3 h-3" />
+            Export PDF
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
-      <div ref={topRef} className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-neutral-400" />
           <input
@@ -259,12 +302,30 @@ export default function StudentsPage() {
             </option>
           ))}
         </select>
+
+        {/* Sort Dropdown */}
+        <div className="relative shrink-0">
+          <select
+            value={sortBy}
+            onChange={(e) => handleSortChange(e.target.value as SortValue)}
+            className="h-[30px] pl-7 pr-3 rounded-[6px] bg-white dark:bg-[#121212] border border-[#e2e8f0] dark:border-[#1a1a1a] text-[11px] text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all cursor-pointer appearance-none"
+            style={{ colorScheme: "dark" }}
+          >
+            {sortOptions.map((opt) => (
+              <option key={opt.value} value={opt.value} className="bg-white dark:bg-[#181818] text-neutral-900 dark:text-white">
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <ArrowUpDown className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-neutral-400 pointer-events-none" />
+        </div>
+
         <p className="text-[10px] text-neutral-400 dark:text-neutral-500 shrink-0 self-center ml-auto sm:ml-0 hidden sm:block">
-          {filteredStudents.length} student{filteredStudents.length !== 1 ? "s" : ""}
+          {sortedStudents.length} student{sortedStudents.length !== 1 ? "s" : ""}
         </p>
       </div>
 
-      {/* ──────── TOP PAGINATION ──────── */}
+      {/* TOP PAGINATION */}
       {totalPages > 1 && (
         <PaginationBar
           pageNumbers={pageNumbers}
@@ -274,7 +335,7 @@ export default function StudentsPage() {
         />
       )}
 
-      {/* ──────── DESKTOP TABLE (md+) ──────── */}
+      {/* DESKTOP TABLE (md+) */}
       <div className="hidden md:block rounded-[16px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px]">
@@ -364,7 +425,7 @@ export default function StudentsPage() {
         </div>
       </div>
 
-      {/* ──────── MOBILE CARDS (< md) ──────── */}
+      {/* MOBILE CARDS (< md) */}
       <div className="md:hidden space-y-3">
         {paginatedStudents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
@@ -452,7 +513,7 @@ export default function StudentsPage() {
         )}
       </div>
 
-      {/* ──────── BOTTOM PAGINATION ──────── */}
+      {/* BOTTOM PAGINATION */}
       {totalPages > 1 && (
         <PaginationBar
           pageNumbers={pageNumbers}
