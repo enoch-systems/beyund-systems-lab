@@ -579,11 +579,10 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C, onRequestSignOut }: { onM
             onClick={onMobileMenuOpen}
             aria-label="Open menu"
             title="Open menu"
-            className="lg:hidden"
+            className="lg:hidden flex items-center justify-center"
             style={{
               background: "transparent", border: "none", cursor: "pointer",
-              padding: 6, color: C.muted, display: "flex",
-              alignItems: "center", justifyContent: "center", borderRadius: 6,
+              padding: 6, color: C.muted, borderRadius: 6,
               flexShrink: 0,
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = iconBtnHover)}
