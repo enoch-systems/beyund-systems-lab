@@ -378,7 +378,7 @@ function SignOutOverlay({ C, onClose }: { C: Colors; onClose: () => void }) {
         alignItems: "center", justifyContent: "center",
         gap: 24,
       }}>
-        <div className="loader" style={{ width: 40, height: 40, color: C.teal }} />
+        <div className="so-loader" style={{ width: 40, height: 40, position: "relative" }} />
         <p style={{
           fontSize: 13, fontWeight: 600, color: C.muted,
           fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
@@ -387,32 +387,28 @@ function SignOutOverlay({ C, onClose }: { C: Colors; onClose: () => void }) {
           Logging out…
         </p>
         <style>{`
-          .loader {
-            aspect-ratio: 1;
-            position: relative;
-            display: inline-block;
-          }
-          .loader::before,
-          .loader::after {
-            content: "";
-            position: absolute;
-            inset:0;
+          .so-loader {
+            --c: no-repeat linear-gradient(#25b09b 0 0);
             background:
-              linear-gradient(currentColor 0 0) 0 calc(var(--s,0)*-100%)/100% calc(100%/3),
-              repeating-linear-gradient(90deg,currentColor 0 25%,#0000 0 50%) calc(var(--s,0)*100%) 50%/calc(4*100%/3) calc(100%/3);
-            background-repeat: no-repeat;
-            animation: l26 2s infinite;
+              var(--c) center/100% 10px,
+              var(--c) center/10px 100%;
           }
-          .loader::after {
-            --s:-1;
+          .so-loader:before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+              var(--c) 0    0,
+              var(--c) 100% 0,
+              var(--c) 0    100%,
+              var(--c) 100% 100%;
+            background-size: 15.5px 15.5px;
+            animation: so-l16 1.5s infinite cubic-bezier(0.3,1,0,1);
           }
-          @keyframes l26 {
-            0%,
-            10%  {transform:translateY(calc(var(--s,1)*0));   background-position: 0 calc(var(--s,0)*-100%),calc(var(--s,0)*100%) 50%}
-            33%  {transform:translateY(calc(var(--s,1)*-20%));background-position: 0 calc(var(--s,0)*-100%),calc(var(--s,0)*100%) 50%}
-            66%  {transform:translateY(calc(var(--s,1)*-20%));background-position: 0 calc(var(--s,0)*-100%),calc(var(--s,0)*100% + 100%) 50%}
-            90%,
-            100%  {transform:translateY(calc(var(--s,1)*0));  background-position: 0 calc(var(--s,0)*-100%),calc(var(--s,0)*100% + 100%) 50%}
+          @keyframes so-l16 {
+            33%  { inset: -10px; transform: rotate(0deg); }
+            66%  { inset: -10px; transform: rotate(90deg); }
+            100% { inset: 0;     transform: rotate(90deg); }
           }
         `}</style>
       </div>
