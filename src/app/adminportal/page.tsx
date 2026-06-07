@@ -211,12 +211,20 @@ export default function AdminDashboardPage() {
     // 20px wide is enough for a small YAxis tick.
     return `https://flagcdn.com/w20/${code}.png`;
   };
+  // Normalise state names so "Abia" and "Abia State" are collapsed into one.
+  const normaliseState = (raw: string) =>
+    raw
+      .replace(/\s+State$/i, "")
+      .replace(/\s+LGA$/i, "")
+      .trim();
+
   type RegionRow = { country: string; state: string; count: number; flagUrl: string | null };
   const enrolledStudents = students.filter(s => s.status === "enrolled");
   const rcMap: Record<string, RegionRow> = {};
   enrolledStudents.forEach(s => {
     const country = (s.country && s.country.trim()) || "Unknown";
-    const state = (s.state && s.state.trim()) || country;
+    const rawState = (s.state && s.state.trim()) || country;
+    const state = normaliseState(rawState);
     // Use a composite key so the same state name in two different countries doesn't collide
     const key = `${country}::${state}`;
     if (!rcMap[key]) {
@@ -237,8 +245,8 @@ export default function AdminDashboardPage() {
     ...d,
     // YAxis tick: country (real flag is rendered by the custom tick below)
     yLabel: d.country,
-    // Bar center label: "State (N person(s))"
-    barLabel: `${d.state} (${d.count} ${d.count === 1 ? "person" : "persons"})`,
+    // Bar center label: "State (N)" – short enough to stay on one line
+    barLabel: `${d.state} (${d.count})`,
     fill: C.teal,
     fillOpacity: 0.25 + (d.count / maxC) * 0.55,
   }));
