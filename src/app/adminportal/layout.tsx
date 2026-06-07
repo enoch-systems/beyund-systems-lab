@@ -338,10 +338,10 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
           style={{
             position: "fixed", inset: 0, zIndex: 99998,
             background: "rgba(0,0,0,0.55)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            padding: 16,
+            padding: 16, margin: 0,
           }}
           onClick={() => setShowConfirm(false)}
         >
@@ -349,38 +349,38 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
             onClick={(e) => e.stopPropagation()}
             style={{
               background: C.card, border: `1px solid ${C.border}`,
-              borderRadius: 8, padding: "20px 24px",
-              maxWidth: 340, width: "100%",
-              boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
+              borderRadius: 10, padding: "24px 28px",
+              maxWidth: 320, width: "100%",
+              boxShadow: "0 20px 48px rgba(0,0,0,0.45)",
               textAlign: "center",
             }}
           >
             <div style={{
-              width: 40, height: 40, borderRadius: "50%",
+              width: 44, height: 44, borderRadius: "50%",
               background: "rgba(239,68,68,0.12)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              margin: "0 auto 12px",
+              margin: "0 auto 14px",
             }}>
-              <LogOut size={18} color={C.red} />
+              <LogOut size={20} color={C.red} />
             </div>
             <p style={{
-              fontSize: 14, fontWeight: 600, color: C.text,
-              margin: "0 0 6px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
+              fontSize: 15, fontWeight: 600, color: C.text,
+              margin: "0 0 8px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
             }}>
               Sign out?
             </p>
             <p style={{
-              fontSize: 11, color: C.muted, margin: "0 0 18px",
+              fontSize: 11.5, color: C.muted, margin: "0 0 20px",
               fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
-              lineHeight: 1.4,
+              lineHeight: 1.45, textAlign: "center",
             }}>
               You will be redirected to the login page. Any unsaved work may be lost.
             </p>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: 10 }}>
               <button
                 onClick={() => setShowConfirm(false)}
                 style={{
-                  flex: 1, padding: "8px 0", borderRadius: 5,
+                  flex: 1, padding: "9px 0", borderRadius: 6,
                   border: `1px solid ${C.border}`, background: "transparent",
                   color: C.text, fontSize: 12, fontWeight: 500, cursor: "pointer",
                 }}
@@ -390,7 +390,7 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
               <button
                 onClick={handleSignOut}
                 style={{
-                  flex: 1, padding: "8px 0", borderRadius: 5,
+                  flex: 1, padding: "9px 0", borderRadius: 6,
                   border: "none", background: C.red,
                   color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer",
                 }}
