@@ -218,49 +218,69 @@ export default function AdminDashboardPage() {
       .replace(/\s+LGA$/i, "")
       .trim();
 
-  type RegionRow = { country: string; state: string; count: number; flagUrl: string | null };
+  // Reverse map: country code -> full name (for display), plus known short codes
+  const COUNTRY_SHORT: Record<string, string> = {
+    Nigeria: "NG", Ghana: "GH", "United Kingdom": "UK", UK: "UK", England: "UK",
+    "United States": "US", USA: "US", "United States of America": "US",
+    Kenya: "KE", "South Africa": "ZA", Canada: "CA", India: "IN",
+    Germany: "DE", France: "FR", Italy: "IT", Spain: "ES",
+    China: "CN", Japan: "JP", Australia: "AU", Brazil: "BR",
+    Togo: "TG", Benin: "BJ", Cameroon: "CM", Niger: "NE",
+  };
+
+  type CountryRegion = { country: string; shortCode: string; topState: string; total: number; topCount: number; flagUrl: string | null };
   const enrolledStudents = students.filter(s => s.status === "enrolled");
-  const rcMap: Record<string, RegionRow> = {};
+
+  // First pass: group by (country, state) to get per-state counts
+  const stateCounts: Record<string, number> = {};
   enrolledStudents.forEach(s => {
     const country = (s.country && s.country.trim()) || "Unknown";
     const rawState = (s.state && s.state.trim()) || country;
     const state = normaliseState(rawState);
-    // Use a composite key so the same state name in two different countries doesn't collide
     const key = `${country}::${state}`;
-    if (!rcMap[key]) {
-      rcMap[key] = {
-        country,
-        state,
-        count: 0,
-        flagUrl: flagUrl(country),
-      };
-    }
-    rcMap[key].count += 1;
+    stateCounts[key] = (stateCounts[key] || 0) + 1;
   });
-  const rd = Object.values(rcMap)
-    .sort((a, b) => b.count - a.count)
+
+  // Second pass: aggregate by country, tracking top state
+  const countryMap = new Map<string, { total: number; topState: string; topCount: number }>();
+  Object.entries(stateCounts).forEach(([key, count]) => {
+    const [country, state] = key.split("::");
+    const entry = countryMap.get(country) || { total: 0, topState: state, topCount: 0 };
+    entry.total += count;
+    if (count > entry.topCount) { entry.topCount = count; entry.topState = state; }
+    countryMap.set(country, entry);
+  });
+
+  const rd = Array.from(countryMap.entries())
+    .map(([country, data]) => ({
+      country,
+      shortCode: COUNTRY_SHORT[country] || country.slice(0, 2).toUpperCase(),
+      topState: data.topState,
+      total: data.total,
+      topCount: data.topCount,
+      flagUrl: flagUrl(country),
+    }))
+    .sort((a, b) => b.total - a.total)
     .slice(0, 5);
-  const maxC = Math.max(...rd.map(d => d.count), 1);
+
+  const maxC = Math.max(...rd.map(d => d.total), 1);
   const regionData = rd.map(d => ({
-    ...d,
-    // YAxis tick: country (real flag is rendered by the custom tick below)
-    yLabel: d.country,
-    // Bar center label: "State (N)" – short enough to stay on one line
-    barLabel: `${d.state} (${d.count})`,
+    country: d.country,
+    shortCode: d.shortCode,
+    state: d.topState,
+    count: d.total,
+    // YAxis tick: short code (real flag is rendered by the custom tick below)
+    yLabel: d.shortCode,
+    // Bar center label: "Top state (N)"
+    barLabel: `${d.topState} (${d.topCount})`,
     fill: C.teal,
-    fillOpacity: 0.25 + (d.count / maxC) * 0.55,
+    fillOpacity: 0.25 + (d.total / maxC) * 0.55,
   }));
-  // Distinct countries represented in the registered data (for context label)
-  const countriesSet = Array.from(
-    new Set(
-      enrolledStudents
-        .map(s => (s.country && s.country.trim()) || "")
-        .filter(Boolean)
-    )
-  );
-  const regionSubLabel = countriesSet.length > 0
-    ? `Top 5 states · ${countriesSet.length} ${countriesSet.length === 1 ? "country" : "countries"}`
-    : "Top 5 states";
+  // Distinct countries count
+  const countriesCount = countryMap.size;
+  const regionSubLabel = countriesCount > 0
+    ? `Top 5 countries · ${countriesCount} ${countriesCount === 1 ? "country" : "countries"}`
+    : "Top 5 countries";
 
   // ── Recent Registrations ──
   const recentStudents = students.slice(0, 5);
