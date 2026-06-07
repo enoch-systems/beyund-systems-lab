@@ -9,15 +9,6 @@ import { Search, ChevronDown, Download, Eye, Mail, MapPin, Phone } from "lucide-
 
 const statusOptions = ["pending", "contacted", "enrolled", "rejected"] as const;
 
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
-
 const statusStyles: Record<string, string> = {
   enrolled: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   pending: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
@@ -191,9 +182,6 @@ export default function StudentsPage() {
                   <tr key={student.id} className="hover:bg-neutral-50/50 dark:hover:bg-white/[0.02] transition-colors">
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500/20 to-indigo-500/20 dark:bg-[#0a0a0a] border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-[10px] font-semibold text-neutral-700 dark:text-neutral-300 shrink-0">
-                          {getInitials(student.full_name)}
-                        </div>
                         <div className="min-w-0">
                           <p className="text-[12px] font-semibold text-neutral-900 dark:text-white truncate">
                             {student.full_name}
@@ -270,11 +258,8 @@ export default function StudentsPage() {
               key={student.id}
               className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-4 space-y-3"
             >
-              {/* Top: avatar + name + status */}
+              {/* Top: name + status */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500/20 to-indigo-500/20 dark:bg-[#0a0a0a] border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-xs font-semibold text-neutral-700 dark:text-neutral-300 shrink-0">
-                  {getInitials(student.full_name)}
-                </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold text-neutral-900 dark:text-white truncate">
                     {student.full_name}
