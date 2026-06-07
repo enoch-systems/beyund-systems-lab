@@ -688,6 +688,9 @@ export default function AdminDashboardPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {recentStudents.map((s, idx) => (
               <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 5, background: C.bg, border: `1px solid ${C.border}`, transition: "border-color 0.15s" }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>
+                  #{recentTotal - idx}
+                </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ fontSize: 11, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.full_name}</p>
                   <p style={{ fontSize: 9, color: C.muted, margin: "1px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.course_applying_for}</p>
