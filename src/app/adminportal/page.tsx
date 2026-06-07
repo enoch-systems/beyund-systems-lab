@@ -52,9 +52,17 @@ export default function AdminDashboardPage() {
   const [showTotalFees, setShowTotalFees] = useState(true);
   const [now, setNow] = useState(ts());
   const [adminFirstName, setAdminFirstName] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
   const { theme } = useTheme();
   const C = getColors(theme);
   useEffect(() => { document.title = "Admin LMS — Beyund Labs Academy"; }, []);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const i = setInterval(() => setNow(ts()), 1000);
@@ -425,7 +433,7 @@ export default function AdminDashboardPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={regionData}
-                    margin={{ top: 4, right: 16, left: 4, bottom: 0 }}
+                    margin={{ top: 4, right: isMobile ? 4 : 16, left: isMobile ? 4 : 4, bottom: 0 }}
                     layout="vertical"
                     barCategoryGap={6}
                   >
@@ -437,32 +445,36 @@ export default function AdminDashboardPage() {
                       dataKey="yLabel"
                       axisLine={false}
                       tickLine={false}
-                      width={108}
+                      width={isMobile ? 78 : 108}
                       tick={(props: any) => {
                         const { x, y, payload } = props;
                         const item = regionData.find(d => d.yLabel === payload.value);
+                        // Responsive offsets: tighter on mobile to fit the smaller YAxis width
+                        const flagOffsetX = isMobile ? -72 : -100;
+                        const textOffsetX = isMobile ? -52 : -78;
+                        const fontSize = isMobile ? 8 : 9;
                         return (
                           <g transform={`translate(${x},${y})`}>
                             {item?.flagUrl ? (
                               <image
                                 href={item.flagUrl}
-                                x={-100}
+                                x={flagOffsetX}
                                 y={-7}
-                                width={18}
-                                height={12}
+                                width={isMobile ? 14 : 18}
+                                height={isMobile ? 10 : 12}
                                 preserveAspectRatio="xMidYMid meet"
                                 style={{ borderRadius: 1, outline: "1px solid rgba(255,255,255,0.15)" }}
                               />
                             ) : (
-                              <rect x={-100} y={-7} width={18} height={12} fill={C.dim} opacity={0.3} rx={1} />
+                              <rect x={flagOffsetX} y={-7} width={isMobile ? 14 : 18} height={isMobile ? 10 : 12} fill={C.dim} opacity={0.3} rx={1} />
                             )}
                             <text
-                              x={-78}
+                              x={textOffsetX}
                               y={0}
                               dy={4}
                               textAnchor="start"
                               fill={C.text}
-                              fontSize={9}
+                              fontSize={fontSize}
                               fontWeight={600}
                               fontFamily="'Inter','SF Pro',system-ui,sans-serif"
                             >
@@ -481,12 +493,12 @@ export default function AdminDashboardPage() {
                       dataKey="count"
                       radius={[0, 3, 3, 0]}
                       name="Students"
-                      barSize={16}
+                      barSize={isMobile ? 14 : 16}
                       isAnimationActive={false}
                       label={{
                         position: "center",
                         fill: "#f8fafc",
-                        fontSize: 9,
+                        fontSize: isMobile ? 8 : 9,
                         fontWeight: 700,
                         fontFamily: "'JetBrains Mono','SF Mono',monospace",
                         formatter: (v: any) => {
@@ -502,7 +514,7 @@ export default function AdminDashboardPage() {
                               x={props.x + props.width / 2}
                               y={props.y + props.height / 2}
                               fill="#f8fafc"
-                              fontSize={9}
+                              fontSize={isMobile ? 8 : 9}
                               fontWeight={700}
                               fontFamily="'JetBrains Mono','SF Mono',monospace"
                               textAnchor="middle"
