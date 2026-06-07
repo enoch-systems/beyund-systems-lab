@@ -236,7 +236,7 @@ export default function GlobalSearch() {
     <div ref={dropdownRef} className="relative flex-1 max-w-[480px] min-w-0">
       {/* ── Search input ── */}
       {open ? (
-        <div className="flex items-center gap-2 flex-1">
+        <div className="flex items-center flex-1">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: C.muted }} />
             <input
@@ -268,23 +268,6 @@ export default function GlobalSearch() {
               <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 animate-spin" style={{ color: C.muted }} />
             )}
           </div>
-          <button
-            onClick={() => { setOpen(false); setQuery(""); }}
-            style={{
-              fontSize: 14,
-              color: C.muted,
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              minWidth: 44,
-              minHeight: 44,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            Cancel
-          </button>
         </div>
       ) : (
         <>
