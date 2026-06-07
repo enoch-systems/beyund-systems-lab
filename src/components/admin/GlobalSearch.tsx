@@ -324,10 +324,10 @@ export default function GlobalSearch() {
       )}
 
       {/* Backdrop blur overlay on mobile — below header */}
-      {open && searched && (
+      {open && (
         <div
           className="fixed inset-x-0 top-12 bottom-0 sm:hidden z-40"
-          style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}
+          style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}
           onClick={() => { setOpen(false); setQuery(""); }}
         />
       )}
@@ -351,7 +351,7 @@ export default function GlobalSearch() {
       {/* ── Dropdown ── */}
       {open && searched && (
         <div
-          className="fixed sm:absolute top-12 left-1/2 -translate-x-1/2 sm:translate-y-0 sm:translate-x-0 sm:top-full sm:left-0 sm:right-0 mt-2 sm:mt-2 w-[calc(100vw-32px)] sm:w-auto rounded-[14px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden z-50 animate-in fade-in duration-200"
+          className="fixed sm:absolute top-12 left-1/2 -translate-x-1/2 sm:translate-y-0 sm:translate-x-0 sm:top-full sm:left-0 sm:right-0 mt-2 sm:mt-2 w-[calc(100vw-32px)] sm:w-auto rounded-[14px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden z-[110] animate-in fade-in duration-200"
           style={{
             background: C.card,
             border: `1px solid ${C.border}`,
