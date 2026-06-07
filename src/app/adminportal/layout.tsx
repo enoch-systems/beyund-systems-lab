@@ -236,6 +236,7 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
   const { profileImage } = useProfile();
   const [adminName, setAdminName] = useState("");
   const [adminEmail, setAdminEmail] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
@@ -263,6 +264,9 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
 
   const handleSignOut = async () => {
     setSigningOut(true);
+    setShowConfirm(false);
+    // Small delay so the loader renders before signOut redirects
+    await new Promise(r => setTimeout(r, 100));
     await supabase.auth.signOut();
     onClose();
     window.location.href = "/adminportal/login";
@@ -284,86 +288,199 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
   };
 
   return (
-    <div
-      role="menu"
-      onClick={(e) => e.stopPropagation()}
-      style={{
-        position: "absolute", top: "calc(100% + 6px)", right: 0,
-        minWidth: 220, zIndex: 60, background: C.card,
-        border: `1px solid ${C.border}`, borderRadius: 6, padding: 6,
-        boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-      }}
-    >
-      <div style={{
-        display: "flex", alignItems: "center", gap: 8,
-        padding: "8px 8px 10px", borderBottom: `1px solid ${C.border}`, marginBottom: 6,
-      }}>
+    <>
+      {signingOut && (
         <div style={{
-          width: 32, height: 32, borderRadius: "50%",
-          background: theme === "dark" ? "#171717" : "#f1f5f9",
-          border: `1px solid ${C.border}`, display: "flex",
+          position: "fixed", inset: 0, zIndex: 99999,
+          background: C.bg,
+          display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
-          color: C.muted, fontSize: 10, fontWeight: 700, flexShrink: 0, overflow: "hidden",
+          gap: 24,
         }}>
-          {profileImage ? (
-            <img src={profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          ) : (
-            <span>{initials}</span>
-          )}
+          <div className="so-loader" style={{ width: 40, height: 40, position: "relative" }} />
+          <p style={{
+            fontSize: 13, fontWeight: 600, color: C.muted,
+            fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
+            letterSpacing: "0.03em", margin: 0,
+          }}>
+            Logging out…
+          </p>
+          <style>{`
+            .so-loader {
+              --c: no-repeat linear-gradient(#25b09b 0 0);
+              background:
+                var(--c) center/100% 10px,
+                var(--c) center/10px 100%;
+            }
+            .so-loader:before {
+              content: '';
+              position: absolute;
+              inset: 0;
+              background:
+                var(--c) 0    0,
+                var(--c) 100% 0,
+                var(--c) 0    100%,
+                var(--c) 100% 100%;
+              background-size: 15.5px 15.5px;
+              animation: so-l16 1.5s infinite cubic-bezier(0.3,1,0,1);
+            }
+            @keyframes so-l16 {
+              33%  { inset: -10px; transform: rotate(0deg); }
+              66%  { inset: -10px; transform: rotate(90deg); }
+              100% { inset: 0;     transform: rotate(90deg); }
+            }
+          `}</style>
         </div>
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <p style={{ fontSize: 12, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{firstName}</p>
-          <p style={{ fontSize: 10, color: C.muted, margin: "1px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{adminEmail}</p>
-        </div>
-      </div>
+      )}
 
-      <Link href="/adminportal/settings" onClick={onClose} style={itemStyle}
-        onMouseEnter={(e) => handleItemHover(e, true)}
-        onMouseLeave={(e) => handleItemHover(e, false)}>
-        <Settings size={13} style={{ color: C.muted }} />
-        <span>Settings</span>
-      </Link>
-
-      {/* Theme toggle — HIDDEN on mobile only (sm and up only) */}
-      <button
-        onClick={toggleTheme}
-                className="hidden sm:flex"
-        style={Object.assign({}, itemStyle, { justifyContent: "space-between" })}
-        onMouseEnter={(e) => handleItemHover(e, true)}
-        onMouseLeave={(e) => handleItemHover(e, false)}
-      >
-        <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {theme === "dark" ? "Light mode" : "Dark mode"}
-        </span>
-        <span
+      {showConfirm && (
+        <div
           style={{
-            position: "relative", width: 26, height: 14, borderRadius: 7,
-            background: theme === "dark" ? "#0d9488" : "#cbd5e1", flexShrink: 0,
+            position: "fixed", inset: 0, zIndex: 99998,
+            background: "rgba(0,0,0,0.55)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: 16,
           }}
+          onClick={() => setShowConfirm(false)}
         >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: C.card, border: `1px solid ${C.border}`,
+              borderRadius: 8, padding: "20px 24px",
+              maxWidth: 340, width: "100%",
+              boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
+              textAlign: "center",
+            }}
+          >
+            <div style={{
+              width: 40, height: 40, borderRadius: "50%",
+              background: "rgba(239,68,68,0.12)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              margin: "0 auto 12px",
+            }}>
+              <LogOut size={18} color={C.red} />
+            </div>
+            <p style={{
+              fontSize: 14, fontWeight: 600, color: C.text,
+              margin: "0 0 6px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
+            }}>
+              Sign out?
+            </p>
+            <p style={{
+              fontSize: 11, color: C.muted, margin: "0 0 18px",
+              fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
+              lineHeight: 1.4,
+            }}>
+              You will be redirected to the login page. Any unsaved work may be lost.
+            </p>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => setShowConfirm(false)}
+                style={{
+                  flex: 1, padding: "8px 0", borderRadius: 5,
+                  border: `1px solid ${C.border}`, background: "transparent",
+                  color: C.text, fontSize: 12, fontWeight: 500, cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSignOut}
+                style={{
+                  flex: 1, padding: "8px 0", borderRadius: 5,
+                  border: "none", background: C.red,
+                  color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer",
+                }}
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div
+        role="menu"
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          position: "absolute", top: "calc(100% + 6px)", right: 0,
+          minWidth: 220, zIndex: 60, background: C.card,
+          border: `1px solid ${C.border}`, borderRadius: 6, padding: 6,
+          boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+        }}
+      >
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "8px 8px 10px", borderBottom: `1px solid ${C.border}`, marginBottom: 6,
+        }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: "50%",
+            background: theme === "dark" ? "#171717" : "#f1f5f9",
+            border: `1px solid ${C.border}`, display: "flex",
+            alignItems: "center", justifyContent: "center",
+            color: C.muted, fontSize: 10, fontWeight: 700, flexShrink: 0, overflow: "hidden",
+          }}>
+            {profileImage ? (
+              <img src={profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <span>{initials}</span>
+            )}
+          </div>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <p style={{ fontSize: 12, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{firstName}</p>
+            <p style={{ fontSize: 10, color: C.muted, margin: "1px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{adminEmail}</p>
+          </div>
+        </div>
+
+        <Link href="/adminportal/settings" onClick={onClose} style={itemStyle}
+          onMouseEnter={(e) => handleItemHover(e, true)}
+          onMouseLeave={(e) => handleItemHover(e, false)}>
+          <Settings size={13} style={{ color: C.muted }} />
+          <span>Settings</span>
+        </Link>
+
+        {/* Theme toggle — HIDDEN on mobile only (sm and up only) */}
+        <button
+          onClick={toggleTheme}
+                  className="hidden sm:flex"
+          style={Object.assign({}, itemStyle, { justifyContent: "space-between" })}
+          onMouseEnter={(e) => handleItemHover(e, true)}
+          onMouseLeave={(e) => handleItemHover(e, false)}
+        >
+          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {theme === "dark" ? "Light mode" : "Dark mode"}
+          </span>
           <span
             style={{
-              position: "absolute", top: 2, width: 10, height: 10, borderRadius: "50%",
-              background: "#fff", transition: "transform 0.2s",
-              transform: theme === "dark" ? "translateX(14px)" : "translateX(2px)",
+              position: "relative", width: 26, height: 14, borderRadius: 7,
+              background: theme === "dark" ? "#0d9488" : "#cbd5e1", flexShrink: 0,
             }}
-          />
-        </span>
-      </button>
+          >
+            <span
+              style={{
+                position: "absolute", top: 2, width: 10, height: 10, borderRadius: "50%",
+                background: "#fff", transition: "transform 0.2s",
+                transform: theme === "dark" ? "translateX(14px)" : "translateX(2px)",
+              }}
+            />
+          </span>
+        </button>
 
-      <div style={{ height: 1, background: C.border, margin: "4px 0" }} />
+        <div style={{ height: 1, background: C.border, margin: "4px 0" }} />
 
-      <button
-        onClick={handleSignOut}
-        disabled={signingOut}
-        style={Object.assign({}, itemStyle, { color: C.red })}
-        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-      >
-        <LogOut size={13} />
-        <span>{signingOut ? "Signing out..." : "Sign out"}</span>
-      </button>
-    </div>
+        <button
+          onClick={() => setShowConfirm(true)}
+          disabled={signingOut}
+          style={Object.assign({}, itemStyle, { color: C.red })}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        >
+          <LogOut size={13} />
+          <span>Sign out</span>
+        </button>
+      </div>
+    </>
   );
 }
 
