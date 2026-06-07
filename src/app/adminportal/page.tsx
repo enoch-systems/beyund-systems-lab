@@ -329,7 +329,7 @@ export default function AdminDashboardPage() {
   ).length;
 
   // ── Recent Registrations ──
-  const recentStudents = students;
+  const recentStudents = students.slice(0, 10);
   const recentTotal = students.length;
 
   // ── Status Data ──
