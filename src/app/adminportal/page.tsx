@@ -110,17 +110,13 @@ export default function AdminDashboardPage() {
   const trend = prevTotal > 0 ? ((total - prevTotal) / prevTotal * 100).toFixed(1) : "0";
 
   // ── Region Data (enrolled only) ──
-  // Group by (country + state) so we can show:
-  //   - country + real flag image on the left side (outside the bar)
-  //   - "State (N persons)" centered inside the bar
-  // For registrations that only have a country (no state), we still surface the country.
-  //
-  // Flag rendering: real PNG flags from flagcdn.com (auto-resolves any ISO-3166-1
-  // alpha-2 country code). No hard-coded emoji. We just need the ISO code.
-  //
-  // Comprehensive country name -> ISO code map (the form's country search uses the
-  // restcountries.com API which spells names a certain way; the SQL seed uses English
-  // common names; both are covered below).
+  // Show actual states per country, up to 3 states per country, all countries sorted by enrollment.
+  // No hard-coded short codes — derive from the data.
+
+  // Normalise state names so "Abia" and "Abia State" are collapsed.
+  const normaliseState = (raw: string) =>
+    raw.replace(/\s+State$/i, "").replace(/\s+LGA$/i, "").trim();
+
   const COUNTRY_NAME_TO_CODE: Record<string, string> = {
     Afghanistan: "af", "Åland Islands": "ax", Albania: "al", Algeria: "dz",
     "American Samoa": "as", Andorra: "ad", Angola: "ao", Anguilla: "ai",
@@ -202,85 +198,75 @@ export default function AdminDashboardPage() {
     "Wallis and Futuna": "wf", "Western Sahara": "eh", Yemen: "ye",
     Zambia: "zm", Zimbabwe: "zw", Kosovo: "xk",
   };
-  // Build the flag URL for a country name. Returns null if we can't resolve
-  // the country to an ISO-2 code (e.g. "Unknown").
   const flagUrl = (country: string): string | null => {
     const code = COUNTRY_NAME_TO_CODE[country];
     if (!code) return null;
-    // flagcdn.com serves a real PNG flag for any ISO-3166-1 alpha-2 code.
-    // 20px wide is enough for a small YAxis tick.
     return `https://flagcdn.com/w20/${code}.png`;
   };
-  // Normalise state names so "Abia" and "Abia State" are collapsed into one.
-  const normaliseState = (raw: string) =>
-    raw
-      .replace(/\s+State$/i, "")
-      .replace(/\s+LGA$/i, "")
-      .trim();
 
-  // Reverse map: country code -> full name (for display), plus known short codes
-  const COUNTRY_SHORT: Record<string, string> = {
-    Nigeria: "NG", Ghana: "GH", "United Kingdom": "UK", UK: "UK", England: "UK",
-    "United States": "US", USA: "US", "United States of America": "US",
-    Kenya: "KE", "South Africa": "ZA", Canada: "CA", India: "IN",
-    Germany: "DE", France: "FR", Italy: "IT", Spain: "ES",
-    China: "CN", Japan: "JP", Australia: "AU", Brazil: "BR",
-    Togo: "TG", Benin: "BJ", Cameroon: "CM", Niger: "NE",
+  // Derive short code from the country name (from data, not hard-coded)
+  const countryShortCode = (country: string): string => {
+    const code = COUNTRY_NAME_TO_CODE[country];
+    if (code) return code.toUpperCase();
+    // Fallback: first 2 letters of the country name
+    return country.slice(0, 2).toUpperCase();
   };
 
-  type CountryRegion = { country: string; shortCode: string; topState: string; total: number; topCount: number; flagUrl: string | null };
+  type RegionRow = { country: string; shortCode: string; state: string; count: number; flagUrl: string | null };
   const enrolledStudents = students.filter(s => s.status === "enrolled");
 
-  // First pass: group by (country, state) to get per-state counts
-  const stateCounts: Record<string, number> = {};
+  // Build per-state counts grouped by country
+  const stateCounts: Record<string, Record<string, number>> = {};
   enrolledStudents.forEach(s => {
     const country = (s.country && s.country.trim()) || "Unknown";
     const rawState = (s.state && s.state.trim()) || country;
     const state = normaliseState(rawState);
-    const key = `${country}::${state}`;
-    stateCounts[key] = (stateCounts[key] || 0) + 1;
+    if (!stateCounts[country]) stateCounts[country] = {};
+    stateCounts[country][state] = (stateCounts[country][state] || 0) + 1;
   });
 
-  // Second pass: aggregate by country, tracking top state
-  const countryMap = new Map<string, { total: number; topState: string; topCount: number }>();
-  Object.entries(stateCounts).forEach(([key, count]) => {
-    const [country, state] = key.split("::");
-    const entry = countryMap.get(country) || { total: 0, topState: state, topCount: 0 };
-    entry.total += count;
-    if (count > entry.topCount) { entry.topCount = count; entry.topState = state; }
-    countryMap.set(country, entry);
+  // Sort countries by total (all countries, no limit)
+  const countryTotals = Object.entries(stateCounts).map(([country, states]) => ({
+    country,
+    total: Object.values(states).reduce((s, c) => s + c, 0),
+  })).sort((a, b) => b.total - a.total);
+
+  // Build flat region data: for each top country, take up to 3 states with highest counts
+  const rd: RegionRow[] = [];
+  countryTotals.forEach(({ country }) => {
+    const states = stateCounts[country];
+    const topStates = Object.entries(states)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3);
+    topStates.forEach(([state, count]) => {
+      rd.push({
+        country,
+        shortCode: countryShortCode(country),
+        state,
+        count,
+        flagUrl: flagUrl(country),
+      });
+    });
   });
 
-  const rd = Array.from(countryMap.entries())
-    .map(([country, data]) => ({
-      country,
-      shortCode: COUNTRY_SHORT[country] || country.slice(0, 2).toUpperCase(),
-      topState: data.topState,
-      total: data.total,
-      topCount: data.topCount,
-      flagUrl: flagUrl(country),
-    }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
+  const maxC = Math.max(...rd.map(d => d.count), 1);
+  const isSingleCountry = countryTotals.length === 1;
 
-  const maxC = Math.max(...rd.map(d => d.total), 1);
-  const regionData = rd.map(d => ({
-    country: d.country,
-    shortCode: d.shortCode,
-    state: d.topState,
-    count: d.total,
-    // YAxis tick: short code (real flag is rendered by the custom tick below)
-    yLabel: d.shortCode,
-    // Bar center label: "Top state (N)"
-    barLabel: `${d.topState} (${d.topCount})`,
+  // Each bar shows the state (country short code) on Y-axis, and state (N) inside
+  const regionData = rd.map((d, idx) => ({
+    ...d,
+    // Y-axis tick shows the short code — we make it unique by appending index
+    yLabel: isSingleCountry ? d.state : `${d.shortCode} ${d.state}`,
+    barLabel: `${d.state} (${d.count})`,
     fill: C.teal,
-    fillOpacity: 0.25 + (d.total / maxC) * 0.55,
+    fillOpacity: 0.25 + (d.count / maxC) * 0.55,
   }));
-  // Distinct countries count
-  const countriesCount = countryMap.size;
+
+  const countriesCount = countryTotals.length;
+  const totalStates = rd.length;
   const regionSubLabel = countriesCount > 0
-    ? `Top 5 countries · ${countriesCount} ${countriesCount === 1 ? "country" : "countries"}`
-    : "Top 5 countries";
+    ? `${totalStates} state${totalStates !== 1 ? "s" : ""} · ${countriesCount} ${countriesCount === 1 ? "country" : "countries"}`
+    : "No region data";
 
   // ── Recent Registrations ──
   const recentStudents = students.slice(0, 5);
@@ -463,11 +449,11 @@ export default function AdminDashboardPage() {
                     data={regionData}
                     margin={{ top: 4, right: isMobile ? 2 : 16, left: isMobile ? 0 : 4, bottom: 0 }}
                     layout="vertical"
-                    barCategoryGap={4}
+                    barCategoryGap={2}
                   >
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" horizontal={false} />
                     <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
-                    {/* YAxis (left side, outside the bar) shows flag image + country */}
+                    {/* YAxis shows flag + short code (or just state if single country) */}
                     <YAxis
                       type="category"
                       dataKey="yLabel"
@@ -482,9 +468,12 @@ export default function AdminDashboardPage() {
                         const fontSize = isMobile ? 7 : 9;
                         const flagW = isMobile ? 12 : 18;
                         const flagH = isMobile ? 8 : 12;
+                        const label = isSingleCountry
+                          ? item?.state || payload.value
+                          : item?.shortCode || payload.value;
                         return (
                           <g transform={`translate(${x},${y})`}>
-                            {item?.flagUrl ? (
+                            {!isSingleCountry && item?.flagUrl ? (
                               <image
                                 href={item.flagUrl}
                                 x={flagOffsetX}
@@ -494,20 +483,20 @@ export default function AdminDashboardPage() {
                                 preserveAspectRatio="xMidYMid meet"
                                 style={{ borderRadius: 1, outline: "1px solid rgba(255,255,255,0.15)" }}
                               />
-                            ) : (
+                            ) : !isSingleCountry ? (
                               <rect x={flagOffsetX} y={-6} width={flagW} height={flagH} fill={C.dim} opacity={0.3} rx={1} />
-                            )}
+                            ) : null}
                             <text
-                              x={textOffsetX}
+                              x={isSingleCountry ? -4 : textOffsetX}
                               y={0}
                               dy={3.5}
-                              textAnchor="start"
+                              textAnchor={isSingleCountry ? "end" : "start"}
                               fill={C.text}
                               fontSize={fontSize}
                               fontWeight={600}
                               fontFamily="'Inter','SF Pro',system-ui,sans-serif"
                             >
-                              {payload.value}
+                              {label}
                             </text>
                           </g>
                         );
@@ -517,12 +506,12 @@ export default function AdminDashboardPage() {
                       cursor={{ fill: "transparent" }}
                       content={<CTip C={C} />}
                     />
-                    {/* Bar center label: "State (N)" or shorter on mobile */}
+                    {/* Bar center label: "State (N)" */}
                     <Bar
                       dataKey="count"
                       radius={[0, 3, 3, 0]}
                       name="Students"
-                      barSize={isMobile ? 12 : 16}
+                      barSize={isMobile ? 14 : 18}
                       isAnimationActive={false}
                       label={{
                         position: "center",
@@ -530,15 +519,10 @@ export default function AdminDashboardPage() {
                         fontSize: isMobile ? 7 : 9,
                         fontWeight: 700,
                         fontFamily: "'JetBrains Mono','SF Mono',monospace",
-                        formatter: (v: any) => {
-                          const item = regionData.find(d => d.count === v);
-                          return item ? item.barLabel : String(v);
-                        },
                         content: (props: any) => {
                           const { index } = props;
                           const item = regionData[index];
                           if (!item) return null;
-                          // Truncate state name for mobile
                           const label = isMobile
                             ? `${item.state.length > 12 ? item.state.slice(0, 11) + "…" : item.state} (${item.count})`
                             : item.barLabel;
