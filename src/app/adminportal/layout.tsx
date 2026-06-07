@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -231,14 +231,11 @@ function MobileTabBar({ onMenuOpen, C }: { onMenuOpen: () => void; C: Colors }) 
   );
 }
 
-function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
+function ProfileDropdown({ C, onClose, onRequestSignOut }: { C: Colors; onClose: () => void; onRequestSignOut: () => void }) {
   const { theme, toggleTheme } = useTheme();
   const { profileImage } = useProfile();
   const [adminName, setAdminName] = useState("");
   const [adminEmail, setAdminEmail] = useState("");
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [signingOut, setSigningOut] = useState(false);
-  const router = useRouter();
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -262,16 +259,6 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
     return () => { active = false; };
   }, [supabase]);
 
-  const handleSignOut = async () => {
-    setSigningOut(true);
-    setShowConfirm(false);
-    // Small delay so the loader renders before signOut redirects
-    await new Promise(r => setTimeout(r, 100));
-    await supabase.auth.signOut();
-    onClose();
-    window.location.href = "/adminportal/login";
-  };
-
   const firstName = adminName ? adminName.split(" ")[0] : "Admin";
   const initials = (firstName.match(/\S/g) || ["A"]).slice(0, 2).join("").toUpperCase();
 
@@ -288,201 +275,213 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
   };
 
   return (
-    <>
-      {signingOut && (
+    <div
+      role="menu"
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        position: "absolute", top: "calc(100% + 6px)", right: 0,
+        minWidth: 220, zIndex: 60, background: C.card,
+        border: `1px solid ${C.border}`, borderRadius: 6, padding: 6,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+      }}
+    >
+      <div style={{
+        display: "flex", alignItems: "center", gap: 8,
+        padding: "8px 8px 10px", borderBottom: `1px solid ${C.border}`, marginBottom: 6,
+      }}>
         <div style={{
-          position: "fixed", inset: 0, zIndex: 99999,
-          background: C.bg,
-          display: "flex", flexDirection: "column",
+          width: 32, height: 32, borderRadius: "50%",
+          background: theme === "dark" ? "#171717" : "#f1f5f9",
+          border: `1px solid ${C.border}`, display: "flex",
           alignItems: "center", justifyContent: "center",
-          gap: 24,
+          color: C.muted, fontSize: 10, fontWeight: 700, flexShrink: 0, overflow: "hidden",
         }}>
-          <div className="so-loader" style={{ width: 40, height: 40, position: "relative" }} />
-          <p style={{
-            fontSize: 13, fontWeight: 600, color: C.muted,
-            fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
-            letterSpacing: "0.03em", margin: 0,
-          }}>
-            Logging out…
-          </p>
-          <style>{`
-            .so-loader {
-              --c: no-repeat linear-gradient(#25b09b 0 0);
-              background:
-                var(--c) center/100% 10px,
-                var(--c) center/10px 100%;
-            }
-            .so-loader:before {
-              content: '';
-              position: absolute;
-              inset: 0;
-              background:
-                var(--c) 0    0,
-                var(--c) 100% 0,
-                var(--c) 0    100%,
-                var(--c) 100% 100%;
-              background-size: 15.5px 15.5px;
-              animation: so-l16 1.5s infinite cubic-bezier(0.3,1,0,1);
-            }
-            @keyframes so-l16 {
-              33%  { inset: -10px; transform: rotate(0deg); }
-              66%  { inset: -10px; transform: rotate(90deg); }
-              100% { inset: 0;     transform: rotate(90deg); }
-            }
-          `}</style>
+          {profileImage ? (
+            <img src={profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span>{initials}</span>
+          )}
         </div>
-      )}
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{firstName}</p>
+          <p style={{ fontSize: 10, color: C.muted, margin: "1px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{adminEmail}</p>
+        </div>
+      </div>
 
-      {showConfirm && (
-        <div
+      <Link href="/adminportal/settings" onClick={onClose} style={itemStyle}
+        onMouseEnter={(e) => handleItemHover(e, true)}
+        onMouseLeave={(e) => handleItemHover(e, false)}>
+        <Settings size={13} style={{ color: C.muted }} />
+        <span>Settings</span>
+      </Link>
+
+      {/* Theme toggle — HIDDEN on mobile only (sm and up only) */}
+      <button
+        onClick={toggleTheme}
+                className="hidden sm:flex"
+        style={Object.assign({}, itemStyle, { justifyContent: "space-between" })}
+        onMouseEnter={(e) => handleItemHover(e, true)}
+        onMouseLeave={(e) => handleItemHover(e, false)}
+      >
+        <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {theme === "dark" ? "Light mode" : "Dark mode"}
+        </span>
+        <span
           style={{
-            position: "fixed", inset: 0, zIndex: 99998,
-            background: "rgba(0,0,0,0.55)",
-            backdropFilter: "blur(6px)",
-            WebkitBackdropFilter: "blur(6px)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            padding: 16, margin: 0,
+            position: "relative", width: 26, height: 14, borderRadius: 7,
+            background: theme === "dark" ? "#0d9488" : "#cbd5e1", flexShrink: 0,
           }}
-          onClick={() => setShowConfirm(false)}
         >
-          <div
-            onClick={(e) => e.stopPropagation()}
+          <span
             style={{
-              background: C.card, border: `1px solid ${C.border}`,
-              borderRadius: 10, padding: "24px 28px",
-              maxWidth: 320, width: "100%",
-              boxShadow: "0 20px 48px rgba(0,0,0,0.45)",
-              textAlign: "center",
+              position: "absolute", top: 2, width: 10, height: 10, borderRadius: "50%",
+              background: "#fff", transition: "transform 0.2s",
+              transform: theme === "dark" ? "translateX(14px)" : "translateX(2px)",
             }}
-          >
-            <div style={{
-              width: 44, height: 44, borderRadius: "50%",
-              background: "rgba(239,68,68,0.12)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              margin: "0 auto 14px",
-            }}>
-              <LogOut size={20} color={C.red} />
-            </div>
-            <p style={{
-              fontSize: 15, fontWeight: 600, color: C.text,
-              margin: "0 0 8px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
-            }}>
-              Sign out?
-            </p>
-            <p style={{
-              fontSize: 11.5, color: C.muted, margin: "0 0 20px",
-              fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
-              lineHeight: 1.45, textAlign: "center",
-            }}>
-              You will be redirected to the login page. Any unsaved work may be lost.
-            </p>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button
-                onClick={() => setShowConfirm(false)}
-                style={{
-                  flex: 1, padding: "9px 0", borderRadius: 6,
-                  border: `1px solid ${C.border}`, background: "transparent",
-                  color: C.text, fontSize: 12, fontWeight: 500, cursor: "pointer",
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSignOut}
-                style={{
-                  flex: 1, padding: "9px 0", borderRadius: 6,
-                  border: "none", background: C.red,
-                  color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer",
-                }}
-              >
-                Sign out
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          />
+        </span>
+      </button>
 
+      <div style={{ height: 1, background: C.border, margin: "4px 0" }} />
+
+      <button
+        onClick={() => { onClose(); onRequestSignOut(); }}
+        style={Object.assign({}, itemStyle, { color: C.red })}
+        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      >
+        <LogOut size={13} />
+        <span>Sign out</span>
+      </button>
+    </div>
+  );
+}
+
+function SignOutOverlay({ C, onClose }: { C: Colors; onClose: () => void }) {
+  const [signingOut, setSigningOut] = useState(false);
+  const supabase = createSupabaseBrowserClient();
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    // Small delay so the loader renders before signOut redirects
+    await new Promise(r => setTimeout(r, 100));
+    await supabase.auth.signOut();
+    window.location.href = "/adminportal/login";
+  };
+
+  if (signingOut) {
+    return (
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 99999,
+        background: C.bg,
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        gap: 24,
+      }}>
+        <div className="so-loader" style={{ width: 40, height: 40, position: "relative" }} />
+        <p style={{
+          fontSize: 13, fontWeight: 600, color: C.muted,
+          fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
+          letterSpacing: "0.03em", margin: 0,
+        }}>
+          Logging out…
+        </p>
+        <style>{`
+          .so-loader {
+            --c: no-repeat linear-gradient(#25b09b 0 0);
+            background:
+              var(--c) center/100% 10px,
+              var(--c) center/10px 100%;
+          }
+          .so-loader:before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+              var(--c) 0    0,
+              var(--c) 100% 0,
+              var(--c) 0    100%,
+              var(--c) 100% 100%;
+            background-size: 15.5px 15.5px;
+            animation: so-l16 1.5s infinite cubic-bezier(0.3,1,0,1);
+          }
+          @keyframes so-l16 {
+            33%  { inset: -10px; transform: rotate(0deg); }
+            66%  { inset: -10px; transform: rotate(90deg); }
+            100% { inset: 0;     transform: rotate(90deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        position: "fixed", inset: 0, zIndex: 99999,
+        background: "rgba(0,0,0,0.55)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        display: "flex", alignItems: "flex-start", justifyContent: "center",
+        padding: "80px 16px 16px", margin: 0,
+      }}
+      onClick={onClose}
+    >
       <div
-        role="menu"
         onClick={(e) => e.stopPropagation()}
         style={{
-          position: "absolute", top: "calc(100% + 6px)", right: 0,
-          minWidth: 220, zIndex: 60, background: C.card,
-          border: `1px solid ${C.border}`, borderRadius: 6, padding: 6,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+          background: C.card, border: `1px solid ${C.border}`,
+          borderRadius: 10, padding: "24px 28px",
+          maxWidth: 320, width: "100%",
+          boxShadow: "0 20px 48px rgba(0,0,0,0.45)",
+          textAlign: "center",
         }}
       >
         <div style={{
-          display: "flex", alignItems: "center", gap: 8,
-          padding: "8px 8px 10px", borderBottom: `1px solid ${C.border}`, marginBottom: 6,
+          width: 44, height: 44, borderRadius: "50%",
+          background: "rgba(239,68,68,0.12)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          margin: "0 auto 14px",
         }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: "50%",
-            background: theme === "dark" ? "#171717" : "#f1f5f9",
-            border: `1px solid ${C.border}`, display: "flex",
-            alignItems: "center", justifyContent: "center",
-            color: C.muted, fontSize: 10, fontWeight: 700, flexShrink: 0, overflow: "hidden",
-          }}>
-            {profileImage ? (
-              <img src={profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <span>{initials}</span>
-            )}
-          </div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <p style={{ fontSize: 12, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{firstName}</p>
-            <p style={{ fontSize: 10, color: C.muted, margin: "1px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{adminEmail}</p>
-          </div>
+          <LogOut size={20} color={C.red} />
         </div>
-
-        <Link href="/adminportal/settings" onClick={onClose} style={itemStyle}
-          onMouseEnter={(e) => handleItemHover(e, true)}
-          onMouseLeave={(e) => handleItemHover(e, false)}>
-          <Settings size={13} style={{ color: C.muted }} />
-          <span>Settings</span>
-        </Link>
-
-        {/* Theme toggle — HIDDEN on mobile only (sm and up only) */}
-        <button
-          onClick={toggleTheme}
-                  className="hidden sm:flex"
-          style={Object.assign({}, itemStyle, { justifyContent: "space-between" })}
-          onMouseEnter={(e) => handleItemHover(e, true)}
-          onMouseLeave={(e) => handleItemHover(e, false)}
-        >
-          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {theme === "dark" ? "Light mode" : "Dark mode"}
-          </span>
-          <span
+        <p style={{
+          fontSize: 15, fontWeight: 600, color: C.text,
+          margin: "0 0 8px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
+        }}>
+          Sign out?
+        </p>
+        <p style={{
+          fontSize: 11.5, color: C.muted, margin: "0 0 20px",
+          fontFamily: "'Inter','SF Pro',system-ui,sans-serif",
+          lineHeight: 1.45, textAlign: "center",
+        }}>
+          You will be redirected to the login page. Any unsaved work may be lost.
+        </p>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button
+            onClick={onClose}
             style={{
-              position: "relative", width: 26, height: 14, borderRadius: 7,
-              background: theme === "dark" ? "#0d9488" : "#cbd5e1", flexShrink: 0,
+              flex: 1, padding: "9px 0", borderRadius: 6,
+              border: `1px solid ${C.border}`, background: "transparent",
+              color: C.text, fontSize: 12, fontWeight: 500, cursor: "pointer",
             }}
           >
-            <span
-              style={{
-                position: "absolute", top: 2, width: 10, height: 10, borderRadius: "50%",
-                background: "#fff", transition: "transform 0.2s",
-                transform: theme === "dark" ? "translateX(14px)" : "translateX(2px)",
-              }}
-            />
-          </span>
-        </button>
-
-        <div style={{ height: 1, background: C.border, margin: "4px 0" }} />
-
-        <button
-          onClick={() => setShowConfirm(true)}
-          disabled={signingOut}
-          style={Object.assign({}, itemStyle, { color: C.red })}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-        >
-          <LogOut size={13} />
-          <span>Sign out</span>
-        </button>
+            Cancel
+          </button>
+          <button
+            onClick={handleSignOut}
+            style={{
+              flex: 1, padding: "9px 0", borderRadius: 6,
+              border: "none", background: C.red,
+              color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer",
+            }}
+          >
+            Sign out
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -499,7 +498,7 @@ function HeaderAvatar() {
   );
 }
 
-function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () => void; collapsed: boolean; C: Colors }) {
+function AdminTopbar({ onMobileMenuOpen, collapsed, C, onRequestSignOut }: { onMobileMenuOpen: () => void; collapsed: boolean; C: Colors; onRequestSignOut: () => void }) {
   const { theme, toggleTheme } = useTheme();
   const [unreadCount, setUnreadCount] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -657,7 +656,13 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
             >
               <HeaderAvatar />
             </button>
-            {dropdownOpen && <ProfileDropdown C={C} onClose={() => setDropdownOpen(false)} />}
+            {dropdownOpen && (
+              <ProfileDropdown
+                C={C}
+                onClose={() => setDropdownOpen(false)}
+                onRequestSignOut={() => { setDropdownOpen(false); onRequestSignOut(); }}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -670,6 +675,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createSupabaseBrowserClient();
@@ -716,12 +722,15 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             [data-collapsed="false"] { margin-left: 220px !important; }
           }
         `}</style>
-        <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} collapsed={collapsed} C={C} />
+        <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} collapsed={collapsed} C={C} onRequestSignOut={() => setSignOutOpen(true)} />
         <main style={{ flex: 1, overflow: "auto", width: "100%", paddingTop: 48 }} className="lg:pt-0">
           <div style={{ padding: "12px" }}>{children}</div>
         </main>
       </div>
       <MobileTabBar onMenuOpen={() => setDrawerOpen(true)} C={C} />
+
+      {/* Sign-out overlay renders at root level, above everything */}
+      {signOutOpen && <SignOutOverlay C={C} onClose={() => setSignOutOpen(false)} />}
     </div>
   );
 }
