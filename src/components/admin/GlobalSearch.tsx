@@ -332,6 +332,22 @@ export default function GlobalSearch() {
         />
       )}
 
+      <style>{`
+.thin-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(128,128,128,0.3);
+  border-radius: 2px;
+}
+.thin-scroll {
+  scrollbar-width: thin;
+}
+      `}</style>
+
       {/* ── Dropdown ── */}
       {open && searched && (
         <div
@@ -350,7 +366,7 @@ export default function GlobalSearch() {
               <p className="text-[11px] mt-1" style={{ color: C.dim }}>Try a different search term</p>
             </div>
           ) : (
-          <div className="max-h-[280px] overflow-y-auto py-0.5 sm:py-2">
+          <div className="max-h-[280px] overflow-y-auto py-0.5 sm:py-2 thin-scroll">
               {results.map((result, index) => {
                 const cfg = categoryConfig[result.category];
                 const isSelected = index === selectedIndex;
