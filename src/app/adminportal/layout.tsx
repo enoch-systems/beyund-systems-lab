@@ -483,11 +483,10 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C }: { onMobileMenuOpen: () 
             onClick={toggleTheme}
             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             aria-label="Toggle theme"
-            className="hidden lg:flex"
+            className="hidden lg:flex items-center justify-center"
             style={{
               background: "transparent", border: "none", cursor: "pointer",
-              padding: 7, color: C.muted, display: "flex", alignItems: "center",
-              justifyContent: "center", borderRadius: 6,
+              padding: 7, color: C.muted, borderRadius: 6,
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = iconBtnHover)}
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
