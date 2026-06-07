@@ -177,8 +177,8 @@ export default function StudentsPage() {
 
   function goToPage(page: number) {
     setCurrentPage(page);
-    // Scroll to the very top of the page wrapper
-    pageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Scroll to the absolute top of the viewport
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   // Reusable pagination component

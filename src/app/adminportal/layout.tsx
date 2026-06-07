@@ -721,8 +721,6 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           @media (min-width: 1024px) {
             [data-collapsed="true"] { margin-left: 56px !important; }
             [data-collapsed="false"] { margin-left: 220px !important; }
-            header[data-collapsed="true"] { left: 56px !important; }
-            header[data-collapsed="false"] { left: 220px !important; }
           }
         `}</style>
         <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} collapsed={collapsed} C={C} onRequestSignOut={() => setSignOutOpen(true)} />
