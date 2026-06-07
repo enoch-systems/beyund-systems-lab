@@ -341,7 +341,7 @@ export default function GlobalSearch() {
               <p className="text-[11px] mt-1" style={{ color: C.dim }}>Try a different search term</p>
             </div>
           ) : (
-          <div className="max-h-[400px] overflow-y-auto py-1 sm:py-2">
+          <div className="max-h-[400px] overflow-y-auto py-0.5 sm:py-2">
               {results.map((result, index) => {
                 const cfg = categoryConfig[result.category];
                 const isSelected = index === selectedIndex;
@@ -351,33 +351,33 @@ export default function GlobalSearch() {
                     key={result.id}
                     onClick={() => navigateTo(result)}
                     onMouseEnter={() => setSelectedIndex(index)}
-                    className="w-full flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2.5 text-left transition-colors"
+                    className="w-full flex items-center gap-1.5 sm:gap-3 px-2 sm:px-4 py-1 sm:py-2.5 text-left transition-colors"
                     style={{
                       background: isSelected ? C.sidebarActive : "transparent",
                     }}
                   >
                     {/* Category icon */}
-                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-[6px] sm:rounded-[8px] flex items-center justify-center shrink-0 mt-0 sm:mt-0.5 ${cfg.color}`}>
+                    <div className={`w-4 h-4 sm:w-8 sm:h-8 rounded-[4px] sm:rounded-[8px] flex items-center justify-center shrink-0 ${cfg.color}`}>
                       {cfg.icon}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <p className="text-xs sm:text-[13px] font-medium truncate" style={{ color: C.text }}>
+                      <div className="flex items-center gap-0.5 sm:gap-2">
+                        <p className="text-[10px] leading-tight sm:text-[13px] font-medium truncate" style={{ color: C.text }}>
                           {result.title}
                         </p>
-                        <span className={`text-[9px] sm:text-[10px] font-medium px-1 sm:px-1.5 py-0.5 rounded-[3px] sm:rounded-[4px] shrink-0 ${cfg.color}`}>
+                        <span className={`text-[7px] leading-none sm:text-[10px] font-medium px-0.5 sm:px-1.5 py-[1px] sm:py-0.5 rounded-[2px] sm:rounded-[4px] shrink-0 ${cfg.color}`}>
                           {cfg.label}
                         </span>
                       </div>
-                      <p className="text-[10px] sm:text-[11px] mt-0 truncate sm:mt-0.5 truncate" style={{ color: C.muted }}>
+                      <p className="text-[8px] leading-tight sm:text-[11px] truncate mt-0 sm:mt-0.5" style={{ color: C.muted }}>
                         {result.subtitle}
                       </p>
                     </div>
 
                     {/* Right metadata */}
-                    <div className="shrink-0 flex items-center gap-1 sm:gap-1.5">
+                    <div className="hidden sm:flex shrink-0 items-center gap-1 sm:gap-1.5">
                       {result.metadata && (
                         <span className="text-[9px] sm:text-[10px] capitalize" style={{ color: C.dim }}>
                           {result.metadata}
@@ -392,20 +392,20 @@ export default function GlobalSearch() {
           )}
 
           {/* Footer hint */}
-          <div className="flex items-center justify-between px-3 sm:px-4 py-1.5 sm:py-2 border-t" style={{ borderColor: C.border }}>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <span className="hidden sm:flex items-center gap-1 text-[9px] sm:text-[10px]" style={{ color: C.dim }}>
-                <kbd className="px-1 py-0.5 rounded font-mono text-[8px] sm:text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↑</kbd>
-                <kbd className="px-1 py-0.5 rounded font-mono text-[8px] sm:text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↓</kbd>
+          <div className="flex items-center justify-between px-2 sm:px-4 py-1 sm:py-2 border-t" style={{ borderColor: C.border }}>
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3">
+              <span className="flex items-center gap-1 text-[8px] sm:text-[10px]" style={{ color: C.dim }}>
+                <kbd className="px-1 py-0.5 rounded font-mono text-[7px] sm:text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↑</kbd>
+                <kbd className="px-1 py-0.5 rounded font-mono text-[7px] sm:text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↓</kbd>
                 Navigate
               </span>
-              <span className="hidden sm:flex items-center gap-1 text-[9px] sm:text-[10px]" style={{ color: C.dim }}>
-                <kbd className="px-1 py-0.5 rounded font-mono text-[8px] sm:text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↵</kbd>
+              <span className="flex items-center gap-1 text-[8px] sm:text-[10px]" style={{ color: C.dim }}>
+                <kbd className="px-1 py-0.5 rounded font-mono text-[7px] sm:text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>↵</kbd>
                 Open
               </span>
             </div>
-            <span className="flex items-center gap-1 text-[9px] sm:text-[10px]" style={{ color: C.dim }}>
-              <kbd className="px-1 py-0.5 rounded font-mono text-[8px] sm:text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>esc</kbd>
+            <span className="flex items-center gap-1 text-[8px] sm:text-[10px]" style={{ color: C.dim }}>
+              <kbd className="px-1 py-0.5 rounded font-mono text-[7px] sm:text-[9px]" style={{ background: C.sidebarActive, color: C.muted }}>esc</kbd>
               Close
             </span>
           </div>
