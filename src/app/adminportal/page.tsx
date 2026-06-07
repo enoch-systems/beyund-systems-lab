@@ -49,7 +49,6 @@ export default function AdminDashboardPage() {
   const [showRevenue, setShowRevenue] = useState(true);
   const [showCollected, setShowCollected] = useState(true);
   const [showOutstanding, setShowOutstanding] = useState(true);
-  const [showTotalFees, setShowTotalFees] = useState(true);
   const [now, setNow] = useState(ts());
   const [adminFirstName, setAdminFirstName] = useState("");
   const [isMobile, setIsMobile] = useState(false);
@@ -631,7 +630,6 @@ export default function AdminDashboardPage() {
                   {[
                     { label: "Collected", val: fmt(collected), color: theme === "dark" ? "#fde68a" : "#92400e" },
                     { label: "Outstanding", val: fmt(outstanding), color: C.amber },
-                    { label: "Total Fees", val: fmt(totalFees), color: C.text },
                   ].map(s => (
                     <div key={s.label} style={{ background: C.card, borderRadius: 4, padding: "6px 8px", border: `1px solid ${C.border}`, position: "relative" }}>
                       <p style={{ fontSize: 8, color: C.muted, textTransform: "uppercase", letterSpacing: "0.04em", margin: 0, display: "flex", alignItems: "center", gap: 4 }}>
@@ -648,17 +646,10 @@ export default function AdminDashboardPage() {
                             {showOutstanding ? <EyeOff size={10} /> : <Eye size={10} />}
                           </button>
                         )}
-                        {s.label === "Total Fees" && (
-                          <button onClick={() => setShowTotalFees(!showTotalFees)}
-                            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
-                            {showTotalFees ? <EyeOff size={10} /> : <Eye size={10} />}
-                          </button>
-                        )}
                       </p>
                       <p style={{ fontSize: 12, fontWeight: 700, color: s.color, margin: "2px 0 0", fontFamily: "'JetBrains Mono','SF Mono',monospace", overflow: "hidden", textOverflow: "ellipsis" }}>{
                         s.label === "Collected" ? (showCollected ? s.val : "₦••••••") :
                         s.label === "Outstanding" ? (showOutstanding ? s.val : "₦••••••") :
-                        s.label === "Total Fees" ? (showTotalFees ? s.val : "₦••••••") :
                         s.val
                       }</p>
                     </div>
