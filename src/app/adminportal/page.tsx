@@ -299,17 +299,18 @@ export default function AdminDashboardPage() {
     ng: "#10b981", us: "#3b82f6", ca: "#ef4444", gh: "#f59e0b",
   };
 
-  const deepData: DeepRow[] = [];
+  // Build all deep data, then sort globally and take top 10
+  const deepDataAll: DeepRow[] = [];
   countryDisplayOrder.forEach(code => {
     const fullName = Object.entries(COUNTRY_NAME_TO_CODE).find(([, v]) => v === code)?.[0];
     if (!fullName || !deepStateCounts[fullName]) return;
     const states = deepStateCounts[fullName];
-    const entries = Object.entries(states).sort(([, a], [, b]) => b - a).slice(0, 12);
+    const entries = Object.entries(states);
     const maxForCountry = Math.max(...entries.map(([, c]) => c), 1);
     const baseColor = countryColorMap[code] || C.teal;
     entries.forEach(([state, count]) => {
       const opacity = 0.30 + (count / maxForCountry) * 0.55;
-      deepData.push({
+      deepDataAll.push({
         country: fullName,
         shortCode: code.toUpperCase(),
         flagUrl: `https://flagcdn.com/w20/${code}.png`,
@@ -322,6 +323,7 @@ export default function AdminDashboardPage() {
       });
     });
   });
+  const deepData = deepDataAll.sort((a, b) => b.count - a.count).slice(0, 10);
   const deepTotalStates = deepData.length;
   const deepCountryCount = countryDisplayOrder.filter(c =>
     Object.entries(COUNTRY_NAME_TO_CODE).some(([, v]) => v === c && deepStateCounts[Object.entries(COUNTRY_NAME_TO_CODE).find(([, v2]) => v2 === c)?.[0] || ""])
