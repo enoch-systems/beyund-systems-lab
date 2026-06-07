@@ -292,15 +292,34 @@ export default function AdminDashboardPage() {
   );
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", padding: "12px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif", maxWidth: 1280, margin: "0 auto" }} className="sm:p-6 xl:p-8">
+    <div style={{ background: C.bg, minHeight: "100vh", padding: "10px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif", maxWidth: 1280, margin: "0 auto" }} className="sm:p-4 md:p-6 xl:p-8">
+      <style>{`
+        .payment-stats-row {
+          grid-template-columns: 1fr;
+        }
+        .payment-stats-grid {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+        @media (min-width: 640px) {
+          .payment-stats-row {
+            grid-template-columns: auto 1fr;
+            align-items: center;
+          }
+        }
+        @media (min-width: 768px) {
+          .payment-stats-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+          }
+        }
+      `}</style>
 
       {/* ── Top Bar ── */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20, paddingBottom: 14, borderBottom: `1px solid ${C.border}`, flexWrap: "wrap", gap: 8 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${C.border}` }} className="sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:mb-5 sm:pb-4">
         <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0, flex: 1 }}>
-          <span style={{ fontSize: 20, fontWeight: 400, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.2 }} className="sm:text-[24px]">Welcome, {adminFirstName || "Admin"}</span>
-          <span style={{ fontSize: 11, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", opacity: 0.7 }} className="sm:text-[12px]">{now}</span>
+          <span style={{ fontSize: 18, fontWeight: 600, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.2 }} className="sm:text-[22px] md:text-[24px]">Welcome, {adminFirstName || "Admin"}</span>
+          <span style={{ fontSize: 10, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", opacity: 0.75 }} className="sm:text-[11px] md:text-[12px]">{now}</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }} className="sm:gap-3">
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, color: C.muted }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.green }} />
             System OK
@@ -345,7 +364,7 @@ export default function AdminDashboardPage() {
       
         {/* Status */}
         <Card title="Registration Status" sub={sd.filter(d => d.value > 0).length + " statuses"} icon={<BarChart3 size={12} />} C={C}>
-          <div style={{ height: 180, display: "flex", alignItems: "center" }} className="sm:h-[200px]">
+          <div style={{ height: 180 }} className="sm:h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
               <RePieChart>
                 <Pie data={displaySD} cx="50%" cy="50%" innerRadius={40} outerRadius={60} paddingAngle={2} dataKey="value">
@@ -354,15 +373,15 @@ export default function AdminDashboardPage() {
                 <Tooltip content={<CTip C={C} />} />
               </RePieChart>
             </ResponsiveContainer>
-            <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 8 }}>
-              {sd.map(d => (
-                <div key={d.name} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: d.color }} />
-                  <span style={{ fontSize: 10, color: C.muted }}>{d.name}</span>
-                  <span style={{ fontSize: 10, fontWeight: 600, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{d.value}</span>
-                </div>
-              ))}
-            </div>
+          </div>
+          <div className="status-legend" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+            {sd.map(d => (
+              <div key={d.name} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: d.color }} />
+                <span style={{ fontSize: 10, color: C.muted }}>{d.name}</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{d.value}</span>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
@@ -513,7 +532,7 @@ export default function AdminDashboardPage() {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {/* Stats row */}
-              <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 8 }}>
+              <div className="payment-stats-row" style={{ display: "grid", gap: 8 }}>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: C.card, borderRadius: 4, padding: "8px 10px", border: `1px solid ${C.border}` }}>
                   <div style={{ position: "relative", width: 52, height: 52 }}>
                     <svg viewBox="0 0 36 36" style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
@@ -524,7 +543,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <span style={{ fontSize: 8, color: C.muted, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.05em" }}>Rate</span>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+                <div className="payment-stats-grid" style={{ display: "grid", gap: 4 }}>
                   {[
                     { label: "Collected", val: fmt(collected), color: theme === "dark" ? "#fde68a" : "#92400e" },
                     { label: "Outstanding", val: fmt(outstanding), color: C.amber },
@@ -625,7 +644,7 @@ export default function AdminDashboardPage() {
       )}
 
       {/* ── Footer ── */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0 0", marginTop: 12, borderTop: `1px solid ${C.border}` }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4, padding: "10px 0 0", marginTop: 12, borderTop: `1px solid ${C.border}` }} className="sm:flex-row sm:justify-between sm:items-center sm:gap-0">
         <span style={{ fontSize: 9, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
           {total} records · {enrolled} enrolled · {pending} pending
         </span>
