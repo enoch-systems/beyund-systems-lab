@@ -671,47 +671,6 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-      {/* ── Country Deep Dive Card (link to full page) ── */}
-      <Link href="/adminportal/country-deep-dive" style={{ textDecoration: "none", display: "block", marginBottom: 20 }}>
-        <div
-          style={{
-            background: C.card,
-            border: `1px solid ${C.border}`,
-            borderRadius: 6,
-            padding: 18,
-            cursor: "pointer",
-            transition: "border-color 0.15s",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10,
-                background: `linear-gradient(135deg, ${C.teal}22, ${C.teal}44)`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <BarChart3 size={18} style={{ color: C.teal }} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: C.text, display: "block" }}>
-                Country Deep Dive
-              </span>
-              <span style={{ fontSize: 10, color: C.muted }}>
-                {deepTotalStates} states · {deepCountryCount} countries · NG · US · CA · GH
-              </span>
-            </div>
-            <span style={{ fontSize: 12, color: C.teal, fontWeight: 600, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>
-              View →
-            </span>
-          </div>
-        </div>
-      </Link>
 
       {/* ── Recently Registered ── */}
       {recentStudents.length > 0 && (
