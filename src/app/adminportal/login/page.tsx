@@ -91,10 +91,51 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium text-sm hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="w-full py-2.5 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium text-sm hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2 flex items-center justify-center gap-2"
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? (
+                <>
+                  <div className="loader loader-login" style={{ width: 20, height: 20 }} />
+                  <span>Signing in...</span>
+                </>
+              ) : "Sign In"}
             </button>
+            {loading && (
+              <style>{`
+                .loader {
+                  width: 20px;
+                  aspect-ratio: 1;
+                  color: #fff;
+                  position: relative;
+                  display: inline-block;
+                }
+                .dark .loader-login {
+                  color: #171717 !important;
+                }
+                .loader::before,
+                .loader::after {
+                  content: "";
+                  position: absolute;
+                  inset:0;
+                  background:
+                    linear-gradient(currentColor 0 0) 0 calc(var(--s,0)*-100%)/100% calc(100%/3),
+                    repeating-linear-gradient(90deg,currentColor 0 25%,#0000 0 50%) calc(var(--s,0)*100%) 50%/calc(4*100%/3) calc(100%/3);
+                  background-repeat: no-repeat;
+                  animation: l26 2s infinite;
+                }
+                .loader::after {
+                  --s:-1;
+                }
+                @keyframes l26 {
+                    0%,
+                    10%  {transform:translateY(calc(var(--s,1)*0));   background-position: 0 calc(var(--s,0)*-100%),calc(var(--s,0)*100%) 50%}
+                    33%  {transform:translateY(calc(var(--s,1)*-20%));background-position: 0 calc(var(--s,0)*-100%),calc(var(--s,0)*100%) 50%}
+                    66%  {transform:translateY(calc(var(--s,1)*-20%));background-position: 0 calc(var(--s,0)*-100%),calc(var(--s,0)*100% + 100%) 50%}
+                    90%,
+                    100%  {transform:translateY(calc(var(--s,1)*0));  background-position: 0 calc(var(--s,0)*-100%),calc(var(--s,0)*100% + 100%) 50%}
+                }
+              `}</style>
+            )}
           </form>
         </div>
 
