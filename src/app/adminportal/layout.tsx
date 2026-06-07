@@ -558,7 +558,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C, onRequestSignOut }: { onM
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-20 h-12 lg:static lg:z-auto"
+      className="fixed top-0 left-0 right-0 z-[120] h-12 lg:static lg:z-auto"
       data-header="mobile-fixed"
       style={{
         borderBottom: `1px solid ${headerBorder}`,
