@@ -422,8 +422,8 @@ function SignOutOverlay({ C, onClose }: { C: Colors; onClose: () => void }) {
         background: "rgba(0,0,0,0.55)",
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)",
-        display: "flex", alignItems: "flex-start", justifyContent: "center",
-        padding: "80px 16px 16px", margin: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 16, margin: 0,
       }}
       onClick={onClose}
     >
