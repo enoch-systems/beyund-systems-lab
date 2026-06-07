@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme-context";
+import { useSearchOverlay } from "@/lib/search-overlay-context";
 import { getColors } from "@/lib/theme-colors";
 import {
   Search,
@@ -64,6 +65,7 @@ export default function GlobalSearch() {
   const { theme } = useTheme();
   const C = getColors(theme);
   const iconBtnHover = theme === "dark" ? "#171717" : C.sidebarActive;
+  const overlay = useSearchOverlay();
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -74,6 +76,9 @@ export default function GlobalSearch() {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  /* sync open state to overlay context */
+  useEffect(() => { overlay.setOpen(open); }, [open, overlay]);
 
   /* ── Keyboard shortcut: ⌘K / Ctrl+K ── */
   useEffect(() => {
@@ -321,15 +326,6 @@ export default function GlobalSearch() {
             </kbd>
           </button>
         </>
-      )}
-
-      {/* Backdrop blur overlay on mobile — below header */}
-      {open && (
-        <div
-          className="fixed inset-x-0 top-12 bottom-0 sm:hidden z-40"
-          style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}
-          onClick={() => { setOpen(false); setQuery(""); }}
-        />
       )}
 
       <style>{`

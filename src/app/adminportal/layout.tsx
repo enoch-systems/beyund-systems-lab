@@ -26,6 +26,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 import BeyundLogo from "@/components/BeyundLogo";
 import { ThemeProvider, useTheme } from "@/lib/theme-context";
 import { ProfileProvider, useProfile } from "@/lib/profile-context";
+import { SearchOverlayProvider, useSearchOverlay } from "@/lib/search-overlay-context";
 import GlobalSearch from "@/components/admin/GlobalSearch";
 import { getColors, type Colors } from "@/lib/theme-colors";
 
@@ -739,8 +740,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <ThemeProvider>
       <ProfileProvider>
-        <AdminLayoutInner>{children}</AdminLayoutInner>
+        <SearchOverlayProvider>
+          <AdminLayoutInner>{children}</AdminLayoutInner>
+          <SearchBackdrop />
+        </SearchOverlayProvider>
       </ProfileProvider>
     </ThemeProvider>
+  );
+}
+
+function SearchBackdrop() {
+  const { open } = useSearchOverlay();
+  const { theme } = useTheme();
+  if (!open) return null;
+  return (
+    <div
+      className="fixed inset-x-0 top-12 bottom-0 sm:hidden"
+      style={{
+        zIndex: 100,
+        background: "rgba(0,0,0,0.45)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+      }}
+      onClick={() => {/* click handled by GlobalSearch close on outside */}}
+    />
   );
 }
