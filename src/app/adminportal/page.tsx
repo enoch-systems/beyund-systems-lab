@@ -268,8 +268,70 @@ export default function AdminDashboardPage() {
     ? `${totalStates} state${totalStates !== 1 ? "s" : ""} · ${countriesCount} ${countriesCount === 1 ? "country" : "countries"}`
     : "No region data";
 
+  // ── Country Deep Dive: NG, US, CA, GH ──
+  const COUNTRY_CODE_TO_NAME: Record<string, string> = {
+    ng: "Nigeria", us: "United States", ca: "Canada", gh: "Ghana",
+  };
+  const TARGET_COUNTRY_CODES = new Set(["ng", "us", "ca", "gh"]);
+
+  const targetedEnrolled = enrolledStudents.filter(s => {
+    const code = COUNTRY_NAME_TO_CODE[s.country?.trim() || ""];
+    return code && TARGET_COUNTRY_CODES.has(code);
+  });
+
+  const deepStateCounts: Record<string, Record<string, number>> = {};
+  targetedEnrolled.forEach(s => {
+    const country = (s.country && s.country.trim()) || "Unknown";
+    const rawState = (s.state && s.state.trim()) || country;
+    const state = normaliseState(rawState);
+    if (!deepStateCounts[country]) deepStateCounts[country] = {};
+    deepStateCounts[country][state] = (deepStateCounts[country][state] || 0) + 1;
+  });
+
+  type DeepRow = {
+    country: string; shortCode: string; flagUrl: string | null;
+    state: string; count: number; yLabel: string; barLabel: string;
+    fill: string; fillOpacity: number;
+  };
+
+  const countryDisplayOrder = ["ng", "us", "ca", "gh"];
+  const countryColorMap: Record<string, string> = {
+    ng: "#10b981", us: "#3b82f6", ca: "#ef4444", gh: "#f59e0b",
+  };
+
+  const deepData: DeepRow[] = [];
+  countryDisplayOrder.forEach(code => {
+    const fullName = Object.entries(COUNTRY_NAME_TO_CODE).find(([, v]) => v === code)?.[0];
+    if (!fullName || !deepStateCounts[fullName]) return;
+    const states = deepStateCounts[fullName];
+    const entries = Object.entries(states).sort(([, a], [, b]) => b - a).slice(0, 12);
+    const maxForCountry = Math.max(...entries.map(([, c]) => c), 1);
+    const baseColor = countryColorMap[code] || C.teal;
+    entries.forEach(([state, count]) => {
+      const opacity = 0.30 + (count / maxForCountry) * 0.55;
+      deepData.push({
+        country: fullName,
+        shortCode: code.toUpperCase(),
+        flagUrl: `https://flagcdn.com/w20/${code}.png`,
+        state,
+        count,
+        yLabel: `${code.toUpperCase()} ${state}`,
+        barLabel: `${state} (${count})`,
+        fill: baseColor,
+        fillOpacity: opacity,
+      });
+    });
+  });
+  const deepTotalStates = deepData.length;
+  const deepCountryCount = countryDisplayOrder.filter(c =>
+    Object.entries(COUNTRY_NAME_TO_CODE).some(([, v]) => v === c && deepStateCounts[Object.entries(COUNTRY_NAME_TO_CODE).find(([, v2]) => v2 === c)?.[0] || ""])
+  ).length;
+
   // ── Recent Registrations ──
-  const recentStudents = students.slice(0, 5);
+  const [showAllRecent, setShowAllRecent] = useState(false);
+  const recentStudents = students.slice(0, showAllRecent ? students.length : 10);
+  const recentTotal = students.length;
+  const recentDisplayed = recentStudents.length;
 
   // ── Status Data ──
   const sd = [
@@ -640,6 +702,48 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
+      {/* ── Country Deep Dive Card (link to full page) ── */}
+      <Link href="/adminportal/country-deep-dive" style={{ textDecoration: "none", display: "block", marginBottom: 20 }}>
+        <div
+          style={{
+            background: C.card,
+            border: `1px solid ${C.border}`,
+            borderRadius: 6,
+            padding: 18,
+            cursor: "pointer",
+            transition: "border-color 0.15s",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                background: `linear-gradient(135deg, ${C.teal}22, ${C.teal}44)`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <BarChart3 size={18} style={{ color: C.teal }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: C.text, display: "block" }}>
+                Country Deep Dive
+              </span>
+              <span style={{ fontSize: 10, color: C.muted }}>
+                {deepTotalStates} states · {deepCountryCount} countries · NG · US · CA · GH
+              </span>
+            </div>
+            <span style={{ fontSize: 12, color: C.teal, fontWeight: 600, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>
+              View →
+            </span>
+          </div>
+        </div>
+      </Link>
+
       {/* ── Recently Registered ── */}
       {recentStudents.length > 0 && (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 6, padding: 14, marginBottom: 16 }}>
@@ -647,7 +751,10 @@ export default function AdminDashboardPage() {
             <div style={{ width: 28, height: 28, borderRadius: 8, background: C.bg, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: C.muted }}>
               <Users size={13} />
             </div>
-            <span style={{ fontSize: 12, fontWeight: 600, color: C.text, letterSpacing: "-0.01em" }}>Recently Registered</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: C.text, letterSpacing: "-0.01em" }}>
+              Recently Registered
+              <span style={{ fontSize: 9, color: C.muted, fontWeight: 400, marginLeft: 6 }}>({recentDisplayed}{recentTotal > recentDisplayed ? ` of ${recentTotal}` : ""})</span>
+            </span>
             <Link href="/adminportal/students" style={{ marginLeft: "auto", fontSize: 10, color: C.teal, fontFamily: "'JetBrains Mono','SF Mono',monospace", textDecoration: "none", cursor: "pointer", fontWeight: 500, opacity: 0.85, transition: "opacity 0.15s" }}>
               See all →
             </Link>
@@ -669,6 +776,28 @@ export default function AdminDashboardPage() {
               </div>
             ))}
           </div>
+          {recentTotal > 10 && (
+            <button
+              onClick={() => setShowAllRecent(!showAllRecent)}
+              style={{
+                marginTop: 10,
+                width: "100%",
+                padding: "8px 0",
+                background: C.bg,
+                border: `1px solid ${C.border}`,
+                borderRadius: 5,
+                cursor: "pointer",
+                fontSize: 10,
+                fontWeight: 600,
+                color: C.teal,
+                fontFamily: "'JetBrains Mono','SF Mono',monospace",
+                textAlign: "center",
+                transition: "border-color 0.15s",
+              }}
+            >
+              {showAllRecent ? "Show less ↑" : `See more (${recentTotal - 10} more) ↓`}
+            </button>
+          )}
         </div>
       )}
 
