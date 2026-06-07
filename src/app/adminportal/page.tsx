@@ -520,38 +520,20 @@ export default function AdminDashboardPage() {
                       dataKey="yLabel"
                       axisLine={false}
                       tickLine={false}
-                      width={isMobile ? 64 : 108}
+                      width={isMobile ? 36 : 52}
                       tick={(props: any) => {
                         const { x, y, payload } = props;
                         const item = deepData.find(d => d.yLabel === payload.value);
-                        const flagOffsetX = isMobile ? -58 : -100;
-                        const textOffsetX = isMobile ? -40 : -78;
-                        const fontSize = isMobile ? 7 : 9;
-                        const flagW = isMobile ? 12 : 18;
-                        const flagH = isMobile ? 8 : 12;
                         const label = item?.shortCode || payload.value;
                         return (
                           <g transform={`translate(${x},${y})`}>
-                            {item?.flagUrl ? (
-                              <image
-                                href={item.flagUrl}
-                                x={flagOffsetX}
-                                y={-6}
-                                width={flagW}
-                                height={flagH}
-                                preserveAspectRatio="xMidYMid meet"
-                                style={{ borderRadius: 1, outline: "1px solid rgba(255,255,255,0.15)" }}
-                              />
-                            ) : (
-                              <rect x={flagOffsetX} y={-6} width={flagW} height={flagH} fill={C.dim} opacity={0.3} rx={1} />
-                            )}
                             <text
-                              x={textOffsetX}
+                              x={-4}
                               y={0}
                               dy={3.5}
-                              textAnchor="start"
+                              textAnchor="end"
                               fill={C.text}
-                              fontSize={fontSize}
+                              fontSize={isMobile ? 7 : 9}
                               fontWeight={600}
                               fontFamily="'Inter','SF Pro',system-ui,sans-serif"
                             >
@@ -575,25 +557,41 @@ export default function AdminDashboardPage() {
                         fontWeight: 700,
                         fontFamily: "'JetBrains Mono','SF Mono',monospace",
                         content: (props: any) => {
-                          const { index } = props;
+                          const { index, x, y, width, height } = props;
                           const item = deepData[index];
                           if (!item) return null;
+                          const flagW = isMobile ? 12 : 18;
+                          const flagH = isMobile ? 8 : 12;
+                          const flagX = x + 4;
+                          const flagY = y + height / 2 - flagH / 2;
+                          const labelX = flagX + flagW + (isMobile ? 3 : 6);
                           const label = isMobile
-                            ? `${item.state.length > 8 ? item.state.slice(0, 7) + "…" : item.state} (${item.count})`
+                            ? `${item.state.length > 6 ? item.state.slice(0, 5) + "…" : item.state} (${item.count})`
                             : `${item.state} (${item.count})`;
                           return (
-                            <text
-                              x={props.x + props.width / 2}
-                              y={props.y + props.height / 2}
-                              fill="#f8fafc"
-                              fontSize={isMobile ? 7 : 9}
-                              fontWeight={700}
-                              fontFamily="'JetBrains Mono','SF Mono',monospace"
-                              textAnchor="middle"
-                              dominantBaseline="central"
-                            >
-                              {label}
-                            </text>
+                            <g>
+                              <image
+                                href={item.flagUrl || undefined}
+                                x={flagX}
+                                y={flagY}
+                                width={flagW}
+                                height={flagH}
+                                preserveAspectRatio="xMidYMid meet"
+                                style={{ borderRadius: 1, outline: "1px solid rgba(255,255,255,0.25)" }}
+                              />
+                              <text
+                                x={labelX}
+                                y={y + height / 2}
+                                fill="#f8fafc"
+                                fontSize={isMobile ? 7 : 9}
+                                fontWeight={700}
+                                fontFamily="'JetBrains Mono','SF Mono',monospace"
+                                textAnchor="start"
+                                dominantBaseline="central"
+                              >
+                                {label}
+                              </text>
+                            </g>
                           );
                         },
                       }}
