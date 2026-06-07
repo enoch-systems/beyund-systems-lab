@@ -323,10 +323,10 @@ export default function GlobalSearch() {
         </>
       )}
 
-      {/* Backdrop blur overlay on mobile */}
+      {/* Backdrop blur overlay on mobile — below header */}
       {open && searched && (
         <div
-          className="fixed inset-0 sm:hidden z-40"
+          className="fixed inset-x-0 top-12 bottom-0 sm:hidden z-40"
           style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}
           onClick={() => { setOpen(false); setQuery(""); }}
         />
