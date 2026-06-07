@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import type { StudentRegistration } from "@/lib/types";
 import StudentDetailDrawer from "@/components/admin/StudentDetailDrawer";
@@ -29,6 +29,7 @@ export default function StudentsPage() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [adminName, setAdminName] = useState("Admin");
   const [currentPage, setCurrentPage] = useState(1);
+  const topRef = useRef<HTMLDivElement>(null);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -140,6 +141,70 @@ export default function StudentsPage() {
 
   const pageNumbers = getPageNumbers();
 
+  function goToPage(page: number) {
+    setCurrentPage(page);
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // Reusable pagination component
+  function PaginationBar({
+    pageNumbers,
+    safeCurrentPage,
+    totalPages,
+    goToPage,
+  }: {
+    pageNumbers: (number | "...")[];
+    safeCurrentPage: number;
+    totalPages: number;
+    goToPage: (page: number) => void;
+  }) {
+    return (
+      <div className="flex items-center justify-center gap-1">
+        {/* Prev Button */}
+        <button
+          onClick={() => goToPage(Math.max(1, safeCurrentPage - 1))}
+          disabled={safeCurrentPage === 1}
+          className="inline-flex items-center justify-center h-[30px] px-2.5 rounded-[6px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+        </button>
+
+        {/* Page Numbers */}
+        {pageNumbers.map((page, idx) =>
+          page === "..." ? (
+            <span
+              key={`ellipsis-${idx}`}
+              className="inline-flex items-center justify-center h-[30px] px-1.5 text-[11px] text-neutral-400 dark:text-neutral-500"
+            >
+              …
+            </span>
+          ) : (
+            <button
+              key={page}
+              onClick={() => goToPage(page as number)}
+              className={`inline-flex items-center justify-center h-[30px] min-w-[30px] px-2 rounded-[6px] text-[11px] font-medium transition-all cursor-pointer ${
+                safeCurrentPage === page
+                  ? "bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-sm"
+                  : "border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+              }`}
+            >
+              {page}
+            </button>
+          )
+        )}
+
+        {/* Next Button */}
+        <button
+          onClick={() => goToPage(Math.min(totalPages, safeCurrentPage + 1))}
+          disabled={safeCurrentPage === totalPages}
+          className="inline-flex items-center justify-center h-[30px] px-2.5 rounded-[6px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -170,7 +235,7 @@ export default function StudentsPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div ref={topRef} className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-neutral-400" />
           <input
@@ -198,6 +263,16 @@ export default function StudentsPage() {
           {filteredStudents.length} student{filteredStudents.length !== 1 ? "s" : ""}
         </p>
       </div>
+
+      {/* ──────── TOP PAGINATION ──────── */}
+      {totalPages > 1 && (
+        <PaginationBar
+          pageNumbers={pageNumbers}
+          safeCurrentPage={safeCurrentPage}
+          totalPages={totalPages}
+          goToPage={goToPage}
+        />
+      )}
 
       {/* ──────── DESKTOP TABLE (md+) ──────── */}
       <div className="hidden md:block rounded-[16px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] overflow-hidden">
@@ -377,51 +452,14 @@ export default function StudentsPage() {
         )}
       </div>
 
-      {/* ──────── PAGINATION ──────── */}
+      {/* ──────── BOTTOM PAGINATION ──────── */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1 pt-1">
-          {/* Prev Button */}
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={safeCurrentPage === 1}
-            className="inline-flex items-center justify-center h-[30px] px-2.5 rounded-[6px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-          </button>
-
-          {/* Page Numbers */}
-          {pageNumbers.map((page, idx) =>
-            page === "..." ? (
-              <span
-                key={`ellipsis-${idx}`}
-                className="inline-flex items-center justify-center h-[30px] px-1.5 text-[11px] text-neutral-400 dark:text-neutral-500"
-              >
-                …
-              </span>
-            ) : (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page as number)}
-                className={`inline-flex items-center justify-center h-[30px] min-w-[30px] px-2 rounded-[6px] text-[11px] font-medium transition-all cursor-pointer ${
-                  safeCurrentPage === page
-                    ? "bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-sm"
-                    : "border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800"
-                }`}
-              >
-                {page}
-              </button>
-            )
-          )}
-
-          {/* Next Button */}
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={safeCurrentPage === totalPages}
-            className="inline-flex items-center justify-center h-[30px] px-2.5 rounded-[6px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        <PaginationBar
+          pageNumbers={pageNumbers}
+          safeCurrentPage={safeCurrentPage}
+          totalPages={totalPages}
+          goToPage={goToPage}
+        />
       )}
 
       {/* Student Detail Drawer */}
