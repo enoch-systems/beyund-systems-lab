@@ -614,46 +614,31 @@ export default function AdminDashboardPage() {
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {/* Stats row */}
-              <div className="payment-stats-row" style={{ display: "grid", gap: 8 }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: C.card, borderRadius: 4, padding: "8px 10px", border: `1px solid ${C.border}` }}>
-                  <div style={{ position: "relative", width: 52, height: 52 }}>
-                    <svg viewBox="0 0 36 36" style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
-                      <circle cx="18" cy="18" r="15.5" fill="none" stroke={C.dim} strokeWidth="3" />
-                      <circle cx="18" cy="18" r="15.5" fill="none" stroke={collectionRate > 70 ? C.green : collectionRate > 40 ? C.amber : C.red} strokeWidth="3" strokeDasharray={`${collectionRate} ${100 - collectionRate}`} strokeLinecap="round" />
-                    </svg>
-                    <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{collectionRate}%</span>
-                  </div>
-                  <span style={{ fontSize: 8, color: C.muted, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.05em" }}>Rate</span>
+              {/* Stats row — two centered cards */}
+              <div style={{ display: "grid", gap: 8, gridTemplateColumns: "1fr 1fr" }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: C.card, borderRadius: 6, padding: "12px 8px", border: `1px solid ${C.border}`, textAlign: "center" }}>
+                  <p style={{ fontSize: 8, color: C.muted, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 4, justifyContent: "center" }}>
+                    Collected
+                    <button onClick={() => setShowCollected(!showCollected)}
+                      style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
+                      {showCollected ? <EyeOff size={10} /> : <Eye size={10} />}
+                    </button>
+                  </p>
+                  <p style={{ fontSize: 16, fontWeight: 700, color: theme === "dark" ? "#fde68a" : "#92400e", margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace", lineHeight: 1.2 }}>
+                    {showCollected ? fmt(collected) : "₦••••••"}
+                  </p>
                 </div>
-                <div className="payment-stats-grid" style={{ display: "grid", gap: 4 }}>
-                  {[
-                    { label: "Collected", val: fmt(collected), color: theme === "dark" ? "#fde68a" : "#92400e" },
-                    { label: "Outstanding", val: fmt(outstanding), color: C.amber },
-                  ].map(s => (
-                    <div key={s.label} style={{ background: C.card, borderRadius: 4, padding: "6px 8px", border: `1px solid ${C.border}`, position: "relative" }}>
-                      <p style={{ fontSize: 8, color: C.muted, textTransform: "uppercase", letterSpacing: "0.04em", margin: 0, display: "flex", alignItems: "center", gap: 4 }}>
-                        {s.label}
-                        {s.label === "Collected" && (
-                          <button onClick={() => setShowCollected(!showCollected)}
-                            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
-                            {showCollected ? <EyeOff size={10} /> : <Eye size={10} />}
-                          </button>
-                        )}
-                        {s.label === "Outstanding" && (
-                          <button onClick={() => setShowOutstanding(!showOutstanding)}
-                            style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
-                            {showOutstanding ? <EyeOff size={10} /> : <Eye size={10} />}
-                          </button>
-                        )}
-                      </p>
-                      <p style={{ fontSize: 12, fontWeight: 700, color: s.color, margin: "2px 0 0", fontFamily: "'JetBrains Mono','SF Mono',monospace", overflow: "hidden", textOverflow: "ellipsis" }}>{
-                        s.label === "Collected" ? (showCollected ? s.val : "₦••••••") :
-                        s.label === "Outstanding" ? (showOutstanding ? s.val : "₦••••••") :
-                        s.val
-                      }</p>
-                    </div>
-                  ))}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: C.card, borderRadius: 6, padding: "12px 8px", border: `1px solid ${C.border}`, textAlign: "center" }}>
+                  <p style={{ fontSize: 8, color: C.muted, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 4, justifyContent: "center" }}>
+                    Outstanding
+                    <button onClick={() => setShowOutstanding(!showOutstanding)}
+                      style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
+                      {showOutstanding ? <EyeOff size={10} /> : <Eye size={10} />}
+                    </button>
+                  </p>
+                  <p style={{ fontSize: 16, fontWeight: 700, color: C.amber, margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace", lineHeight: 1.2 }}>
+                    {showOutstanding ? fmt(outstanding) : "₦••••••"}
+                  </p>
                 </div>
               </div>
 
