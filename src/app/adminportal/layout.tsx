@@ -318,13 +318,6 @@ function ProfileDropdown({ C, onClose }: { C: Colors; onClose: () => void }) {
       <Link href="/adminportal/settings" onClick={onClose} style={itemStyle}
         onMouseEnter={(e) => handleItemHover(e, true)}
         onMouseLeave={(e) => handleItemHover(e, false)}>
-        <UserIcon size={13} style={{ color: C.muted }} />
-        <span>View profile</span>
-      </Link>
-
-      <Link href="/adminportal/settings" onClick={onClose} style={itemStyle}
-        onMouseEnter={(e) => handleItemHover(e, true)}
-        onMouseLeave={(e) => handleItemHover(e, false)}>
         <Settings size={13} style={{ color: C.muted }} />
         <span>Settings</span>
       </Link>
