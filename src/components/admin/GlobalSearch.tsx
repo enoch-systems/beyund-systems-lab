@@ -326,7 +326,7 @@ export default function GlobalSearch() {
       {/* ── Dropdown ── */}
       {open && searched && (
         <div
-          className="absolute top-full left-0 right-0 mt-2 rounded-[14px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200"
+          className="fixed sm:absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:translate-y-0 sm:translate-x-0 sm:top-full sm:left-0 sm:right-0 mt-0 sm:mt-2 w-[calc(100vw-32px)] sm:w-auto rounded-[14px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden z-50 animate-in fade-in duration-200"
           style={{
             background: C.card,
             border: `1px solid ${C.border}`,
@@ -356,8 +356,8 @@ export default function GlobalSearch() {
                       background: isSelected ? C.sidebarActive : "transparent",
                     }}
                   >
-                    {/* Category icon */}
-                    <div className={`w-4 h-4 sm:w-8 sm:h-8 rounded-[4px] sm:rounded-[8px] flex items-center justify-center shrink-0 ${cfg.color}`}>
+                    {/* Category icon — hidden on mobile */}
+                    <div className={`hidden sm:flex w-8 h-8 rounded-[8px] items-center justify-center shrink-0 ${cfg.color}`}>
                       {cfg.icon}
                     </div>
 
