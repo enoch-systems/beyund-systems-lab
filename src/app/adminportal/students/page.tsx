@@ -178,10 +178,13 @@ export default function StudentsPage() {
                   </td>
                 </tr>
               ) : (
-                filteredStudents.map((student) => (
+                filteredStudents.map((student, index) => (
                   <tr key={student.id} className="hover:bg-neutral-50/50 dark:hover:bg-white/[0.02] transition-colors">
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2.5">
+                        <span className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 shrink-0 w-5 text-right" style={{ fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+                          #{filteredStudents.length - index}
+                        </span>
                         <div className="min-w-0">
                           <p className="text-[12px] font-semibold text-neutral-900 dark:text-white truncate">
                             {student.full_name}
@@ -253,13 +256,16 @@ export default function StudentsPage() {
             <p className="text-[12px] text-neutral-400 dark:text-neutral-500 mt-1">Try adjusting your search or filters</p>
           </div>
         ) : (
-          filteredStudents.map((student) => (
+          filteredStudents.map((student, index) => (
             <div
               key={student.id}
               className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-4 space-y-3"
             >
               {/* Top: name + status */}
               <div className="flex items-center gap-3">
+                <span className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 shrink-0" style={{ fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+                  #{filteredStudents.length - index}
+                </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold text-neutral-900 dark:text-white truncate">
                     {student.full_name}
