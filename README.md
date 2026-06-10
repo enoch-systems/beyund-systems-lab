@@ -4,19 +4,13 @@ A structured fullstack development program landing page that teaches participant
 
 Built with Next.js 16, TypeScript, and Tailwind CSS v4.
 
----
-
 ## The Problem
 
 80 out of 100 beginners who try to learn development alone never finish their first real project. They get stuck after the tutorial ends. Traditional learning paths teach syntax in isolation, leaving students without the practical knowledge required to ship production-grade software. This program bridges that gap with direct mentorship and a curriculum built around real-world systems.
 
----
-
 ## The Approach
 
 Beyund Systems Labs is a 12-week cohort-based program that moves beyond tutorials. Participants build real applications from day one, progressing through 9 architectural layers that mirror how professional software is actually constructed. Each layer builds on the last, covering fintech systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture. The program costs ₦60,000 (₦5,000 per week) for the full 12 weeks with direct mentorship.
-
----
 
 ## What Participants Build
 
@@ -26,8 +20,6 @@ By the end of the program, participants have shipped multiple production-ready p
 - A Recipe Social Platform with Supabase for storage and real-time updates
 - A SaaS Dashboard Starter with authentication, charts, and user management
 - A Community Job Board with search, filters, email notifications, and an admin panel
-
----
 
 ## Tech Stack
 
@@ -45,8 +37,6 @@ By the end of the program, participants have shipped multiple production-ready p
 - Git
 - Node.js
 - Vercel (deployment)
-
----
 
 ## Project Structure
 
@@ -103,8 +93,6 @@ beyund-systems-lab/
 └── README.md
 ```
 
----
-
 ## Sections
 
 | Section | Description |
@@ -123,8 +111,6 @@ beyund-systems-lab/
 | **SocialSidebar** | Fixed social links (LinkedIn, GitHub, X, Email) |
 | **WhatsAppButton** | Floating WhatsApp chat button |
 
----
-
 ## Key Features
 
 - Outcome-first user flow guiding visitors from problem awareness through proof, curriculum exploration, identity transformation, mentorship, and registration
@@ -134,8 +120,6 @@ beyund-systems-lab/
 - Dynamic form with country and state dropdowns populated via the REST Countries API and CountriesNow API
 - Responsive design across mobile, tablet, and desktop breakpoints
 - Search engine optimization with OpenGraph and Twitter card metadata
-
----
 
 ## Getting Started
 
@@ -162,20 +146,14 @@ npm run build
 npm start
 ```
 
----
-
 ## API Integrations
 
 - **Countries**: Fetched from REST Countries API
 - **States and Provinces**: Fetched from CountriesNow API
 
----
-
 ## Deployment
 
 Live at [beyund-systems-lab.vercel.app](https://beyund-systems-lab.vercel.app). The project is deployed on Vercel with automatic deployments triggered from the GitHub repository.
-
----
 
 ## Contact
 
