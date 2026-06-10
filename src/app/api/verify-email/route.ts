@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyEmail } from "@/lib/email-verification";
+import { verifyEmail } from "@/server/services/email-verification.service";
 
 /**
  * POST /api/verify-email

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { verifyEmail } from "@/lib/email-verification";
+import { verifyEmail } from "@/server/services/email-verification.service";
 
 /**
  * POST /api/registrations
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
         category: "student",
         status: "unread",
         student_id: data.id,
-        link: "/adminportal/students",
+        link: "/admin/students",
       });
 
     if (notifError) {

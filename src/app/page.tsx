@@ -1,15 +1,15 @@
-import Navbar from "@/components/Navbar";
-import SocialSidebar from "@/components/SocialSidebar";
-import PricingBadge from "@/components/PricingBadge";
-import ProblemHook from "@/components/ProblemHook";
-import VisionOutcome from "@/components/VisionOutcome";
-import Layers from "@/components/Layers";
-import WhatYouBecome from "@/components/WhatYouBecome";
-import MeetTheMentor from "@/components/MeetTheMentor";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
-import ScrollToTop from "@/components/ScrollToTop";
+import Navbar from "@/client/components/common/Navbar";
+import SocialSidebar from "@/client/components/common/SocialSidebar";
+import PricingBadge from "@/client/components/landing/PricingBadge";
+import ProblemHook from "@/client/components/landing/ProblemHook";
+import VisionOutcome from "@/client/components/landing/VisionOutcome";
+import Layers from "@/client/components/landing/Layers";
+import WhatYouBecome from "@/client/components/landing/WhatYouBecome";
+import MeetTheMentor from "@/client/components/landing/MeetTheMentor";
+import Contact from "@/client/components/landing/Contact";
+import Footer from "@/client/components/common/Footer";
+import WhatsAppButton from "@/client/components/common/WhatsAppButton";
+import ScrollToTop from "@/client/components/common/ScrollToTop";
 
 export default function Home() {
   return (
