@@ -6,8 +6,7 @@ Built with Next.js 16, TypeScript, Tailwind CSS v4, and Supabase.
 
 ![Beyund Systems Labs Landing Page](https://res.cloudinary.com/djdbcoyot/image/upload/v1781079555/pg6ij6cfhp7hrcknp9iw.jpg)
 
-<!-- Screenshot: Add admin dashboard screenshot here (Cloudinary link) -->
-<!-- e.g. https://res.cloudinary.com/your-cloud/image/upload/v1/beyund/admin-dashboard.png -->
+![Beyund Systems Labs Admin Dashboard](https://res.cloudinary.com/djdbcoyot/image/upload/v1781079555/boobsiawkgm045tg9fud.jpg)
 
 ## The Problem
 
