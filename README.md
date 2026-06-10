@@ -18,8 +18,7 @@ On the operational side, managing student applications manually, tracking regist
 
 Beyund Systems Labs is a 12-week cohort-based program that moves beyond tutorials. Participants build real applications from day one, progressing through 9 architectural layers that mirror how professional software is actually constructed. Each layer builds on the last, covering fintech systems, logistics operations, fraud-aware workflows, and fullstack applications with structured architecture. The program costs ₦60,000 (₦5,000 per week) for the full 12 weeks with direct mentorship.
 
-<!-- Screenshot: Add wizard registration form screenshot here (Cloudinary link) -->
-<!-- e.g. https://res.cloudinary.com/your-cloud/image/upload/v1/beyund/wizard-form.png -->
+![Beyund Systems Labs Wizard Registration Form](https://res.cloudinary.com/djdbcoyot/image/upload/v1781079557/qtsrgsil6uurmodrnvaz.jpg)
 
 ## Seamless Registration Flow
 
@@ -31,8 +30,7 @@ The landing page features a wizard-style registration form that collects applica
 
 Once submitted, the registration data is stored in Supabase and becomes immediately visible in the admin dashboard. The admin can then update the applicant's status through a pipeline: pending, contacted, enrolled, or rejected. This creates a closed loop from public signup to internal management, all within the same application.
 
-<!-- Screenshot: Add registration success screen screenshot here (Cloudinary link) -->
-<!-- e.g. https://res.cloudinary.com/your-cloud/image/upload/v1/beyund/registration-success.png -->
+![Beyund Systems Labs Registration Success](https://res.cloudinary.com/djdbcoyot/image/upload/v1781079555/x16jazhjcwu5gaw08jyn.jpg)
 
 ## What Participants Build
 
@@ -56,8 +54,7 @@ The public landing page presents the program's value proposition through an outc
 
 The design uses a dark glassmorphism aesthetic with backdrop blur effects, gradient overlays, and scroll-triggered animations via Intersection Observer. The page is fully responsive across mobile, tablet, and desktop breakpoints.
 
-<!-- Screenshot: Add curriculum accordion section screenshot here (Cloudinary link) -->
-<!-- e.g. https://res.cloudinary.com/your-cloud/image/upload/v1/beyund/curriculum-layers.png -->
+![Beyund Systems Labs Curriculum Layers](https://res.cloudinary.com/djdbcoyot/image/upload/v1781079556/yb6lw13x0yl2mt16iebu.jpg)
 
 ## Admin Dashboard Overview
 
@@ -70,8 +67,7 @@ The admin dashboard is a full-featured management interface for program administ
 - Enrollment by region with country flags and state-level breakdowns, with a dedicated deep dive view for Nigeria, United States, Canada, and Ghana.
 - Payment analytics showing collected revenue, outstanding balances, and daily payment trends with transaction history.
 
-<!-- Screenshot: Add dashboard analytics screenshot here (Cloudinary link) -->
-<!-- e.g. https://res.cloudinary.com/your-cloud/image/upload/v1/beyund/admin-analytics.png -->
+![Beyund Systems Labs Dashboard Analytics](https://res.cloudinary.com/djdbcoyot/image/upload/v1781079555/ekp3wgzbgiwqxwsd49ut.jpg)
 
 ### Student Management
 - A full list of all registered students with search and filtering capabilities.
@@ -81,8 +77,7 @@ The admin dashboard is a full-featured management interface for program administ
 - Student record deletion capability.
 - CSV and PDF export with a dedicated export modal that generates downloadable reports.
 
-<!-- Screenshot: Add student detail drawer screenshot here (Cloudinary link) -->
-<!-- e.g. https://res.cloudinary.com/your-cloud/image/upload/v1/beyund/student-detail.png -->
+![Beyund Systems Labs Student Detail Drawer](https://res.cloudinary.com/djdbcoyot/image/upload/v1781079556/irigqquum341dx8veviu.jpg)
 
 ### Course Management
 - Course creation through a modal interface with title validation.
@@ -103,6 +98,8 @@ The admin dashboard is a full-featured management interface for program administ
 - Keyboard navigation through search results with arrow keys.
 - Category badges for each result type.
 
+![Beyund Systems Labs Global Search](https://res.cloudinary.com/djdbcoyot/image/upload/v1781079556/fw62x3oaf9zkyockx3vd.jpg)
+
 ### Notifications
 - Notification creation and management with category tagging.
 - Read and unread status tracking.
@@ -114,9 +111,6 @@ The admin dashboard is a full-featured management interface for program administ
 - Session-based authentication via Supabase Auth.
 - Admin profile display with personalized greeting.
 - Real-time clock display in the dashboard header.
-
-<!-- Screenshot: Add global search screenshot here (Cloudinary link) -->
-<!-- e.g. https://res.cloudinary.com/your-cloud/image/upload/v1/beyund/global-search.png -->
 
 ## Tech Stack
 
@@ -320,13 +314,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## Deployment
 
 Live at [beyund-systems-lab.vercel.app](https://beyund-systems-lab.vercel.app). The project is deployed on Vercel with automatic deployments triggered from the GitHub repository.
-
-<!-- Screenshot: Add live deployment screenshot here (Cloudinary link) -->
-<!-- e.g. https://res.cloudinary.com/your-cloud/image/upload/v1/beyund/deployment.png -->
-
-## Image Assets
-
-All image placeholders in this README are formatted as HTML comments. Replace them with actual Cloudinary or other CDN-hosted screenshots of the application when available.
 
 ## Contact
 
