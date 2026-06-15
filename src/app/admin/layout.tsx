@@ -681,21 +681,25 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const [signOutOpen, setSignOutOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const supabase = createSupabaseBrowserClient();
+  const supabaseRef = useRef(createSupabaseBrowserClient());
+  const supabase = supabaseRef.current;
   const { theme } = useTheme();
   const C = getColors(theme);
   const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
+    let cancelled = false;
     async function getUser() {
       const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled) return;
       if (!session) router.push("/admin/login");
       else setUser({ email: session.user.email ?? "" });
       setLoading(false);
     }
     getUser();
-  }, [router, supabase, isLoginPage]);
+    return () => { cancelled = true; };
+  }, [router, isLoginPage]);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
