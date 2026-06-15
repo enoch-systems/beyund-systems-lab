@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     if (!registrationId) {
       return NextResponse.json({ error: "Registration ID is required" }, { status: 400 });
     }
-
+  
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Get the student registration
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     // Check if user already exists by trying to get them
     const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find((u: { email: string }) => u.email === email);
+    const existingUser = existingUsers?.users?.find((u) => u.email === email);
 
     if (existingUser) {
       // Update existing user's password
