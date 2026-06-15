@@ -675,7 +675,6 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C, onRequestSignOut }: { onM
 }
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<{ email: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -689,6 +688,10 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const isLoginPage = pathname === "/admin/login";
   const isLoginRef = useRef(isLoginPage);
   isLoginRef.current = isLoginPage;
+  const storeEmail = useAdminAuthStore((s) => s.adminEmail);
+  const setAdminEmail = useAdminAuthStore((s) => s.setAdmin);
+  const clearAdminEmail = useAdminAuthStore((s) => s.clearAdmin);
+  const [userEmail, setUserEmail] = useState<string | null>(storeEmail);
 
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
@@ -697,19 +700,35 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (cancelled || isLoginRef.current) return;
-      if (!session) router.push("/admin/login");
-      else setUser({ email: session.user.email ?? "" });
-      setLoading(false);
+      if (!session) {
+        // Check if we have a stored email from Zustand
+        const stored = useAdminAuthStore.getState().adminEmail;
+        if (stored) {
+          // Session might be briefly null during token refresh — use cached value
+          setUserEmail(stored);
+          setLoading(false);
+          return;
+        }
+        router.push("/admin/login");
+      } else {
+        const email = session.user.email ?? "";
+        setUserEmail(email);
+        setAdminEmail(email);
+        setLoading(false);
+      }
     }
     checkAuth();
 
-    // Listen for auth state changes instead of re-checking on every render
+    // Listen for actual SIGNED_OUT events only
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (cancelled || isLoginRef.current) return;
-      if (event === "SIGNED_OUT" || (!session && user !== null)) {
+      if (event === "SIGNED_OUT") {
+        clearAdminEmail();
         router.push("/admin/login");
-      } else if (session && !user) {
-        setUser({ email: session.user.email ?? "" });
+      } else if (event === "TOKEN_REFRESHED" && session) {
+        const email = session.user.email ?? "";
+        setUserEmail(email);
+        setAdminEmail(email);
       }
     });
 
@@ -717,7 +736,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
       cancelled = true;
       subscription.unsubscribe();
     };
-  }, []); // Run ONLY on mount — no dependency on pathname
+  }, []);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
@@ -727,7 +746,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     </div>
   );
   if (isLoginPage) return <div style={{ background: C.bg, minHeight: "100vh" }}>{children}</div>;
-  if (!user) return null;
+  if (!userEmail) return null;
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.text }}>
