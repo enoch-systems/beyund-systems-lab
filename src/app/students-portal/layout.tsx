@@ -433,16 +433,21 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
   const [signOutOpen, setSignOutOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const supabase = createSupabaseBrowserClient();
+  const supabaseRef = useRef(createSupabaseBrowserClient());
+  const supabase = supabaseRef.current;
   const { theme } = useTheme();
   const C = getColors(theme);
   const isLoginPage = pathname === "/students-portal/login";
+  const isLoginRef = useRef(isLoginPage);
+  isLoginRef.current = isLoginPage;
 
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
+    let cancelled = false;
 
     async function loadStudent() {
       const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled || isLoginRef.current) return;
       if (!session) {
         router.push("/students-portal/login");
         return;
@@ -455,6 +460,7 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
         .eq("email", session.user.email)
         .maybeSingle();
 
+      if (cancelled || isLoginRef.current) return;
       if (regData && regData.status !== "enrolled") {
         await supabase.auth.signOut();
         router.push("/students-portal/login");
@@ -467,6 +473,7 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
         .eq("auth_user_id", session.user.id)
         .single();
 
+      if (cancelled || isLoginRef.current) return;
       if (error || !studentData) {
         await supabase.auth.signOut();
         router.push("/students-portal/login");
@@ -487,7 +494,9 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
     }
 
     loadStudent();
-  }, [router, supabase, isLoginPage]);
+
+    return () => { cancelled = true; };
+  }, []); // Run ONLY on mount — no dependency on pathname or isLoginPage
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 

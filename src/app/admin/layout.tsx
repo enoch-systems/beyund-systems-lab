@@ -686,20 +686,37 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
   const C = getColors(theme);
   const isLoginPage = pathname === "/admin/login";
+  const isLoginRef = useRef(isLoginPage);
+  isLoginRef.current = isLoginPage;
 
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
     let cancelled = false;
-    async function getUser() {
+
+    async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (cancelled) return;
+      if (cancelled || isLoginRef.current) return;
       if (!session) router.push("/admin/login");
       else setUser({ email: session.user.email ?? "" });
       setLoading(false);
     }
-    getUser();
-    return () => { cancelled = true; };
-  }, [router, isLoginPage]);
+    checkAuth();
+
+    // Listen for auth state changes instead of re-checking on every render
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (cancelled || isLoginRef.current) return;
+      if (event === "SIGNED_OUT" || (!session && user !== null)) {
+        router.push("/admin/login");
+      } else if (session && !user) {
+        setUser({ email: session.user.email ?? "" });
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, []); // Run ONLY on mount — no dependency on pathname
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
