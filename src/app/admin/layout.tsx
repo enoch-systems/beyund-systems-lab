@@ -693,15 +693,25 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const clearAdminEmail = useAdminAuthStore((s) => s.clearAdmin);
   const [userEmail, setUserEmail] = useState<string | null>(storeEmail);
 
-  // On mount: check session but use Zustand as fallback
+  // On mount: check auth using getUser() (server-verified) + multiple fallbacks
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
 
     async function checkAuth() {
-      // First check Supabase
+      // 1. Server-verified check (always accurate)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (isLoginRef.current) return;
+      if (user) {
+        const email = user.email ?? "";
+        setUserEmail(email);
+        setAdminEmail(email);
+        setLoading(false);
+        return;
+      }
+
+      // 2. Session check (cookie-based, faster)
       const { data: { session } } = await supabase.auth.getSession();
       if (isLoginRef.current) return;
-
       if (session) {
         const email = session.user.email ?? "";
         setUserEmail(email);
@@ -710,7 +720,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Fallback: check Zustand store (persisted in localStorage)
+      // 3. Zustand fallback (localStorage cache)
       const stored = useAdminAuthStore.getState().adminEmail;
       if (stored) {
         setUserEmail(stored);
@@ -718,7 +728,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Really not authenticated
+      // 4. Really not authenticated
       router.push("/admin/login");
     }
     checkAuth();
