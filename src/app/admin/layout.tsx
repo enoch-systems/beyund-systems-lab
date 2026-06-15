@@ -26,6 +26,7 @@ import {
 import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
 import BeyundLogo from "@/client/components/common/BeyundLogo";
 import { ThemeProvider, useTheme } from "@/contexts/theme-context";
+import { useAdminAuthStore } from "@/shared/store/auth-store";
 import { ProfileProvider, useProfile } from "@/contexts/profile-context";
 import { SearchOverlayProvider, useSearchOverlay } from "@/contexts/search-overlay-context";
 import GlobalSearch from "@/client/components/admin/GlobalSearch";
