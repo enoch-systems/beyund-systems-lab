@@ -21,6 +21,7 @@ import {
   User as UserIcon,
   Sun,
   Moon,
+  Mail,
 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
 import BeyundLogo from "@/client/components/common/BeyundLogo";
@@ -45,6 +46,7 @@ const navGroups: { label: string; items: NavItem[] }[] = [
     { label: "Notifications", href: "/admin/notifications", icon: <Bell size={13} /> },
   ]},
   { label: "System", items: [
+    { label: "Email History", href: "/admin/email-history", icon: <Mail size={13} /> },
     { label: "Analytics", href: "#", icon: <BarChart3 size={13} />, badge: "Soon" },
     { label: "Certificates", href: "/admin/certificates", icon: <Award size={13} /> },
     { label: "Settings", href: "/admin/settings", icon: <Settings size={13} /> },
