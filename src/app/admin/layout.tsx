@@ -693,23 +693,21 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const clearAdminEmail = useAdminAuthStore((s) => s.clearAdmin);
   const [userEmail, setUserEmail] = useState<string | null>(storeEmail);
 
-  // On mount: check auth using getUser() (server-verified) + multiple fallbacks
+  // On mount: check auth — fastest path first
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
 
-    async function checkAuth() {
-      // 1. Server-verified check (always accurate)
-      const { data: { user } } = await supabase.auth.getUser();
-      if (isLoginRef.current) return;
-      if (user) {
-        const email = user.email ?? "";
-        setUserEmail(email);
-        setAdminEmail(email);
-        setLoading(false);
-        return;
-      }
+    // If Zustand already has email, skip server checks (fast navigation)
+    const cached = useAdminAuthStore.getState().adminEmail;
+    if (cached) {
+      setUserEmail(cached);
+      setAdminEmail(cached);
+      setLoading(false);
+      return;
+    }
 
-      // 2. Session check (cookie-based, faster)
+    async function checkAuth() {
+      // 1. Fast cookie-based session check
       const { data: { session } } = await supabase.auth.getSession();
       if (isLoginRef.current) return;
       if (session) {
@@ -720,15 +718,18 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // 3. Zustand fallback (localStorage cache)
-      const stored = useAdminAuthStore.getState().adminEmail;
-      if (stored) {
-        setUserEmail(stored);
+      // 2. Server-verified check (slower but more accurate)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (isLoginRef.current) return;
+      if (user) {
+        const email = user.email ?? "";
+        setUserEmail(email);
+        setAdminEmail(email);
         setLoading(false);
         return;
       }
 
-      // 4. Really not authenticated
+      // 3. Really not authenticated
       router.push("/admin/login");
     }
     checkAuth();
