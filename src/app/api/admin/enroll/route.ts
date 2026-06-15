@@ -34,11 +34,12 @@ export async function POST(request: NextRequest) {
     const defaultPin = "123456";
     const courseName = registration.course_applying_for;
 
-    // 1. Check if auth user already exists
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find(u => u.email === email);
-
+    // 1. Create or update auth user
     let authUserId: string;
+
+    // Check if user already exists by trying to get them
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const existingUser = existingUsers?.users?.find((u: { email: string }) => u.email === email);
 
     if (existingUser) {
       // Update existing user's password
@@ -60,9 +61,8 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      if (createError || !newUser?.user) {
-        throw new Error(`Failed to create auth user: ${createError?.message}`);
-      }
+      if (createError) throw new Error(`Failed to create auth user: ${createError.message}`);
+      if (!newUser?.user) throw new Error("No user returned from auth creation");
       authUserId = newUser.user.id;
     }
 
