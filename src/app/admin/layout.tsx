@@ -693,21 +693,33 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const clearAdminEmail = useAdminAuthStore((s) => s.clearAdmin);
   const [userEmail, setUserEmail] = useState<string | null>(storeEmail);
 
+  // On mount: check session but use Zustand as fallback
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
 
-    // Only check session once on mount — NEVER subscribe to auth changes
     async function checkAuth() {
+      // First check Supabase
       const { data: { session } } = await supabase.auth.getSession();
       if (isLoginRef.current) return;
-      if (!session) {
-        router.push("/admin/login");
-      } else {
+
+      if (session) {
         const email = session.user.email ?? "";
         setUserEmail(email);
         setAdminEmail(email);
         setLoading(false);
+        return;
       }
+
+      // Fallback: check Zustand store (persisted in localStorage)
+      const stored = useAdminAuthStore.getState().adminEmail;
+      if (stored) {
+        setUserEmail(stored);
+        setLoading(false);
+        return;
+      }
+
+      // Really not authenticated
+      router.push("/admin/login");
     }
     checkAuth();
   }, []);
