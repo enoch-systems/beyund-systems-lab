@@ -72,11 +72,26 @@ export default function StudentLoginPage() {
         return;
       }
 
-      if (student.status === "suspended") {
-        await supabase.auth.signOut();
-        setError("Your account has been suspended. Contact admin.");
-        setLoading(false);
-        return;
+      // Check registration status — block login for pending or restricted
+      const { data: regStatus } = await supabase
+        .from("student_registrations")
+        .select("status")
+        .eq("email", student.email.toLowerCase().trim())
+        .maybeSingle();
+
+      if (regStatus) {
+        if (regStatus.status === "pending") {
+          await supabase.auth.signOut();
+          setError("Your access is pending. Please contact the admin to complete your enrollment.");
+          setLoading(false);
+          return;
+        }
+        if (regStatus.status === "restricted") {
+          await supabase.auth.signOut();
+          setError("Your access has been restricted. Please contact admin for more information.");
+          setLoading(false);
+          return;
+        }
       }
 
       router.push("/students-portal/dashboard");
