@@ -31,10 +31,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Query is required" }, { status: 400 });
     }
 
-    // Only allow SELECT queries for safety
+    // Allow DELETE and SELECT for admin cleanup
     const trimmed = query.trim().toUpperCase();
-    if (!trimmed.startsWith("SELECT")) {
-      return NextResponse.json({ error: "Only SELECT queries are allowed via the API" }, { status: 400 });
+    if (!trimmed.startsWith("SELECT") && !trimmed.startsWith("DELETE")) {
+      return NextResponse.json({ error: "Only SELECT and DELETE queries are allowed via the API" }, { status: 400 });
     }
 
     // Execute using raw SQL via the management API
