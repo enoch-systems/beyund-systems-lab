@@ -695,20 +695,12 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
-    let cancelled = false;
 
+    // Only check session once on mount — NEVER subscribe to auth changes
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (cancelled || isLoginRef.current) return;
+      if (isLoginRef.current) return;
       if (!session) {
-        // Check if we have a stored email from Zustand
-        const stored = useAdminAuthStore.getState().adminEmail;
-        if (stored) {
-          // Session might be briefly null during token refresh — use cached value
-          setUserEmail(stored);
-          setLoading(false);
-          return;
-        }
         router.push("/admin/login");
       } else {
         const email = session.user.email ?? "";
@@ -718,24 +710,6 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
       }
     }
     checkAuth();
-
-    // Listen for actual SIGNED_OUT events only
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (cancelled || isLoginRef.current) return;
-      if (event === "SIGNED_OUT") {
-        clearAdminEmail();
-        router.push("/admin/login");
-      } else if (event === "TOKEN_REFRESHED" && session) {
-        const email = session.user.email ?? "";
-        setUserEmail(email);
-        setAdminEmail(email);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      subscription.unsubscribe();
-    };
   }, []);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
