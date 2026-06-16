@@ -4,8 +4,9 @@ import type { NextRequest } from "next/server";
 /**
  * Proxy (formerly middleware in < Next.js 16)
  *
- * Protects admin routes by checking for a Supabase auth session cookie.
- * Unauthenticated users are redirected to the login page.
+ * Protects admin and students-portal routes by checking for Supabase auth.
+ * Unauthenticated users are redirected to the appropriate login page.
+ * The landing page (/) is NOT matched — it loads instantly with no auth delay.
  *
  * Note: Next.js 16 requires the proxy function to be exported as the
  * `default` export of the module. The runtime adapter invokes
@@ -35,6 +36,20 @@ function proxy(request: NextRequest) {
     }
   }
 
+  // Protect students-portal routes (but not the login page itself)
+  if (pathname.startsWith("/students-portal") && pathname !== "/students-portal/login") {
+    const supabaseCookie = request.cookies.get("sb-auth-token");
+    const hasSupabaseAuth = request.cookies.getAll().some(
+      (cookie) => cookie.name.startsWith("sb-") && cookie.name.includes("auth")
+    );
+
+    if (!supabaseCookie && !hasSupabaseAuth) {
+      const loginUrl = new URL("/students-portal/login", request.url);
+      loginUrl.searchParams.set("redirectedFrom", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   return NextResponse.next();
 }
 
@@ -44,11 +59,11 @@ export { proxy };
 export const config = {
   matcher: [
     /*
-     * Match all admin routes except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (metadata file)
+     * Only match auth-required routes — NOT the landing page.
+     * This eliminates the 1-3s delay on landing page load caused by
+     * unnecessary auth checks for public pages.
      */
     "/admin/:path*",
+    "/students-portal/:path*",
   ],
 };
