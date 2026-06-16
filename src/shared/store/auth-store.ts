@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 interface AdminAuthState {
   adminEmail: string | null;
@@ -9,15 +8,19 @@ interface AdminAuthState {
   clearAdmin: () => void;
 }
 
+/**
+ * Admin auth store — in-memory only (no persistence).
+ * Session persistence is handled by Supabase cookies, not localStorage.
+ * This avoids stale-state issues on page refresh.
+ */
 export const useAdminAuthStore = create<AdminAuthState>()(
-  persist(
-    (set) => ({
-      adminEmail: null,
-      adminName: "",
-      setAdmin: (email) => set({ adminEmail: email }),
-      setAdminName: (name) => set({ adminName: name }),
-      clearAdmin: () => set({ adminEmail: null, adminName: "" }),
-    }),
-    { name: "beyund-admin-auth" }
-  )
+  (set) => ({
+    adminEmail: null,
+    adminName: "",
+    setAdmin: (email) => set({ adminEmail: email }),
+    setAdminName: (name) => set({ adminName: name }),
+    clearAdmin: () => set({ adminEmail: null, adminName: "" }),
+  })
 );
+
+

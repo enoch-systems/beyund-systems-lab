@@ -11,7 +11,7 @@ export interface StudentRegistration {
   has_laptop: string;
   heard_about_us: string;
   learning_reason: string;
-  status: "pending" | "enrolled" | "restricted";
+  status: "pending" | "contacted" | "enrolled" | "rejected";
   created_at: string;
   // Lifecycle
   student_lifecycle?: "applied" | "accepted" | "active" | "completed" | "dropped";
