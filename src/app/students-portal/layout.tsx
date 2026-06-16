@@ -469,8 +469,10 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
 
       if (cancelled || isLoginPage) return;
       if (regData && regData.status !== "enrolled") {
-        await supabase.auth.signOut();
-        router.push("/students-portal/login");
+        // Do NOT call signOut() — it clears the shared Supabase auth cookie
+        // which would also log out the admin in their tab.
+        // Just redirect; the layout check will always block access anyway.
+        window.location.href = "/students-portal/login";
         return;
       }
 
@@ -482,8 +484,8 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
 
       if (cancelled || isLoginPage) return;
       if (error || !studentData) {
-        await supabase.auth.signOut();
-        router.push("/students-portal/login");
+        // Do NOT call signOut() — same reason as above.
+        window.location.href = "/students-portal/login";
         return;
       }
 

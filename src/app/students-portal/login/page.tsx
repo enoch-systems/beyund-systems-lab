@@ -71,7 +71,9 @@ export default function StudentLoginPage() {
         .single();
 
       if (studentError || !student) {
-        await supabase.auth.signOut();
+        // Don't call signOut() — it clears the shared Supabase cookie
+        // which would log out the admin in another tab.
+        // Just redirect; the students table check will always fail.
         setError("Access denied. You are not registered as a student.");
         setLoading(false);
         return;
