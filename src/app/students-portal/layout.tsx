@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -13,16 +13,11 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Bell,
   Sun,
   Moon,
   GraduationCap,
-  CheckSquare,
-  BarChart3,
-  Home,
 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
-import BeyundLogo from "@/client/components/common/BeyundLogo";
 import { ThemeProvider, useTheme } from "@/contexts/theme-context";
 import { getColors, type Colors } from "@/config/theme-colors";
 
@@ -438,16 +433,28 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
   const C = getColors(theme);
   const isLoginPage = pathname === "/students-portal/login";
-  const isLoginRef = useRef(isLoginPage);
-  isLoginRef.current = isLoginPage;
+
+  // Retry helper: attempt a function up to `retries` times with backoff delay
+  async function withRetry<T>(fn: () => Promise<T | null>, retries = 3, delayMs = 400): Promise<T | null> {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      const result = await fn();
+      if (result) return result;
+      if (attempt < retries) await new Promise(r => setTimeout(r, delayMs * attempt));
+    }
+    return null;
+  }
 
   useEffect(() => {
     if (isLoginPage) { setLoading(false); return; }
     let cancelled = false;
 
     async function loadStudent() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (cancelled || isLoginRef.current) return;
+      // Retry session check to handle supabase cookie propagation delay
+      const session = await withRetry(async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        return session;
+      });
+      if (cancelled || isLoginPage) return;
       if (!session) {
         router.push("/students-portal/login");
         return;
@@ -460,7 +467,7 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
         .eq("email", session.user.email)
         .maybeSingle();
 
-      if (cancelled || isLoginRef.current) return;
+      if (cancelled || isLoginPage) return;
       if (regData && regData.status !== "enrolled") {
         await supabase.auth.signOut();
         router.push("/students-portal/login");
@@ -473,7 +480,7 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
         .eq("auth_user_id", session.user.id)
         .single();
 
-      if (cancelled || isLoginRef.current) return;
+      if (cancelled || isLoginPage) return;
       if (error || !studentData) {
         await supabase.auth.signOut();
         router.push("/students-portal/login");
@@ -496,7 +503,7 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
     loadStudent();
 
     return () => { cancelled = true; };
-  }, []); // Run ONLY on mount — no dependency on pathname or isLoginPage
+  }, []);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
@@ -543,6 +550,11 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * StudentsPortalLayout — entry point.
+ * No redundant AuthGuard wrapper — StudentLayoutInner handles its own auth checks.
+ * This eliminates the double-loading chain that caused freeze/refresh issues.
+ */
 export default function StudentsPortalLayout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>

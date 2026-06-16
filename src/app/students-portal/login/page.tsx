@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
 import { useTheme } from "@/contexts/theme-context";
 import { getColors } from "@/config/theme-colors";
@@ -9,7 +8,6 @@ import { GraduationCap, Eye, EyeOff, Loader2, LogIn } from "lucide-react";
 import Link from "next/link";
 
 export default function StudentLoginPage() {
-  const router = useRouter();
   const { theme } = useTheme();
   const C = getColors(theme);
 
@@ -26,39 +24,46 @@ export default function StudentLoginPage() {
 
     try {
       const supabase = createSupabaseBrowserClient();
+      const normalizedEmail = email.toLowerCase().trim();
+
+      // IMPORTANT: Check registration status FIRST, before calling signInWithPassword.
+      // Calling signInWithPassword overwrites any existing Supabase session cookie
+      // (e.g. an admin session in another tab). If we then call signOut because the
+      // student is pending/restricted, the admin gets logged out entirely.
+      // By checking registration status FIRST, we never call signInWithPassword
+      // for blocked accounts — preserving the admin's session.
+      const { data: regData } = await supabase
+        .from("student_registrations")
+        .select("status")
+        .eq("email", normalizedEmail)
+        .maybeSingle();
+
+      if (regData) {
+        if (regData.status === "pending") {
+          setError("Your access is pending. Please contact the admin to complete your enrollment.");
+          setLoading(false);
+          return;
+        }
+        if (regData.status === "restricted") {
+          setError("Your access has been restricted. Please contact admin for more information.");
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Registration check passed (enrolled or no record) — now attempt login
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (signInError) {
-        // Check if the user exists in registrations but not yet enrolled
-        const { data: regData } = await supabase
-          .from("student_registrations")
-          .select("status")
-          .eq("email", email.toLowerCase().trim())
-          .maybeSingle();
-
-        if (regData) {
-          if (regData.status === "pending") {
-            setError(
-              "Your access is pending. Please contact the admin to complete your enrollment."
-            );
-          } else if (regData.status === "restricted") {
-            setError(
-              "Your access has been restricted. Please contact admin for more information."
-            );
-          } else {
-            setError(signInError.message);
-          }
-        } else {
-          setError(signInError.message);
-        }
+        setError(signInError.message);
         setLoading(false);
         return;
       }
 
-      // Verify they are a student
+      // Verify they are a student in the students table
       const { data: student, error: studentError } = await supabase
         .from("students")
         .select("*")
@@ -72,29 +77,10 @@ export default function StudentLoginPage() {
         return;
       }
 
-      // Check registration status — block login for pending or restricted
-      const { data: regStatus } = await supabase
-        .from("student_registrations")
-        .select("status")
-        .eq("email", student.email.toLowerCase().trim())
-        .maybeSingle();
-
-      if (regStatus) {
-        if (regStatus.status === "pending") {
-          await supabase.auth.signOut();
-          setError("Your access is pending. Please contact the admin to complete your enrollment.");
-          setLoading(false);
-          return;
-        }
-        if (regStatus.status === "restricted") {
-          await supabase.auth.signOut();
-          setError("Your access has been restricted. Please contact admin for more information.");
-          setLoading(false);
-          return;
-        }
-      }
-
-      router.push("/students-portal/dashboard");
+      // Use window.location.href for a full page navigation after login.
+      // This ensures the Supabase auth cookie is fully propagated before
+      // the dashboard layout tries to read it — fixing the "login freeze" issue.
+      window.location.href = "/students-portal/dashboard";
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);
