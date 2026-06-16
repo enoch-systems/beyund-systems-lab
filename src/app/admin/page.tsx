@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
 import Link from "next/link";
 import {
@@ -38,7 +38,8 @@ const ts = () => {
 };
 
 export default function AdminDashboardPage() {
-  const supabase = createSupabaseBrowserClient();
+  const supabaseRef = useRef(createSupabaseBrowserClient());
+  const supabase = supabaseRef.current;
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);

@@ -37,9 +37,10 @@ export default function AdminLoginPage() {
       return;
     }
 
-    // Hold the spinner for 2.5 seconds so the user sees it before redirect
-    await new Promise(r => setTimeout(r, 2500));
-    router.push("/admin");
+    // Hold the spinner briefly, then do a full page redirect to ensure
+    // the Supabase auth cookie is fully propagated before dashboard loads.
+    await new Promise(r => setTimeout(r, 400));
+    window.location.href = "/admin";
   }
 
   return (

@@ -16,7 +16,6 @@ import {
   ChevronRight,
   Menu,
   X,
-  Sparkles,
   LogOut,
   User as UserIcon,
   Sun,
@@ -31,6 +30,7 @@ import { ProfileProvider, useProfile } from "@/contexts/profile-context";
 import { SearchOverlayProvider, useSearchOverlay } from "@/contexts/search-overlay-context";
 import GlobalSearch from "@/client/components/admin/GlobalSearch";
 import { getColors, type Colors } from "@/config/theme-colors";
+import { AuthGuard, useAuthSession } from "@/shared/auth";
 
 interface NavItem { label: string; href: string; icon: React.ReactNode; badge?: number | string; }
 
@@ -364,12 +364,14 @@ function ProfileDropdown({ C, onClose, onRequestSignOut }: { C: Colors; onClose:
 function SignOutOverlay({ C, onClose }: { C: Colors; onClose: () => void }) {
   const [signingOut, setSigningOut] = useState(false);
   const supabase = createSupabaseBrowserClient();
+  const router = useRouter();
 
   const handleSignOut = async () => {
     setSigningOut(true);
-    // Small delay so the loader renders before signOut redirects
     await new Promise(r => setTimeout(r, 100));
     await supabase.auth.signOut();
+    // Clear persisted store
+    useAdminAuthStore.getState().clearAdmin();
     window.location.href = "/admin/login";
   };
 
@@ -507,7 +509,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C, onRequestSignOut }: { onM
   const [unreadCount, setUnreadCount] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const supabase = createSupabaseBrowserClient();
+  const supabase = useRef(createSupabaseBrowserClient()).current;
 
   useEffect(() => {
     const refetchUnreadCount = async () => {
@@ -674,76 +676,32 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, C, onRequestSignOut }: { onM
   );
 }
 
+/**
+ * AdminLayoutInner — the actual layout shell.
+ * Uses AuthGuard at the top level for route protection.
+ * The login page is rendered bare (no sidebar) without guard.
+ */
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [signOutOpen, setSignOutOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const supabaseRef = useRef(createSupabaseBrowserClient());
-  const supabase = supabaseRef.current;
+  const supabase = useRef(createSupabaseBrowserClient()).current;
   const { theme } = useTheme();
   const C = getColors(theme);
   const isLoginPage = pathname === "/admin/login";
-  const isLoginRef = useRef(isLoginPage);
-  isLoginRef.current = isLoginPage;
-  const storeEmail = useAdminAuthStore((s) => s.adminEmail);
-  const setAdminEmail = useAdminAuthStore((s) => s.setAdmin);
-  const clearAdminEmail = useAdminAuthStore((s) => s.clearAdmin);
-  const [userEmail, setUserEmail] = useState<string | null>(storeEmail);
-
-  // On mount: check auth — fastest path first
-  useEffect(() => {
-    if (isLoginPage) { setLoading(false); return; }
-
-    // If Zustand already has email, skip server checks (fast navigation)
-    const cached = useAdminAuthStore.getState().adminEmail;
-    if (cached) {
-      setUserEmail(cached);
-      setAdminEmail(cached);
-      setLoading(false);
-      return;
-    }
-
-    async function checkAuth() {
-      // 1. Fast cookie-based session check
-      const { data: { session } } = await supabase.auth.getSession();
-      if (isLoginRef.current) return;
-      if (session) {
-        const email = session.user.email ?? "";
-        setUserEmail(email);
-        setAdminEmail(email);
-        setLoading(false);
-        return;
-      }
-
-      // 2. Server-verified check (slower but more accurate)
-      const { data: { user } } = await supabase.auth.getUser();
-      if (isLoginRef.current) return;
-      if (user) {
-        const email = user.email ?? "";
-        setUserEmail(email);
-        setAdminEmail(email);
-        setLoading(false);
-        return;
-      }
-
-      // 3. Really not authenticated
-      router.push("/admin/login");
-    }
-    checkAuth();
-  }, []);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
-  if (loading) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.bg }}>
-      <div style={{ width: 16, height: 16, borderRadius: "50%", border: `2px solid ${C.dim}`, borderTopColor: C.teal }} />
-    </div>
-  );
-  if (isLoginPage) return <div style={{ background: C.bg, minHeight: "100vh" }}>{children}</div>;
-  if (!userEmail) return null;
+  // Login page — render bare without sidebar, without auth guard
+  if (isLoginPage) {
+    return <div style={{ background: C.bg, minHeight: "100vh" }}>{children}</div>;
+  }
+
+  if (signOutOpen) {
+    return <SignOutOverlay C={C} onClose={() => setSignOutOpen(false)} />;
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.text }}>
@@ -769,23 +727,53 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <MobileTabBar onMenuOpen={() => setDrawerOpen(true)} C={C} />
-
-      {/* Sign-out overlay renders at root level, above everything */}
-      {signOutOpen && <SignOutOverlay C={C} onClose={() => setSignOutOpen(false)} />}
     </div>
   );
 }
 
+/**
+ * AdminLayout — entry point.
+ * Wraps everything in AuthGuard which:
+ *   1. Checks auth state reactively via onAuthStateChange
+ *   2. Shows a loading spinner while checking
+ *   3. Redirects to /admin/login if not authenticated
+ *   4. Renders the layout shell if authenticated
+ */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <ProfileProvider>
         <SearchOverlayProvider>
-          <AdminLayoutInner>{children}</AdminLayoutInner>
+          <AuthGuardWrapper loadingFallback={<AdminLoadingSpinner />}>
+            <AdminLayoutInner>{children}</AdminLayoutInner>
+          </AuthGuardWrapper>
           <SearchBackdrop />
         </SearchOverlayProvider>
       </ProfileProvider>
     </ThemeProvider>
+  );
+}
+
+function AuthGuardWrapper({ children, loadingFallback }: { children: React.ReactNode; loadingFallback: React.ReactNode }) {
+  const pathname = usePathname();
+  // On login page, skip auth guard — let the login form handle itself
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+  return (
+    <AuthGuard loadingFallback={loadingFallback}>
+      {children}
+    </AuthGuard>
+  );
+}
+
+function AdminLoadingSpinner() {
+  const { theme } = useTheme();
+  const C = getColors(theme);
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.bg }}>
+      <div style={{ width: 16, height: 16, borderRadius: "50%", border: `2px solid ${C.dim}`, borderTopColor: C.teal }} />
+    </div>
   );
 }
 
