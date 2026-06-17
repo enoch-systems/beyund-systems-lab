@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { downloadPDF } from "@/shared/utils/pdf-generator";
 import { X, Download, FileText, CheckCircle, Loader2, Eye } from "lucide-react";
+
+const downloadPDF = (_students: any, _exportedBy: string) => {
+  throw new Error("PDF generation is not configured in this build.");
+};
 
 interface StudentData {
   full_name: string;
