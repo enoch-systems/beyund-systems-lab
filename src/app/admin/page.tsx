@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Users, BookOpen, Bell, ChevronRight, Activity, TrendingUp, BarChart3,
@@ -38,8 +37,6 @@ const ts = () => {
 };
 
 export default function AdminDashboardPage() {
-  const supabaseRef = useRef(createSupabaseBrowserClient());
-  const supabase = supabaseRef.current;
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -71,30 +68,36 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     async function load() {
-      const [{ data: s }, { data: c }, { data: p }, { data: tx }, { data: n }, { data: settings }] = await Promise.all([
-        supabase.from("student_registrations").select("*").order("created_at", { ascending: false }),
-        supabase.from("courses").select("*").order("created_at", { ascending: false }),
-        supabase.from("student_payment_profiles").select("*"),
-        supabase.from("payments").select("*").order("created_at", { ascending: false }),
-        supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(10),
-        supabase.from("admin_settings").select("value").eq("key", "admin_name").maybeSingle(),
-      ]);
-      if (s) { setStudents(s as Student[]); setPrevTotal(s.length); }
-      if (c) setCourses(c as Course[]);
-      if (p) setPaymentProfiles(p as PaymentProfile[]);
-      if (tx) setTransactions(tx as PaymentTx[]);
-      if (n) setNotifications(n as Notification[]);
-      if (settings?.value) {
-        setAdminFirstName(settings.value.split(" ")[0]);
-      } else {
-        const { data: { session } } = await supabase.auth.getSession();
-        const emailPrefix = session?.user?.email?.split("@")[0] ?? "Admin";
-        setAdminFirstName(emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1));
+      try {
+        const [sRes, cRes, pRes, txRes, nRes] = await Promise.all([
+          fetch("http://localhost:4000/registrations"),
+          fetch("http://localhost:4000/courses"),
+          fetch("http://localhost:4000/payments/profiles"),
+          fetch("http://localhost:4000/payments"),
+          fetch("http://localhost:4000/notifications"),
+        ]);
+        const s = sRes.ok ? await sRes.json() : [];
+        const c = cRes.ok ? await cRes.json() : [];
+        const p = pRes.ok ? await pRes.json() : [];
+        const tx = txRes.ok ? await txRes.json() : [];
+        const n = nRes.ok ? await nRes.json() : [];
+        setStudents(s);
+        setPrevTotal(s.length);
+        setCourses(c);
+        setPaymentProfiles(p);
+        setTransactions(tx);
+        setNotifications(Array.isArray(n) ? n.slice(0,10) : []);
+      } catch (e) {
+        setStudents([]);
+        setCourses([]);
+        setPaymentProfiles([]);
+        setTransactions([]);
+        setNotifications([]);
       }
       setLoading(false);
     }
     load();
-  }, [supabase]);
+  }, []);
 
   const total = students.length;
   const enrolled = students.filter(s => s.status === "enrolled").length;
