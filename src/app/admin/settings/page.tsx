@@ -1,9 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
-import { useTheme } from "@/contexts/theme-context";
-import { useProfile } from "@/contexts/profile-context";
 import {
   Lock,
   Sun,
@@ -21,70 +18,27 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
-  const { theme, toggleTheme } = useTheme();
-  const [adminName, setAdminName] = useState("");
-  const [adminEmail, setAdminEmail] = useState("");
+  const [theme, setTheme] = useState("dark");
+  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [adminName, setAdminName] = useState("Admin");
+  const [adminEmail, setAdminEmail] = useState("admin@beyund.com");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const { profileImage, setProfileImage } = useProfile();
-  const supabase = createSupabaseBrowserClient();
 
-  // Load settings from Supabase
+  // Load settings (stubbed)
   useEffect(() => {
-    async function loadSettings() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
+    setAdminName("Admin");
+    setAdminEmail("admin@beyund.com");
+  }, []);
 
-      setAdminEmail(session.user.email ?? "");
-
-      // Load saved settings
-      const { data: settings } = await supabase
-        .from("admin_settings")
-        .select("key, value");
-
-      if (settings) {
-        const settingsMap = Object.fromEntries(
-          settings.map((s) => [s.key, s.value])
-        );
-
-        if (settingsMap.admin_name) setAdminName(settingsMap.admin_name);
-        else {
-          const emailPrefix = session.user.email?.split("@")[0] ?? "Admin";
-          setAdminName(emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1));
-        }
-
-        if (settingsMap.profile_image) setProfileImage(settingsMap.profile_image);
-      } else {
-        const emailPrefix = session.user.email?.split("@")[0] ?? "Admin";
-        setAdminName(emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1));
-      }
-    }
-    loadSettings();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Save settings to Supabase
   const handleSave = async () => {
     setSaving(true);
-
-    const userId = (await supabase.auth.getSession()).data.session?.user?.id;
-    const now = new Date().toISOString();
-
-    const settingsToSave = [
-      { key: "admin_name", value: adminName, updated_at: now, updated_by: userId },
-    ];
-
-    if (profileImage) {
-      settingsToSave.push({ key: "profile_image", value: profileImage, updated_at: now, updated_by: userId });
-    }
-
-    for (const setting of settingsToSave) {
-      await supabase.from("admin_settings").upsert(setting, { onConflict: "key" });
-    }
-
+    await new Promise((r) => setTimeout(r, 400));
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -93,9 +47,7 @@ export default function SettingsPage() {
   const handlePasswordReset = async () => {
     if (!adminEmail) return;
     setResetting(true);
-    await supabase.auth.resetPasswordForEmail(adminEmail, {
-      redirectTo: `${window.location.origin}/admin/login`,
-    });
+    await new Promise((r) => setTimeout(r, 400));
     setResetting(false);
     setShowResetModal(false);
     alert("Password reset email sent. Check your inbox.");
@@ -118,8 +70,8 @@ export default function SettingsPage() {
 
   const handleSignOut = async () => {
     setSigningOut(true);
-    await supabase.auth.signOut();
-    window.location.href = "/adminportal/login";
+    await new Promise((r) => setTimeout(r, 200));
+    window.location.href = "/admin/login";
   };
 
   return (
