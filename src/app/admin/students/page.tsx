@@ -40,8 +40,23 @@ export default function StudentsPage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setAdminName("Admin");
-    setLoading(false);
+    let cancelled = false;
+    setLoading(true);
+    fetch("/api/admin/students", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled) {
+          setStudents(Array.isArray(data) ? data : []);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setStudents([]);
+          setLoading(false);
+        }
+      });
+    return () => { cancelled = true; };
   }, []);
 
   async function updateStatus(studentId: string, newStatus: string) {
