@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Registration {
+  id                Int      @id @default(autoincrement())
+  fullName          String   @map("full_name")
+  email             String   @unique
+  phoneWhatsapp     String   @map("phone_whatsapp")
+  sex               String?
+  country           String
+  state             String?
+  courseApplyingFor String   @map("course_applying_for")
+  employmentStatus  String?  @map("employment_status")
+  hasLaptop         String?  @map("has_laptop")
+  learningReason    String?  @map("learning_reason")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("registrations")
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("admins")
+}
+
