@@ -268,7 +268,7 @@ export default function Contact() {
       setEmailChecking(true);
       setEmailStatus({ status: "checking", message: "Checking email..." });
       try {
-        const res = await fetch("/api/check-email", {
+        const res = await fetch("http://localhost:4000/registrations/check-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: trimmed }),
@@ -354,21 +354,20 @@ export default function Contact() {
     const courseLabel = "Full Stack Development";
 
     try {
-      const res = await fetch("/api/registrations", {
+      const res = await fetch("http://localhost:4000/registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          full_name: form.name.trim(),
+          fullName: form.name.trim(),
           email: form.email.trim().toLowerCase(),
-          phone_whatsapp: fullPhone,
+          phoneWhatsapp: fullPhone,
           sex: form.sex,
           country: countryName,
           state: form.state || null,
-          course_applying_for: courseLabel,
-          employment_status: form.employment,
-          has_laptop: form.laptop,
-          heard_about_us: "registration",
-          learning_reason: form.reason.trim(),
+          courseApplyingFor: courseLabel,
+          employmentStatus: form.employment,
+          hasLaptop: form.laptop,
+          learningReason: form.reason.trim(),
         }),
       });
       if (res.ok) {
