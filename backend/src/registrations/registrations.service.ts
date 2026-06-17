@@ -17,16 +17,16 @@ export class RegistrationsService {
 
     return this.prisma.registration.create({
       data: {
-        fullName: dto.full_name,
+        fullName: dto.fullName,
         email: dto.email.toLowerCase(),
-        phoneWhatsapp: dto.phone_whatsapp,
+        phoneWhatsapp: dto.phoneWhatsapp,
         sex: dto.sex || null,
         country: dto.country,
         state: dto.state || null,
-        courseApplyingFor: dto.course_applying_for,
-        employmentStatus: dto.employment_status || null,
-        hasLaptop: dto.has_laptop || null,
-        learningReason: dto.learning_reason || null,
+        courseApplyingFor: dto.courseApplyingFor,
+        employmentStatus: dto.employmentStatus || null,
+        hasLaptop: dto.hasLaptop || null,
+        learningReason: dto.learningReason || null,
       },
     });
   }

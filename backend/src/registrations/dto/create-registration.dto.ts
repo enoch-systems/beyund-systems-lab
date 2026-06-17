@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class CreateRegistrationDto {
   @IsString()
   @IsNotEmpty()
-  full_name: string;
+  fullName: string;
 
   @IsEmail()
   @IsNotEmpty()
@@ -11,7 +11,7 @@ export class CreateRegistrationDto {
 
   @IsString()
   @IsNotEmpty()
-  phone_whatsapp: string;
+  phoneWhatsapp: string;
 
   @IsOptional()
   @IsString()
@@ -27,17 +27,18 @@ export class CreateRegistrationDto {
 
   @IsString()
   @IsNotEmpty()
-  course_applying_for: string;
+  courseApplyingFor: string;
 
   @IsOptional()
   @IsString()
-  employment_status?: string;
+  employmentStatus?: string;
 
   @IsOptional()
   @IsString()
-  has_laptop?: string;
+  hasLaptop?: string;
 
   @IsOptional()
   @IsString()
-  learning_reason?: string;
+  learningReason?: string;
 }
+

@@ -1,14 +1,14 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '../../../src/generated/prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
+    const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres123@localhost:5432/training_academy';
     super({
-      adapter: new PrismaPg({
-        connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres123@localhost:5432/training_academy',
-      }),
+      adapter: new PrismaPg(new Pool({ connectionString })),
     });
   }
 
@@ -20,3 +20,4 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     await this.$disconnect();
   }
 }
+
