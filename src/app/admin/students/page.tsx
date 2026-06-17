@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
 import type { StudentRegistration } from "@/shared/types";
-import StudentDetailDrawer from "@/client/components/admin/StudentDetailDrawer";
-import ExportReportModal from "@/client/components/admin/ExportReportModal";
+import StudentDetailDrawer from "@admin/components/StudentDetailDrawer";
+import ExportReportModal from "@admin/components/ExportReportModal";
 import { Search, ChevronDown, Download, Eye, Mail, MapPin, Phone, ChevronLeft, ChevronRight, ArrowUpDown } from "lucide-react";
 
 const ITEMS_PER_PAGE = 15;

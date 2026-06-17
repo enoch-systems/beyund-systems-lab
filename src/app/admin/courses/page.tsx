@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
 import { BookOpen, Plus, Search, ChevronRight, Eye, Loader2, Trash2, CalendarDays, X } from "lucide-react";
-import CreateCourseModal from "@/client/components/admin/CreateCourseModal";
-import CourseDetailView from "@/client/components/admin/CourseDetailView";
+import CreateCourseModal from "@admin/components/CreateCourseModal";
+import CourseDetailView from "@admin/components/CourseDetailView";
 
 interface Course {
   id: string;

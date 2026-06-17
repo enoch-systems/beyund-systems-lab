@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
 import { Award, Search, Download, CheckCircle, XCircle, Loader2, Users, FileText } from "lucide-react";
-import { apple } from "@/admin-design-system";
+import { apple } from "@/shared/admin-design-system";
 
 type Student = {
   id: string;

@@ -25,7 +25,7 @@ import {
   ChevronDown,
   MoreVertical,
 } from "lucide-react";
-import { apple } from "@/admin-design-system";
+import { apple } from "@/shared/admin-design-system";
 
 /* ═══════════════════════════════════════
    Constants

@@ -28,7 +28,7 @@ import { ThemeProvider, useTheme } from "@/contexts/theme-context";
 import { useAdminAuthStore } from "@/shared/store/auth-store";
 import { ProfileProvider, useProfile } from "@/contexts/profile-context";
 import { SearchOverlayProvider, useSearchOverlay } from "@/contexts/search-overlay-context";
-import GlobalSearch from "@/client/components/admin/GlobalSearch";
+import GlobalSearch from "@admin/components/GlobalSearch";
 import { getColors, type Colors } from "@/config/theme-colors";
 import { AuthGuard, useAuthSession } from "@/shared/auth";
 
