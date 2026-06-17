@@ -11,8 +11,14 @@ import {
   AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
-import { useTheme } from "@/contexts/theme-context";
-import { getColors, type Colors } from "@/config/theme-colors";
+const C: any = {
+  bg: "#0b0f14", text: "#e5e7eb", muted: "#9ca3af", dim: "#6b7280",
+  border: "#1f2937", card: "#111827", sidebarBg: "#0b0f14", sidebarActive: "#0f172a",
+  teal: "#14b8a6", green: "#22c55e", amber: "#f59e0b", red: "#ef4444", accent: "#3b82f6",
+};
+const useTheme = () => ({ theme: "dark" });
+
+type Colors = any;
 
 /* ── Types ── */
 type Student = { id: string; full_name: string; email: string; course_applying_for: string; status: string; country: string; state?: string; created_at: string; };
@@ -50,8 +56,7 @@ export default function AdminDashboardPage() {
   const [now, setNow] = useState(ts());
   const [adminFirstName, setAdminFirstName] = useState("");
   const [isMobile, setIsMobile] = useState(false);
-  const { theme } = useTheme();
-  const C = getColors(theme);
+  const theme = "dark";
   useEffect(() => { document.title = "Admin LMS — Beyund Labs Academy"; }, []);
 
   useEffect(() => {
@@ -724,10 +729,7 @@ export default function AdminDashboardPage() {
 
 /* ── Components ── */
 
-function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor, C }: {
-  icon: React.ReactNode; label: string; value: string; sub: string; href: string;
-  onToggle?: () => void; showEye?: boolean; valueColor?: string; C: Colors;
-}) {
+function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor, C }: any) {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
       <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: "10px 12px", transition: "border-color 0.15s" }}>
@@ -750,7 +752,7 @@ function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor, C }
   );
 }
 
-function Card({ title, sub, icon, children, C }: { title: string; sub: string; icon: React.ReactNode; children: React.ReactNode; C: Colors }) {
+function Card({ title, sub, icon, children, C }: any) {
   return (
     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: 10 }} className="sm:p-4">
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
@@ -777,7 +779,7 @@ function CTip({ active, payload, label, C }: any) {
   );
 }
 
-function SBadge({ status, C }: { status: string; C: Colors }) {
+function SBadge({ status, C }: any) {
   const map: Record<string, string> = {
     enrolled: C.green, pending: C.amber, contacted: C.accent, rejected: C.red,
   };
