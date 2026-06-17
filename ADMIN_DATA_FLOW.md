@@ -1,3 +1,4 @@
+
 # Admin Dashboard Data Flow
 
 ## Overview
@@ -17,3 +18,5 @@ The admin dashboard (`src/app/admin/page.tsx`) no longer calls the NestJS backen
 - `src/app/admin/page.tsx` — main dashboard
 - `src/app/admin/students/page.tsx` — students table with local state fallbacks
 - `src/app/admin/payments/page.tsx` — payments UI backed by the API routes above
+
+

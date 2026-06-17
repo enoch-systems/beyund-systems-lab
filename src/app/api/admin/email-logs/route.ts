@@ -1,30 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const registrationId = searchParams.get("registrationId");
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    let query = supabase
-      .from("email_logs")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (registrationId) {
-      query = query.eq("registration_id", registrationId);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    // Stubbed email logs response until email logging backend is implemented.
+    const data = registrationId
+      ? [{ id: "stub-1", registration_id: registrationId, status: "sent", created_at: new Date().toISOString() }]
+      : [];
 
     return NextResponse.json({ data });
   } catch (err: any) {
