@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createSupabaseBrowserClient } from "@/server/integration/supabase.client";
-import type { StudentRegistration } from "@/shared/types";
 import StudentDetailDrawer from "@admin/components/StudentDetailDrawer";
 import ExportReportModal from "@admin/components/ExportReportModal";
 import { Search, ChevronDown, Download, Eye, Mail, MapPin, Phone, ChevronLeft, ChevronRight, ArrowUpDown } from "lucide-react";
@@ -21,89 +19,59 @@ const statusStyles: Record<string, string> = {
 const sortOptions = [
   { value: "last-to-join", label: "Last to Join" },
   { value: "first-to-join", label: "First to Join" },
-  { value: "a-z", label: "A\u2013Z" },
-  { value: "z-a", label: "Z\u2013A" },
+  { value: "a-z", label: "A–Z" },
+  { value: "z-a", label: "Z–A" },
 ] as const;
 
 type SortValue = (typeof sortOptions)[number]["value"];
+type StudentRecord = any;
 
 export default function StudentsPage() {
-  const [students, setStudents] = useState<StudentRegistration[]>([]);
+  const [students, setStudents] = useState<StudentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [selectedStudent, setSelectedStudent] = useState<StudentRegistration | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<StudentRecord | null>(null);
   const [showExportModal, setShowExportModal] = useState(false);
   const [adminName, setAdminName] = useState("Admin");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortValue>("last-to-join");
   const pageRef = useRef<HTMLDivElement>(null);
-  const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
-    fetchStudents();
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user?.email) {
-        const prefix = session.user.email.split("@")[0];
-        setAdminName(prefix.charAt(0).toUpperCase() + prefix.slice(1));
-      }
-    })();
+    setAdminName("Admin");
+    setLoading(false);
   }, []);
 
-  async function fetchStudents() {
-    const { data, error } = await supabase
-      .from("student_registrations")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (!error && data) {
-      setStudents(data);
-    }
-    setLoading(false);
-  }
-
-  async function updateStatus(studentId: string, newStatus: StudentRegistration["status"]) {
+  async function updateStatus(studentId: string, newStatus: string) {
     setUpdatingId(studentId);
-    const { error } = await supabase
-      .from("student_registrations")
-      .update({ status: newStatus })
-      .eq("id", studentId);
-
-    if (!error) {
-      setStudents((prev) =>
-        prev.map((s) =>
-          s.id === studentId ? { ...s, status: newStatus } : s
-        )
-      );
-      setSelectedStudent((prev) =>
-        prev?.id === studentId ? { ...prev, status: newStatus } : prev
-      );
-    }
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    setStudents((prev: StudentRecord[]) =>
+      prev.map((s: StudentRecord) =>
+        s.id === studentId ? { ...s, status: newStatus } : s
+      )
+    );
+    setSelectedStudent((prev: StudentRecord | null) =>
+      prev?.id === studentId ? { ...prev, status: newStatus } : prev
+    );
     setUpdatingId(null);
   }
 
   async function deleteStudent(studentId: string) {
-    const { error } = await supabase
-      .from("student_registrations")
-      .delete()
-      .eq("id", studentId);
-
-    if (!error) {
-      setStudents((prev) => prev.filter((s) => s.id !== studentId));
-      setSelectedStudent(null);
-    }
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    setStudents((prev: StudentRecord[]) => prev.filter((s: StudentRecord) => s.id !== studentId));
+    setSelectedStudent(null);
   }
 
   // Filter
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
       searchQuery === "" ||
-      student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.phone_whatsapp.includes(searchQuery) ||
-      student.country.toLowerCase().includes(searchQuery.toLowerCase());
+      (student.full_name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (student.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (student.phone_whatsapp || "").includes(searchQuery) ||
+      (student.country || "").toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus =
       statusFilter === "all" || student.status === statusFilter;
@@ -115,13 +83,13 @@ export default function StudentsPage() {
   const sortedStudents = [...filteredStudents].sort((a, b) => {
     switch (sortBy) {
       case "last-to-join":
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
       case "first-to-join":
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
       case "a-z":
-        return a.full_name.localeCompare(b.full_name);
+        return (a.full_name || "").localeCompare(b.full_name || "");
       case "z-a":
-        return b.full_name.localeCompare(a.full_name);
+        return (b.full_name || "").localeCompare(a.full_name || "");
       default:
         return 0;
     }
@@ -137,7 +105,6 @@ export default function StudentsPage() {
   const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE + 1;
   const endIndex = Math.min(safeCurrentPage * ITEMS_PER_PAGE, sortedStudents.length);
 
-  // Reset to page 1 when filters change
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     setCurrentPage(1);
@@ -151,7 +118,6 @@ export default function StudentsPage() {
     setCurrentPage(1);
   };
 
-  // Sliding window page numbers
   function getPageNumbers(): (number | "...")[] {
     if (totalPages <= VISIBLE_PAGE_COUNT) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -176,11 +142,9 @@ export default function StudentsPage() {
 
   function goToPage(page: number) {
     setCurrentPage(page);
-    // Scroll to the absolute top of the viewport
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // Reusable pagination component
   function PaginationBar({
     pageNumbers,
     safeCurrentPage,
@@ -194,7 +158,6 @@ export default function StudentsPage() {
   }) {
     return (
       <div className="flex items-center justify-center gap-1">
-        {/* Prev Button */}
         <button
           onClick={() => goToPage(Math.max(1, safeCurrentPage - 1))}
           disabled={safeCurrentPage === 1}
@@ -203,7 +166,6 @@ export default function StudentsPage() {
           <ChevronLeft className="w-3.5 h-3.5" />
         </button>
 
-        {/* Page Numbers */}
         {pageNumbers.map((page, idx) =>
           page === "..." ? (
             <span
@@ -227,7 +189,6 @@ export default function StudentsPage() {
           )
         )}
 
-        {/* Next Button */}
         <button
           onClick={() => goToPage(Math.min(totalPages, safeCurrentPage + 1))}
           disabled={safeCurrentPage === totalPages}
@@ -249,7 +210,6 @@ export default function StudentsPage() {
 
   return (
     <div ref={pageRef} className="space-y-5">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-[13px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
@@ -260,7 +220,6 @@ export default function StudentsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* Showing X of Y */}
           {sortedStudents.length > 0 && (
             <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-medium whitespace-nowrap">
               Showing {startIndex}&ndash;{endIndex} of {sortedStudents.length}
@@ -276,7 +235,6 @@ export default function StudentsPage() {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-neutral-400" />
@@ -285,7 +243,7 @@ export default function StudentsPage() {
             placeholder="Search students..."
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#121212] border border-[#e2e8f0] dark:border-[#1a1a1a] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+            className="w-full h-[30px] pl-8 pr-3 rounded-[6px] bg-white dark:bg-[#121212] border border-[#e2e8f0] dark:border-[#1a1a1a] text-[11px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
           />
         </div>
         <select
@@ -302,7 +260,6 @@ export default function StudentsPage() {
           ))}
         </select>
 
-        {/* Sort Dropdown */}
         <div className="relative shrink-0">
           <select
             value={sortBy}
@@ -324,7 +281,6 @@ export default function StudentsPage() {
         </p>
       </div>
 
-      {/* TOP PAGINATION */}
       {totalPages > 1 && (
         <PaginationBar
           pageNumbers={pageNumbers}
@@ -334,13 +290,12 @@ export default function StudentsPage() {
         />
       )}
 
-      {/* DESKTOP TABLE (md+) */}
       <div className="hidden md:block rounded-[16px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px]">
             <thead>
               <tr className="border-b border-neutral-100 dark:border-neutral-800">
-              <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Student</th>
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Student</th>
                 <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em] hidden sm:table-cell">Phone</th>
                 <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em] hidden lg:table-cell">Country</th>
                 <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.06em]">Course</th>
@@ -365,30 +320,18 @@ export default function StudentsPage() {
                           #{(safeCurrentPage - 1) * ITEMS_PER_PAGE + index + 1}
                         </span>
                         <div className="min-w-0">
-                          <p className="text-[12px] font-semibold text-neutral-900 dark:text-white truncate">
-                            {student.full_name}
-                          </p>
-                          <p className="text-[10px] text-neutral-400 dark:text-neutral-500 truncate">
-                            {student.email}
-                          </p>
+                          <p className="text-[12px] font-semibold text-neutral-900 dark:text-white truncate">{student.full_name}</p>
+                          <p className="text-[10px] text-neutral-400 dark:text-neutral-500 truncate">{student.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden sm:table-cell">
-                      {student.phone_whatsapp}
-                    </td>
-                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden lg:table-cell">
-                      {student.country}
-                    </td>
-                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
-                      {student.course_applying_for}
-                    </td>
+                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden sm:table-cell">{student.phone_whatsapp}</td>
+                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap hidden lg:table-cell">{student.country}</td>
+                    <td className="px-4 py-2.5 text-[11px] text-neutral-600 dark:text-neutral-400 whitespace-nowrap">{student.course_applying_for}</td>
                     <td className="px-4 py-2.5">
-                    <select
+                      <select
                         value={student.status}
-                        onChange={(e) =>
-                          updateStatus(student.id, e.target.value as StudentRegistration["status"])
-                        }
+                        onChange={(e) => updateStatus(student.id, e.target.value)}
                         disabled={updatingId === student.id}
                         className={`text-[10px] font-semibold px-2 py-0.5 rounded-[6px] border-0 cursor-pointer focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 ${statusStyles[student.status] || ""}`}
                         style={{ colorScheme: "dark" }}
@@ -401,11 +344,7 @@ export default function StudentsPage() {
                       </select>
                     </td>
                     <td className="px-4 py-2.5 text-[11px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap hidden lg:table-cell">
-                      {new Date(student.created_at).toLocaleDateString("en-US", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
+                      {new Date(student.created_at).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
                     </td>
                     <td className="px-4 pr-5 py-2.5 text-right">
                       <button
@@ -424,7 +363,6 @@ export default function StudentsPage() {
         </div>
       </div>
 
-      {/* MOBILE CARDS (< md) */}
       <div className="md:hidden space-y-3">
         {paginatedStudents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
@@ -436,28 +374,18 @@ export default function StudentsPage() {
           </div>
         ) : (
           paginatedStudents.map((student, index) => (
-            <div
-              key={student.id}
-              className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-4 space-y-3"
-            >
-              {/* Top: name + status */}
+            <div key={student.id} className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-4 space-y-3">
               <div className="flex items-center gap-3">
                 <span className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 shrink-0" style={{ fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
                   #{(safeCurrentPage - 1) * ITEMS_PER_PAGE + index + 1}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-semibold text-neutral-900 dark:text-white truncate">
-                    {student.full_name}
-                  </p>
-                  <p className="text-[11px] text-neutral-400 dark:text-neutral-500 truncate">
-                    {student.email}
-                  </p>
+                  <p className="text-[14px] font-semibold text-neutral-900 dark:text-white truncate">{student.full_name}</p>
+                  <p className="text-[11px] text-neutral-400 dark:text-neutral-500 truncate">{student.email}</p>
                 </div>
                 <select
                   value={student.status}
-                  onChange={(e) =>
-                    updateStatus(student.id, e.target.value as StudentRegistration["status"])
-                  }
+                  onChange={(e) => updateStatus(student.id, e.target.value)}
                   disabled={updatingId === student.id}
                   className={`text-[10px] font-semibold px-2 py-0.5 rounded-[6px] border-0 cursor-pointer ${statusStyles[student.status] || ""}`}
                   style={{ colorScheme: "dark" }}
@@ -470,7 +398,6 @@ export default function StudentsPage() {
                 </select>
               </div>
 
-              {/* Meta row */}
               <div className="flex items-center gap-4 text-[12px] text-neutral-500 dark:text-neutral-400">
                 <span className="flex items-center gap-1">
                   <Phone className="w-3 h-3" />
@@ -484,20 +411,13 @@ export default function StudentsPage() {
                 )}
               </div>
 
-              {/* Course + Date */}
               <div className="flex items-center justify-between text-[12px]">
-                <span className="text-neutral-600 dark:text-neutral-300 font-medium">
-                  {student.course_applying_for}
-                </span>
+                <span className="text-neutral-600 dark:text-neutral-300 font-medium">{student.course_applying_for}</span>
                 <span className="text-neutral-400 dark:text-neutral-500">
-                  {new Date(student.created_at).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "short",
-                  })}
+                  {new Date(student.created_at).toLocaleDateString("en-US", { day: "numeric", month: "short" })}
                 </span>
               </div>
 
-              {/* Actions */}
               <div className="pt-2 border-t border-neutral-100 dark:border-neutral-800/40">
                 <button
                   onClick={() => setSelectedStudent(student)}
@@ -512,7 +432,6 @@ export default function StudentsPage() {
         )}
       </div>
 
-      {/* BOTTOM PAGINATION */}
       {totalPages > 1 && (
         <PaginationBar
           pageNumbers={pageNumbers}
@@ -522,7 +441,6 @@ export default function StudentsPage() {
         />
       )}
 
-      {/* Student Detail Drawer */}
       <StudentDetailDrawer
         student={selectedStudent}
         onClose={() => setSelectedStudent(null)}
@@ -530,7 +448,6 @@ export default function StudentsPage() {
         onStatusUpdate={updateStatus}
       />
 
-      {/* Export Report Modal */}
       <ExportReportModal
         open={showExportModal}
         onClose={() => setShowExportModal(false)}
