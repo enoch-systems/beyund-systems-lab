@@ -20,11 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/client/*": ["./src/client/*"],
-      "@/server/*": ["./src/server/*"],
-      "@/shared/*": ["./src/shared/*"],
-      "@/config/*": ["./src/config/*"],
-      "@/contexts/*": ["./src/contexts/*"]
+      "@landing/*": ["./landing-page/*"],
+      "@admin/*": ["./admin-dashboard/*"]
     }
   },
   "include": [
