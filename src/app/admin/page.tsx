@@ -74,25 +74,17 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function load() {
       try {
-        const [sRes, cRes, pRes, txRes, nRes] = await Promise.all([
-          fetch("http://localhost:4000/registrations"),
-          fetch("http://localhost:4000/courses"),
-          fetch("http://localhost:4000/payments/profiles"),
-          fetch("http://localhost:4000/payments"),
-          fetch("http://localhost:4000/notifications"),
+        const [sRes] = await Promise.all([
+          fetch("/api/admin/students", { cache: "no-store" }),
         ]);
         const s = sRes.ok ? await sRes.json() : [];
-        const c = cRes.ok ? await cRes.json() : [];
-        const p = pRes.ok ? await pRes.json() : [];
-        const tx = txRes.ok ? await txRes.json() : [];
-        const n = nRes.ok ? await nRes.json() : [];
         setStudents(s);
         setPrevTotal(s.length);
-        setCourses(c);
-        setPaymentProfiles(p);
-        setTransactions(tx);
-        setNotifications(Array.isArray(n) ? n.slice(0,10) : []);
-      } catch (e) {
+        setCourses([]);
+        setPaymentProfiles([]);
+        setTransactions([]);
+        setNotifications([]);
+      } catch {
         setStudents([]);
         setCourses([]);
         setPaymentProfiles([]);
