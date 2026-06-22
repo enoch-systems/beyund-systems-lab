@@ -386,8 +386,11 @@ export default function AdminDashboardPage() {
         gap: 12, 
         marginBottom: 20, 
         paddingBottom: 16, 
-        borderBottom: "1px solid var(--color-border-default)" 
-      }} className="sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:mb-6 sm:pb-5">
+        background: "var(--color-bg-secondary)",
+        borderRadius: 14,
+        padding: 20,
+        boxShadow: "var(--shadow-sm)",
+      }} className="sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0, flex: 1 }}>
           <span style={{ fontSize: 22, fontWeight: 600, color: "var(--color-text-primary)", letterSpacing: "-0.02em", lineHeight: 1.3 }} className="sm:text-[24px] md:text-[26px]">
             Welcome, {adminFirstName || "Admin"}
@@ -482,7 +485,7 @@ export default function AdminDashboardPage() {
               borderRadius: 8,
               overflow: "hidden",
               minHeight: 240,
-              background: "var(--color-bg-secondary)",
+              background: "var(--color-bg-tertiary)",
             }}
           >
             {deepData.length === 0 ? (
@@ -606,12 +609,12 @@ export default function AdminDashboardPage() {
                   display: "flex", 
                   flexDirection: "column", 
                   alignItems: "center", 
-                  background: "var(--color-bg-secondary)", 
+                  background: "var(--color-bg-tertiary)", 
                   borderRadius: 12, 
                   padding: "16px 12px", 
-                  border: "1px solid var(--color-border-default)", 
                   textAlign: "center",
                   transition: "all 0.15s",
+                  boxShadow: "var(--shadow-sm)",
                 }}>
                   <p style={{ 
                     fontSize: 11, 
@@ -658,12 +661,12 @@ export default function AdminDashboardPage() {
                   display: "flex", 
                   flexDirection: "column", 
                   alignItems: "center", 
-                  background: "var(--color-bg-secondary)", 
+                  background: "var(--color-bg-tertiary)", 
                   borderRadius: 12, 
                   padding: "16px 12px", 
-                  border: "1px solid var(--color-border-default)", 
                   textAlign: "center",
                   transition: "all 0.15s",
+                  boxShadow: "var(--shadow-sm)",
                 }}>
                   <p style={{ 
                     fontSize: 11, 
@@ -727,14 +730,14 @@ export default function AdminDashboardPage() {
               {/* Latest */}
               {transactions.length > 0 && (
                 <div style={{ 
-                  background: "var(--color-bg-secondary)", 
+                  background: "var(--color-bg-tertiary)", 
                   borderRadius: 10, 
                   padding: "10px 14px", 
-                  border: "1px solid var(--color-border-default)", 
                   display: "flex", 
                   justifyContent: "space-between", 
                   alignItems: "center",
                   transition: "all 0.15s",
+                  boxShadow: "var(--shadow-sm)",
                 }}>
                   <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
                     Latest: <strong style={{ color: "#22c55e", fontFamily: "var(--font-mono)", fontWeight: 600 }}>₦{transactions[0].amount.toLocaleString()}</strong> via {transactions[0].payment_method}
@@ -751,7 +754,6 @@ export default function AdminDashboardPage() {
       {recentStudents.length > 0 && (
         <div style={{ 
           background: "var(--color-bg-elevated)", 
-          border: "1px solid var(--color-border-default)", 
           borderRadius: 14, 
           padding: 20, 
           marginBottom: 20,
@@ -762,12 +764,12 @@ export default function AdminDashboardPage() {
               width: 36, 
               height: 36, 
               borderRadius: 10, 
-              background: "var(--color-bg-secondary)", 
-              border: "1px solid var(--color-border-default)", 
+              background: "var(--color-bg-tertiary)", 
               display: "flex", 
               alignItems: "center", 
               justifyContent: "center", 
-              color: "var(--color-text-secondary)" 
+              color: "var(--color-text-secondary)",
+              boxShadow: "var(--shadow-sm)",
             }}>
               <Users size={18} />
             </div>
@@ -806,9 +808,9 @@ export default function AdminDashboardPage() {
                   gap: 14, 
                   padding: "12px 14px", 
                   borderRadius: 10, 
-                  background: "var(--color-bg-secondary)", 
-                  border: "1px solid var(--color-border-default)", 
+                  background: "var(--color-bg-tertiary)", 
                   transition: "all 0.15s",
+                  boxShadow: "var(--shadow-sm)",
                 }}
               >
                 <span style={{ 
@@ -840,9 +842,11 @@ export default function AdminDashboardPage() {
         display: "flex", 
         flexDirection: "column", 
         gap: 6, 
-        padding: "14px 0 0", 
         marginTop: 16, 
-        borderTop: "1px solid var(--color-border-default)" 
+        background: "var(--color-bg-secondary)",
+        borderRadius: 14,
+        padding: 16,
+        boxShadow: "var(--shadow-sm)",
       }} className="sm:flex-row sm:justify-between sm:items-center sm:gap-0">
         <span style={{ fontSize: 11, color: "var(--color-text-tertiary)", fontFamily: "var(--font-mono)" }}>
           {total} records · {enrolled} enrolled · {pending} pending
@@ -862,7 +866,6 @@ function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor }: a
     <Link href={href} style={{ textDecoration: "none" }}>
       <div style={{ 
         background: "var(--color-bg-elevated)", 
-        border: "1px solid var(--color-border-default)", 
         borderRadius: 14, 
         padding: "16px 18px",
         transition: "all 0.2s",
@@ -871,12 +874,10 @@ function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor }: a
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";
         e.currentTarget.style.boxShadow = "var(--shadow-md)";
-        e.currentTarget.style.borderColor = "var(--color-border-strong)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "translateY(0)";
         e.currentTarget.style.boxShadow = "var(--shadow-sm)";
-        e.currentTarget.style.borderColor = "var(--color-border-default)";
       }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
@@ -896,7 +897,7 @@ function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor }: a
                   transition: "all 0.15s",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "var(--color-sidebar-hover)";
+                  e.currentTarget.style.background = "var(--color-bg-tertiary)";
                   e.currentTarget.style.color = "var(--color-text-primary)";
                 }}
                 onMouseLeave={(e) => {
@@ -915,7 +916,8 @@ function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor }: a
               width: 32,
               height: 32,
               borderRadius: 8,
-              background: "var(--color-bg-secondary)",
+              background: "var(--color-bg-tertiary)",
+              boxShadow: "var(--shadow-sm)",
             }}>
               {icon}
             </span>
@@ -932,7 +934,6 @@ function Card({ title, sub, icon, children }: any) {
   return (
     <div style={{ 
       background: "var(--color-bg-elevated)", 
-      border: "1px solid var(--color-border-default)", 
       borderRadius: 14, 
       padding: 20,
       boxShadow: "var(--shadow-sm)",
@@ -954,7 +955,8 @@ function Card({ title, sub, icon, children }: any) {
           width: 32,
           height: 32,
           borderRadius: 8,
-          background: "var(--color-bg-secondary)",
+          background: "var(--color-bg-tertiary)",
+          boxShadow: "var(--shadow-sm)",
         }}>
           {icon}
         </span>
@@ -971,7 +973,6 @@ function CTip({ active, payload, label }: any) {
   return (
     <div style={{ 
       background: "var(--color-bg-elevated)", 
-      border: "1px solid var(--color-border-default)", 
       borderRadius: 10, 
       padding: "10px 14px", 
       boxShadow: "var(--shadow-lg)",
@@ -998,17 +999,7 @@ function SBadge({ status }: any) {
       textTransform: "uppercase", 
       letterSpacing: "0.04em", 
       fontFamily: "var(--font-mono)",
-      display: "inline-flex",
-      alignItems: "center",
-      gap: 6,
     }}>
-      <span style={{
-        width: 6,
-        height: 6,
-        borderRadius: "50%",
-        background: map[status] || "var(--color-text-tertiary)",
-        boxShadow: `0 0 0 2px ${map[status] || "var(--color-text-tertiary)"}30`,
-      }} />
       {status}
     </span>
   );
