@@ -16,12 +16,14 @@ type Notification = {
 const categoryConfig = {
   student: {
     label: "Student Registration",
-    color: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
+    color: "#8b5cf6",
+    bg: "rgba(139, 92, 246, 0.1)",
     icon: <UserPlus className="w-4 h-4" />,
   },
   payment: {
     label: "Payment",
-    color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+    color: "#10b981",
+    bg: "rgba(16, 185, 129, 0.1)",
     icon: <CreditCard className="w-4 h-4" />,
   },
 };
@@ -71,7 +73,7 @@ export default function NotificationsPage() {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "notifications" },
-        (payload) => {
+        (payload: any) => {
           const n = payload.new as Notification;
           if (n.category === "student" || n.category === "payment") {
             setNotifications((prev) => [n, ...prev]);
@@ -81,7 +83,7 @@ export default function NotificationsPage() {
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "notifications" },
-        (payload) => {
+        (payload: any) => {
           const updated = payload.new as Notification;
           setNotifications((prev) =>
             prev.map((n) => (n.id === updated.id ? updated : n))
@@ -95,7 +97,6 @@ export default function NotificationsPage() {
 
   // ── Mark single notification as read ──
   const markAsRead = async (id: string) => {
-    // Optimistic update
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, status: "read" as const } : n))
     );
@@ -103,7 +104,6 @@ export default function NotificationsPage() {
       .from("notifications")
       .update({ status: "read" })
       .eq("id", id);
-    // Notify the header to refresh its unread count
     window.dispatchEvent(new CustomEvent("notifications-updated"));
   };
 
@@ -115,7 +115,6 @@ export default function NotificationsPage() {
     if (unreadIds.length === 0) return;
 
     setMarkingAll(true);
-    // Optimistic update
     setNotifications((prev) =>
       prev.map((n) => (unreadIds.includes(n.id) ? { ...n, status: "read" as const } : n))
     );
@@ -124,7 +123,6 @@ export default function NotificationsPage() {
       .update({ status: "read" })
       .in("id", unreadIds);
     setMarkingAll(false);
-    // Notify the header to refresh its unread count
     window.dispatchEvent(new CustomEvent("notifications-updated"));
   };
 
@@ -137,7 +135,12 @@ export default function NotificationsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-5 h-5 animate-spin text-neutral-400" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)" }}>
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          </div>
+          <p className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Loading notifications...</p>
+        </div>
       </div>
     );
   }
@@ -147,13 +150,13 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-[20px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
+          <h1 className="text-xl font-semibold" style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em", lineHeight: 1.3 }}>
             Notifications
           </h1>
-          <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+          <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>
             Stay updated with student registrations and payments.
             {unreadCount > 0 && (
-              <span className="ml-1.5 text-blue-500 font-medium">
+              <span className="ml-1.5 font-medium" style={{ color: "var(--color-accent-teal)" }}>
                 · {unreadCount} unread
               </span>
             )}
@@ -163,12 +166,22 @@ export default function NotificationsPage() {
           <button
             onClick={markAllAsRead}
             disabled={markingAll}
-            className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-[6px] bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[11px] font-semibold hover:bg-blue-500/20 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 shrink-0"
+            className="inline-flex items-center gap-2 h-9 px-4 rounded-lg text-xs font-semibold transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 shrink-0"
+            style={{
+              background: "var(--color-accent-teal)",
+              color: "#ffffff",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "0.9";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "1";
+            }}
           >
             {markingAll ? (
-              <Loader2 className="w-3 h-3 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
             ) : (
-              <CheckCheck className="w-3 h-3" />
+              <CheckCheck className="w-3.5 h-3.5" />
             )}
             Mark All as Read
           </button>
@@ -176,16 +189,23 @@ export default function NotificationsPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/50 rounded-[8px] w-fit">
+      <div className="flex items-center gap-1 p-1 rounded-lg w-fit" style={{ background: "var(--color-bg-secondary)" }}>
         {(["all", "student", "payment"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-[6px] text-[11px] font-medium transition-all cursor-pointer ${
+            className="px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer"
+            style={
               filter === f
-                ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-sm"
-                : "text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
-            }`}
+                ? {
+                    background: "var(--color-bg-elevated)",
+                    color: "var(--color-text-primary)",
+                    boxShadow: "var(--shadow-sm)",
+                  }
+                : {
+                    color: "var(--color-text-tertiary)",
+                  }
+            }
           >
             {f === "all" ? "All" : f === "student" ? "Registration" : "Payment"}
           </button>
@@ -194,12 +214,12 @@ export default function NotificationsPage() {
 
       {/* List */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
-          <div className="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-3">
-            <CreditCard className="w-6 h-6 text-neutral-400" />
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
+          <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3" style={{ background: "var(--color-bg-secondary)" }}>
+            <CreditCard className="w-6 h-6" style={{ color: "var(--color-text-tertiary)" }} />
           </div>
-          <p className="text-[13px] font-medium text-neutral-500 dark:text-neutral-400">No notifications yet</p>
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 mt-1">New notifications will appear here</p>
+          <p className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>No notifications yet</p>
+          <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>New notifications will appear here</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -208,38 +228,48 @@ export default function NotificationsPage() {
             return (
               <div
                 key={item.id}
-                className={`rounded-[12px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-4 transition-all hover:shadow-sm ${
-                  item.status === "unread" ? "border-l-[3px] border-l-blue-500" : "border-l-[3px] border-l-transparent"
-                }`}
+                className="rounded-xl border p-4 transition-all"
+                style={{
+                  borderColor: item.status === "unread" ? "var(--color-accent-teal)" : "var(--color-border-default)",
+                  background: "var(--color-bg-elevated)",
+                  borderLeftWidth: item.status === "unread" ? "3px" : "1px",
+                }}
               >
                 <div className="flex items-start gap-3">
-                  <div className={`w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 ${cfg.color}`}>
+                  <div 
+                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: cfg.bg, color: cfg.color }}
+                  >
                     {cfg.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-[6px] ${cfg.color}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span 
+                        className="text-[10px] font-medium px-2 py-0.5 rounded-md"
+                        style={{ background: cfg.bg, color: cfg.color }}
+                      >
                         {cfg.label}
                       </span>
                       {item.status === "unread" && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent-teal)" }} />
                       )}
                     </div>
-                    <p className="text-[12px] font-semibold text-neutral-900 dark:text-white mt-0.5">
+                    <p className="text-sm font-semibold mt-1" style={{ color: "var(--color-text-primary)" }}>
                       {item.title}
                     </p>
-                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+                    <p className="text-xs mt-1" style={{ color: "var(--color-text-secondary)" }}>
                       {item.message}
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-2 shrink-0">
-                    <span className="text-[10px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap">
+                    <span className="text-[10px] whitespace-nowrap" style={{ color: "var(--color-text-tertiary)" }}>
                       {timeAgo(item.created_at)}
                     </span>
                     {item.status === "unread" && (
                       <button
                         onClick={() => markAsRead(item.id)}
-                        className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-500 hover:text-blue-600 transition-colors cursor-pointer bg-transparent border-0 p-0"
+                        className="inline-flex items-center gap-1 text-[10px] font-semibold transition-colors"
+                        style={{ color: "var(--color-accent-teal)" }}
                         title="Mark as read"
                       >
                         <Check className="w-3 h-3" />
@@ -247,7 +277,7 @@ export default function NotificationsPage() {
                       </button>
                     )}
                     {item.status === "read" && (
-                      <span className="inline-flex items-center gap-1 text-[10px] text-neutral-400">
+                      <span className="inline-flex items-center gap-1 text-[10px]" style={{ color: "var(--color-text-tertiary)" }}>
                         <MailOpen className="w-3 h-3" />
                         Read
                       </span>

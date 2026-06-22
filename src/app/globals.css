@@ -2,6 +2,8 @@
 
 @variant dark (&:is(.dark *));
 
+@import "./admin/design-tokens.css";
+
 @theme {
   --animate-slide-in-left: slide-in-left 0.9s ease-out;
   --animate-slide-in-right: slide-in-right 0.9s ease-out;

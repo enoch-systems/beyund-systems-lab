@@ -11,14 +11,6 @@ import {
   AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
-const C: any = {
-  bg: "#0b0f14", text: "#e5e7eb", muted: "#9ca3af", dim: "#6b7280",
-  border: "#1f2937", card: "#111827", sidebarBg: "#0b0f14", sidebarActive: "#0f172a",
-  teal: "#14b8a6", green: "#22c55e", amber: "#f59e0b", red: "#ef4444", accent: "#3b82f6",
-};
-const useTheme = () => ({ theme: "dark" });
-
-type Colors = any;
 
 /* ── Types ── */
 type Student = { id: string; full_name: string; email: string; course_applying_for: string; status: string; country: string; state?: string; created_at: string; };
@@ -110,10 +102,6 @@ export default function AdminDashboardPage() {
   const trend = prevTotal > 0 ? ((total - prevTotal) / prevTotal * 100).toFixed(1) : "0";
 
   // ── Region Data (enrolled only) ──
-  // Show actual states per country, up to 3 states per country, all countries sorted by enrollment.
-  // No hard-coded short codes — derive from the data.
-
-  // Normalise state names so "Abia" and "Abia State" are collapsed.
   const normaliseState = (raw: string) =>
     raw.replace(/\s+State$/i, "").replace(/\s+LGA$/i, "").trim();
 
@@ -204,18 +192,15 @@ export default function AdminDashboardPage() {
     return `https://flagcdn.com/w20/${code}.png`;
   };
 
-  // Derive short code from the country name (from data, not hard-coded)
   const countryShortCode = (country: string): string => {
     const code = COUNTRY_NAME_TO_CODE[country];
     if (code) return code.toUpperCase();
-    // Fallback: first 2 letters of the country name
     return country.slice(0, 2).toUpperCase();
   };
 
   type RegionRow = { country: string; shortCode: string; state: string; count: number; flagUrl: string | null };
   const enrolledStudents = students.filter(s => s.status === "enrolled");
 
-  // Build per-state counts grouped by country
   const stateCounts: Record<string, Record<string, number>> = {};
   enrolledStudents.forEach(s => {
     const country = (s.country && s.country.trim()) || "Unknown";
@@ -225,13 +210,11 @@ export default function AdminDashboardPage() {
     stateCounts[country][state] = (stateCounts[country][state] || 0) + 1;
   });
 
-  // Sort countries by total (all countries, no limit)
   const countryTotals = Object.entries(stateCounts).map(([country, states]) => ({
     country,
     total: Object.values(states).reduce((s, c) => s + c, 0),
   })).sort((a, b) => b.total - a.total);
 
-  // Build flat region data: for each top country, take up to 3 states with highest counts
   const rd: RegionRow[] = [];
   countryTotals.forEach(({ country }) => {
     const states = stateCounts[country];
@@ -252,13 +235,11 @@ export default function AdminDashboardPage() {
   const maxC = Math.max(...rd.map(d => d.count), 1);
   const isSingleCountry = countryTotals.length === 1;
 
-  // Each bar shows the state (country short code) on Y-axis, and state (N) inside
   const regionData = rd.map((d, idx) => ({
     ...d,
-    // Y-axis tick shows the short code — we make it unique by appending index
     yLabel: isSingleCountry ? d.state : `${d.shortCode} ${d.state}`,
     barLabel: `${d.state} (${d.count})`,
-    fill: C.teal,
+    fill: "#14b8a6",
     fillOpacity: 0.25 + (d.count / maxC) * 0.55,
   }));
 
@@ -299,7 +280,6 @@ export default function AdminDashboardPage() {
     ng: "#10b981", us: "#3b82f6", ca: "#ef4444", gh: "#f59e0b",
   };
 
-  // Build all deep data, then sort globally and take top 10
   const deepDataAll: DeepRow[] = [];
   countryDisplayOrder.forEach(code => {
     const fullName = Object.entries(COUNTRY_NAME_TO_CODE).find(([, v]) => v === code)?.[0];
@@ -307,7 +287,7 @@ export default function AdminDashboardPage() {
     const states = deepStateCounts[fullName];
     const entries = Object.entries(states);
     const maxForCountry = Math.max(...entries.map(([, c]) => c), 1);
-    const baseColor = countryColorMap[code] || C.teal;
+    const baseColor = countryColorMap[code] || "#14b8a6";
     entries.forEach(([state, count]) => {
       const opacity = 0.30 + (count / maxForCountry) * 0.55;
       deepDataAll.push({
@@ -335,12 +315,12 @@ export default function AdminDashboardPage() {
 
   // ── Status Data ──
   const sd = [
-    { name: "Enrolled", value: enrolled || 0, color: C.green },
-    { name: "Pending", value: pending || 0, color: C.amber },
-    { name: "Contacted", value: contacted || 0, color: C.accent },
-    { name: "Rejected", value: rejected || 0, color: C.red },
+    { name: "Enrolled", value: enrolled || 0, color: "#10b981" },
+    { name: "Pending", value: pending || 0, color: "#f59e0b" },
+    { name: "Contacted", value: contacted || 0, color: "#3b82f6" },
+    { name: "Rejected", value: rejected || 0, color: "#ef4444" },
   ].filter(d => d.value > 0);
-  const displaySD = total > 0 ? sd : [{ name: "—", value: 1, color: C.dim }];
+  const displaySD = total > 0 ? sd : [{ name: "—", value: 1, color: "#64748b" }];
 
   // ── Growth ──
   const gd = [];
@@ -367,16 +347,18 @@ export default function AdminDashboardPage() {
   });
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-[100vh]" style={{ background: C.bg }}>
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-6 h-6 rounded-full border border-t-transparent animate-spin" style={{ borderColor: C.dim, borderTopColor: C.teal }} />
-        <p className="text-xs" style={{ color: C.muted }}>Loading...</p>
+    <div className="flex items-center justify-center min-h-[100vh]" style={{ background: "var(--color-bg-primary)" }}>
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)" }}>
+          <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        </div>
+        <p className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Loading dashboard...</p>
       </div>
     </div>
   );
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", padding: "10px", fontFamily: "'Inter','SF Pro',system-ui,sans-serif", maxWidth: 1280, margin: "0 auto" }} className="sm:p-4 md:p-6 xl:p-8">
+    <div style={{ background: "var(--color-bg-primary)", minHeight: "100vh", fontFamily: "var(--font-sans)" }}>
       <style>{`
         .payment-stats-row {
           grid-template-columns: 1fr;
@@ -398,72 +380,92 @@ export default function AdminDashboardPage() {
       `}</style>
 
       {/* ── Top Bar ── */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${C.border}` }} className="sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:mb-5 sm:pb-4">
-        <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0, flex: 1 }}>
-          <span style={{ fontSize: 18, fontWeight: 600, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.2 }} className="sm:text-[22px] md:text-[24px]">Welcome, {adminFirstName || "Admin"}</span>
-          <span style={{ fontSize: 10, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", opacity: 0.75 }} className="sm:text-[11px] md:text-[12px]">{now}</span>
+      <div style={{ 
+        display: "flex", 
+        flexDirection: "column", 
+        gap: 12, 
+        marginBottom: 20, 
+        paddingBottom: 16, 
+        borderBottom: "1px solid var(--color-border-default)" 
+      }} className="sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:mb-6 sm:pb-5">
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0, flex: 1 }}>
+          <span style={{ fontSize: 22, fontWeight: 600, color: "var(--color-text-primary)", letterSpacing: "-0.02em", lineHeight: 1.3 }} className="sm:text-[24px] md:text-[26px]">
+            Welcome, {adminFirstName || "Admin"}
+          </span>
+          <span style={{ fontSize: 12, color: "var(--color-text-tertiary)", fontFamily: "var(--font-mono)", opacity: 0.8 }} className="sm:text-[13px]">
+            {now}
+          </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }} className="sm:gap-3">
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, color: C.muted }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.green }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, color: "var(--color-text-secondary)", fontWeight: 500 }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#10b981", boxShadow: "0 0 0 2px rgba(16, 185, 129, 0.2)" }} />
             System OK
           </span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, color: C.muted }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: unread > 0 ? C.amber : C.dim }} />
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, color: "var(--color-text-secondary)", fontWeight: 500 }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: unread > 0 ? "#f59e0b" : "#64748b", boxShadow: unread > 0 ? "0 0 0 2px rgba(245, 158, 11, 0.2)" : "none" }} />
             {unread} alert{unread !== 1 ? "s" : ""}
           </span>
         </div>
       </div>
 
       {/* ── KPI Row ── */}
-      <div style={{ display: "grid", gap: 10, marginBottom: 16 }} className="sm:gap-4 sm:grid-cols-2 md:grid-cols-4">
-        <Kpi icon={<GraduationCap size={14} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/admin/students" C={C} />
-        <Kpi icon={<BookOpen size={14} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/admin/courses" C={C} />
-        <Kpi icon={<DollarSign size={14} />} label="Revenue" value={showRevenue ? fmt(collected) : "₦••••••"} sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} href="/admin/payments" onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} showEye={showRevenue} valueColor={theme === "dark" ? "#fde68a" : "#92400e"} C={C} />
-        <Kpi icon={<Bell size={14} />} label="Activity" value={String(notifications.length)} sub={`${unread} unread`} href="/admin/notifications" C={C} />
+      <div style={{ display: "grid", gap: 16, marginBottom: 20 }} className="sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Kpi icon={<GraduationCap size={18} />} label="Students" value={String(total)} sub={`${enrolled} enrolled`} href="/admin/students" />
+        <Kpi icon={<BookOpen size={18} />} label="Courses" value={String(activeCourses)} sub={`${courses.length} total`} href="/admin/courses" />
+        <Kpi 
+          icon={<DollarSign size={18} />} 
+          label="Revenue" 
+          value={showRevenue ? fmt(collected) : "₦••••••"} 
+          sub={showRevenue ? `${paymentProfiles.filter(p => p.payment_status === "paid").length} paid` : "••••• paid"} 
+          href="/admin/payments" 
+          onToggle={() => { setShowRevenue(!showRevenue); setShowCollected(!showRevenue); }} 
+          showEye={showRevenue} 
+          valueColor="#fde68a" 
+        />
+        <Kpi icon={<Bell size={18} />} label="Activity" value={String(notifications.length)} sub={`${unread} unread`} href="/admin/notifications" />
       </div>
 
       {/* ── Main Chart Row ── */}
-      <div style={{ display: "grid", gap: 10, marginBottom: 16 }} className="sm:gap-4 md:grid-cols-2">
+      <div style={{ display: "grid", gap: 16, marginBottom: 20 }} className="sm:gap-4 lg:grid-cols-2">
         {/* Growth */}
-        <Card title="Registrations" sub="14d" icon={<TrendingUp size={12} />} C={C}>
-          <div style={{ height: 180 }} className="sm:h-[200px]">
+        <Card title="Registrations" sub="14d" icon={<TrendingUp size={16} />}>
+          <div style={{ height: 200 }} className="sm:h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={gd} margin={{ top: 4, right: 4, left: isMobile ? -20 : -16, bottom: 0 }}>
                 <defs>
                   <linearGradient id="gg" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={C.teal} stopOpacity={0.1} />
-                    <stop offset="95%" stopColor={C.teal} stopOpacity={0} />
+                    <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#14b8a6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: isMobile ? 7 : 9, fill: C.muted }} axisLine={false} tickLine={false} interval={isMobile ? 2 : 1} />
-                <YAxis allowDecimals={false} tick={{ fontSize: isMobile ? 7 : 9, fill: C.muted }} axisLine={false} tickLine={false} width={isMobile ? 24 : 36} />
-                <Tooltip content={<CTip C={C} />} />
-                <Area type="monotone" dataKey="count" stroke={C.teal} strokeWidth={1.5} fill="url(#gg)" name="New" dot={total > 0 ? { r: isMobile ? 1.5 : 2, fill: C.teal, stroke: "none" } : false} />
+                <CartesianGrid stroke="var(--color-border-default)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="label" tick={{ fontSize: isMobile ? 9 : 10, fill: "var(--color-text-tertiary)" }} axisLine={false} tickLine={false} interval={isMobile ? 2 : 1} />
+                <YAxis allowDecimals={false} tick={{ fontSize: isMobile ? 9 : 10, fill: "var(--color-text-tertiary)" }} axisLine={false} tickLine={false} width={isMobile ? 28 : 40} />
+                <Tooltip content={<CTip />} />
+                <Area type="monotone" dataKey="count" stroke="#14b8a6" strokeWidth={2} fill="url(#gg)" name="New" dot={total > 0 ? { r: isMobile ? 2 : 3, fill: "#14b8a6", stroke: "var(--color-bg-primary)", strokeWidth: 2 } : false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </Card>
       
         {/* Status */}
-        <Card title="Registration Status" sub={sd.filter(d => d.value > 0).length + " statuses"} icon={<BarChart3 size={12} />} C={C}>
-          <div style={{ height: 180 }} className="sm:h-[200px]">
+        <Card title="Registration Status" sub={sd.filter(d => d.value > 0).length + " statuses"} icon={<BarChart3 size={16} />}>
+          <div style={{ height: 200 }} className="sm:h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <RePieChart>
-                <Pie data={displaySD} cx="50%" cy="50%" innerRadius={40} outerRadius={60} paddingAngle={2} dataKey="value">
+                <Pie data={displaySD} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={3} dataKey="value">
                   {displaySD.map((e, i) => <Cell key={i} fill={e.color} stroke="transparent" />)}
                 </Pie>
-                <Tooltip content={<CTip C={C} />} />
+                <Tooltip content={<CTip />} />
               </RePieChart>
             </ResponsiveContainer>
           </div>
-          <div className="status-legend" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+          <div className="status-legend" style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 12 }}>
             {sd.map(d => (
-              <div key={d.name} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: d.color }} />
-                <span style={{ fontSize: 10, color: C.muted }}>{d.name}</span>
-                <span style={{ fontSize: 10, fontWeight: 600, color: C.text, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{d.value}</span>
+              <div key={d.name} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: d.color, boxShadow: `0 0 0 2px ${d.color}20` }} />
+                <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>{d.name}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--color-text-primary)", fontFamily: "var(--font-mono)" }}>{d.value}</span>
               </div>
             ))}
           </div>
@@ -471,56 +473,39 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* ── Secondary Chart Row ── */}
-      <div style={{ display: "grid", gap: 10, marginBottom: 16 }} className="sm:gap-4 md:grid-cols-2">
-        {/* Region — now shows NG, US, CA, GH with 12 states each */}
-        <Card title="Enrollment by Region" sub={`${deepData.length} states · ${deepData.filter((d,i,a)=>a.findIndex(x=>x.shortCode===d.shortCode)===i).length} countries`} icon={<BarChart3 size={12} />} C={C}>
+      <div style={{ display: "grid", gap: 16, marginBottom: 20 }} className="sm:gap-4 lg:grid-cols-2">
+        {/* Region */}
+        <Card title="Enrollment by Region" sub={`${deepData.length} states · ${deepData.filter((d,i,a)=>a.findIndex(x=>x.shortCode===d.shortCode)===i).length} countries`} icon={<BarChart3 size={16} />}>
           <div
             style={{
               position: "relative",
-              borderRadius: 4,
+              borderRadius: 8,
               overflow: "hidden",
-              minHeight: 220,
+              minHeight: 240,
+              background: "var(--color-bg-secondary)",
             }}
           >
-            {/* Globe background — blended softly behind the chart */}
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: "url('/globe.png')",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "contain",
-                opacity: theme === "dark" ? 0.10 : 0.18,
-                filter: theme === "dark"
-                  ? "invert(1) hue-rotate(180deg) brightness(1.4)"
-                  : "hue-rotate(-10deg) saturate(0.6) brightness(1.05)",
-                mixBlendMode: theme === "dark" ? "screen" : "multiply",
-                pointerEvents: "none",
-              }}
-            />
             {deepData.length === 0 ? (
-              <div style={{ position: "relative", height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 11, color: C.muted }}>No data</span>
+              <div style={{ position: "relative", height: 180, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 13, color: "var(--color-text-tertiary)" }}>No data</span>
               </div>
             ) : (
-              <div style={{ position: "relative", height: Math.max(220, deepData.length * 28 + 10) }}>
+              <div style={{ position: "relative", height: Math.max(240, deepData.length * 30 + 10) }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={deepData}
-                    margin={{ top: 4, right: isMobile ? 2 : 16, left: isMobile ? 0 : 4, bottom: 0 }}
+                    margin={{ top: 4, right: isMobile ? 4 : 20, left: isMobile ? 4 : 8, bottom: 0 }}
                     layout="vertical"
-                    barCategoryGap={2}
+                    barCategoryGap={3}
                   >
-                    <CartesianGrid stroke={C.border} strokeDasharray="3 3" horizontal={false} />
+                    <CartesianGrid stroke="var(--color-border-default)" strokeDasharray="3 3" horizontal={false} />
                     <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
                     <YAxis
                       type="category"
                       dataKey="yLabel"
                       axisLine={false}
                       tickLine={false}
-                      width={isMobile ? 36 : 52}
+                      width={isMobile ? 44 : 60}
                       tick={(props: any) => {
                         const { x, y, payload } = props;
                         const item = deepData.find(d => d.yLabel === payload.value);
@@ -528,14 +513,14 @@ export default function AdminDashboardPage() {
                         return (
                           <g transform={`translate(${x},${y})`}>
                             <text
-                              x={-4}
+                              x={-6}
                               y={0}
-                              dy={3.5}
+                              dy={4}
                               textAnchor="end"
-                              fill={C.text}
-                              fontSize={isMobile ? 7 : 9}
+                              fill="var(--color-text-primary)"
+                              fontSize={isMobile ? 9 : 10}
                               fontWeight={600}
-                              fontFamily="'Inter','SF Pro',system-ui,sans-serif"
+                              fontFamily="var(--font-sans)"
                             >
                               {label}
                             </text>
@@ -543,49 +528,51 @@ export default function AdminDashboardPage() {
                         );
                       }}
                     />
-                    <Tooltip cursor={{ fill: "transparent" }} content={<CTip C={C} />} />
+                    <Tooltip cursor={{ fill: "transparent" }} content={<CTip />} />
                     <Bar
                       dataKey="count"
-                      radius={[0, 3, 3, 0]}
+                      radius={[0, 4, 4, 0]}
                       name="Students"
-                      barSize={isMobile ? 14 : 18}
+                      barSize={isMobile ? 16 : 20}
                       isAnimationActive={false}
                       label={{
                         position: "center",
                         fill: "#f8fafc",
-                        fontSize: isMobile ? 7 : 9,
+                        fontSize: isMobile ? 8 : 9,
                         fontWeight: 700,
-                        fontFamily: "'JetBrains Mono','SF Mono',monospace",
+                        fontFamily: "var(--font-mono)",
                         content: (props: any) => {
                           const { index, x, y, width, height } = props;
                           const item = deepData[index];
                           if (!item) return null;
-                          const flagW = isMobile ? 12 : 18;
-                          const flagH = isMobile ? 8 : 12;
-                          const flagX = x + 4;
+                          const flagW = isMobile ? 14 : 20;
+                          const flagH = isMobile ? 10 : 14;
+                          const flagX = x + 5;
                           const flagY = y + height / 2 - flagH / 2;
-                          const labelX = flagX + flagW + (isMobile ? 3 : 6);
+                          const labelX = flagX + flagW + (isMobile ? 3 : 7);
                           const label = isMobile
                             ? `${item.state.length > 6 ? item.state.slice(0, 5) + "…" : item.state} (${item.count})`
                             : `${item.state} (${item.count})`;
                           return (
                             <g>
-                              <image
-                                href={item.flagUrl || undefined}
-                                x={flagX}
-                                y={flagY}
-                                width={flagW}
-                                height={flagH}
-                                preserveAspectRatio="xMidYMid meet"
-                                style={{ borderRadius: 1, outline: "1px solid rgba(255,255,255,0.25)" }}
-                              />
+                              {item.flagUrl && (
+                                <image
+                                  href={item.flagUrl}
+                                  x={flagX}
+                                  y={flagY}
+                                  width={flagW}
+                                  height={flagH}
+                                  preserveAspectRatio="xMidYMid meet"
+                                  style={{ borderRadius: 2, outline: "1px solid rgba(255,255,255,0.3)" }}
+                                />
+                              )}
                               <text
                                 x={labelX}
                                 y={y + height / 2}
                                 fill="#f8fafc"
-                                fontSize={isMobile ? 7 : 9}
+                                fontSize={isMobile ? 8 : 9}
                                 fontWeight={700}
-                                fontFamily="'JetBrains Mono','SF Mono',monospace"
+                                fontFamily="var(--font-mono)"
                                 textAnchor="start"
                                 dominantBaseline="central"
                               >
@@ -606,36 +593,116 @@ export default function AdminDashboardPage() {
         </Card>
 
         {/* Payment Analytics */}
-        <Card title="Payment Analytics" sub={`${transactions.length} tx`} icon={<DollarSign size={12} />} C={C}>
+        <Card title="Payment Analytics" sub={`${transactions.length} tx`} icon={<DollarSign size={16} />}>
           {paymentProfiles.length === 0 ? (
-            <div style={{ height: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: 11, color: C.muted }}>No data</span>
+            <div style={{ height: 180, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: 13, color: "var(--color-text-tertiary)" }}>No data</span>
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {/* Stats row — two centered cards */}
-              <div style={{ display: "grid", gap: 8, gridTemplateColumns: "1fr 1fr" }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: C.card, borderRadius: 6, padding: "12px 8px", border: `1px solid ${C.border}`, textAlign: "center" }}>
-                  <p style={{ fontSize: 8, color: C.muted, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 4, justifyContent: "center" }}>
+              <div className="payment-stats-grid" style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr 1fr" }}>
+                <div style={{ 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  alignItems: "center", 
+                  background: "var(--color-bg-secondary)", 
+                  borderRadius: 12, 
+                  padding: "16px 12px", 
+                  border: "1px solid var(--color-border-default)", 
+                  textAlign: "center",
+                  transition: "all 0.15s",
+                }}>
+                  <p style={{ 
+                    fontSize: 11, 
+                    color: "var(--color-text-tertiary)", 
+                    textTransform: "uppercase", 
+                    letterSpacing: "0.06em", 
+                    margin: "0 0 8px", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: 6, 
+                    justifyContent: "center",
+                    fontWeight: 600,
+                  }}>
                     Collected
-                    <button onClick={() => setShowCollected(!showCollected)}
-                      style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
-                      {showCollected ? <EyeOff size={10} /> : <Eye size={10} />}
+                    <button 
+                      onClick={() => setShowCollected(!showCollected)}
+                      style={{ 
+                        background: "transparent", 
+                        border: "none", 
+                        cursor: "pointer", 
+                        padding: 2, 
+                        color: "var(--color-text-tertiary)", 
+                        display: "inline-flex", 
+                        lineHeight: 1,
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      {showCollected ? <EyeOff size={12} /> : <Eye size={12} />}
                     </button>
                   </p>
-                  <p style={{ fontSize: 16, fontWeight: 700, color: theme === "dark" ? "#fde68a" : "#92400e", margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace", lineHeight: 1.2 }}>
+                  <p style={{ 
+                    fontSize: 18, 
+                    fontWeight: 700, 
+                    color: "#fde68a", 
+                    margin: 0, 
+                    fontFamily: "var(--font-mono)", 
+                    lineHeight: 1.3,
+                    letterSpacing: "-0.02em",
+                  }}>
                     {showCollected ? fmt(collected) : "₦••••••"}
                   </p>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: C.card, borderRadius: 6, padding: "12px 8px", border: `1px solid ${C.border}`, textAlign: "center" }}>
-                  <p style={{ fontSize: 8, color: C.muted, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 4, justifyContent: "center" }}>
+                <div style={{ 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  alignItems: "center", 
+                  background: "var(--color-bg-secondary)", 
+                  borderRadius: 12, 
+                  padding: "16px 12px", 
+                  border: "1px solid var(--color-border-default)", 
+                  textAlign: "center",
+                  transition: "all 0.15s",
+                }}>
+                  <p style={{ 
+                    fontSize: 11, 
+                    color: "var(--color-text-tertiary)", 
+                    textTransform: "uppercase", 
+                    letterSpacing: "0.06em", 
+                    margin: "0 0 8px", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: 6, 
+                    justifyContent: "center",
+                    fontWeight: 600,
+                  }}>
                     Outstanding
-                    <button onClick={() => setShowOutstanding(!showOutstanding)}
-                      style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, color: C.muted, display: "inline-flex", lineHeight: 1 }}>
-                      {showOutstanding ? <EyeOff size={10} /> : <Eye size={10} />}
+                    <button 
+                      onClick={() => setShowOutstanding(!showOutstanding)}
+                      style={{ 
+                        background: "transparent", 
+                        border: "none", 
+                        cursor: "pointer", 
+                        padding: 2, 
+                        color: "var(--color-text-tertiary)", 
+                        display: "inline-flex", 
+                        lineHeight: 1,
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      {showOutstanding ? <EyeOff size={12} /> : <Eye size={12} />}
                     </button>
                   </p>
-                  <p style={{ fontSize: 16, fontWeight: 700, color: C.amber, margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace", lineHeight: 1.2 }}>
+                  <p style={{ 
+                    fontSize: 18, 
+                    fontWeight: 700, 
+                    color: "#f59e0b", 
+                    margin: 0, 
+                    fontFamily: "var(--font-mono)", 
+                    lineHeight: 1.3,
+                    letterSpacing: "-0.02em",
+                  }}>
                     {showOutstanding ? fmt(outstanding) : "₦••••••"}
                   </p>
                 </div>
@@ -643,26 +710,36 @@ export default function AdminDashboardPage() {
 
               {/* Daily trend */}
               {dailyPayments.some(d => d.count > 0) && (
-                <div style={{ height: 55 }}>
+                <div style={{ height: 60 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={dailyPayments} margin={{ top: 2, right: 2, left: -16, bottom: 0 }}>
-                      <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={C.teal} stopOpacity={0.1} /><stop offset="95%" stopColor={C.teal} stopOpacity={0} /></linearGradient></defs>
-                      <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fontSize: 8, fill: C.muted }} axisLine={false} tickLine={false} />
+                      <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#14b8a6" stopOpacity={0.15} /><stop offset="95%" stopColor="#14b8a6" stopOpacity={0} /></linearGradient></defs>
+                      <CartesianGrid stroke="var(--color-border-default)" strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="label" tick={{ fontSize: 9, fill: "var(--color-text-tertiary)" }} axisLine={false} tickLine={false} />
                       <YAxis hide />
-                      <Tooltip content={<CTip C={C} />} />
-                      <Area type="monotone" dataKey="amount" stroke={C.teal} strokeWidth={1.5} fill="url(#pg)" name="Amount" dot={{ r: 2, fill: C.teal, stroke: "none" }} />
+                      <Tooltip content={<CTip />} />
+                      <Area type="monotone" dataKey="amount" stroke="#14b8a6" strokeWidth={2} fill="url(#pg)" name="Amount" dot={{ r: 2, fill: "#14b8a6", stroke: "var(--color-bg-primary)", strokeWidth: 2 }} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
               )}
 
-
               {/* Latest */}
               {transactions.length > 0 && (
-                <div style={{ background: C.card, borderRadius: 4, padding: "6px 8px", border: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: 9, color: C.muted }}>Latest: <strong style={{ color: "#22c55e", fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>₦{transactions[0].amount.toLocaleString()}</strong> via {transactions[0].payment_method}</span>
-                  <span style={{ fontSize: 8, color: C.dim, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{nDate(transactions[0].created_at)}</span>
+                <div style={{ 
+                  background: "var(--color-bg-secondary)", 
+                  borderRadius: 10, 
+                  padding: "10px 14px", 
+                  border: "1px solid var(--color-border-default)", 
+                  display: "flex", 
+                  justifyContent: "space-between", 
+                  alignItems: "center",
+                  transition: "all 0.15s",
+                }}>
+                  <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+                    Latest: <strong style={{ color: "#22c55e", fontFamily: "var(--font-mono)", fontWeight: 600 }}>₦{transactions[0].amount.toLocaleString()}</strong> via {transactions[0].payment_method}
+                  </span>
+                  <span style={{ fontSize: 11, color: "var(--color-text-tertiary)", fontFamily: "var(--font-mono)" }}>{nDate(transactions[0].created_at)}</span>
                 </div>
               )}
             </div>
@@ -670,35 +747,87 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-
       {/* ── Recently Registered ── */}
       {recentStudents.length > 0 && (
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 6, padding: 14, marginBottom: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: C.bg, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: C.muted }}>
-              <Users size={13} />
+        <div style={{ 
+          background: "var(--color-bg-elevated)", 
+          border: "1px solid var(--color-border-default)", 
+          borderRadius: 14, 
+          padding: 20, 
+          marginBottom: 20,
+          boxShadow: "var(--shadow-sm)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+            <div style={{ 
+              width: 36, 
+              height: 36, 
+              borderRadius: 10, 
+              background: "var(--color-bg-secondary)", 
+              border: "1px solid var(--color-border-default)", 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center", 
+              color: "var(--color-text-secondary)" 
+            }}>
+              <Users size={18} />
             </div>
-            <span style={{ fontSize: 12, fontWeight: 600, color: C.text, letterSpacing: "-0.01em" }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", letterSpacing: "-0.01em" }}>
               Recently Registered
-              <span style={{ fontSize: 9, color: C.muted, fontWeight: 400, marginLeft: 6 }}>({recentTotal})</span>
+              <span style={{ fontSize: 12, color: "var(--color-text-tertiary)", fontWeight: 400, marginLeft: 8 }}>({recentTotal})</span>
             </span>
-            <Link href="/admin/students" style={{ marginLeft: "auto", fontSize: 10, color: C.teal, fontFamily: "'JetBrains Mono','SF Mono',monospace", textDecoration: "none", cursor: "pointer", fontWeight: 500, opacity: 0.85, transition: "opacity 0.15s" }}>
-              See all →
+            <Link 
+              href="/admin/students" 
+              style={{ 
+                marginLeft: "auto", 
+                fontSize: 12, 
+                color: "var(--color-accent-teal)", 
+                fontFamily: "var(--font-mono)", 
+                textDecoration: "none", 
+                cursor: "pointer", 
+                fontWeight: 500, 
+                opacity: 0.9,
+                transition: "all 0.15s",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              See all
+              <ChevronRight size={14} />
             </Link>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {recentStudents.map((s, idx) => (
-              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 5, background: C.bg, border: `1px solid ${C.border}`, transition: "border-color 0.15s" }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace", flexShrink: 0 }}>
+              <div 
+                key={s.id} 
+                style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: 14, 
+                  padding: "12px 14px", 
+                  borderRadius: 10, 
+                  background: "var(--color-bg-secondary)", 
+                  border: "1px solid var(--color-border-default)", 
+                  transition: "all 0.15s",
+                }}
+              >
+                <span style={{ 
+                  fontSize: 11, 
+                  fontWeight: 600, 
+                  color: "var(--color-text-tertiary)", 
+                  fontFamily: "var(--font-mono)", 
+                  flexShrink: 0,
+                  minWidth: 24,
+                }}>
                   #{recentTotal - idx}
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 11, fontWeight: 600, color: C.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.full_name}</p>
-                  <p style={{ fontSize: 9, color: C.muted, margin: "1px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.course_applying_for}</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.full_name}</p>
+                  <p style={{ fontSize: 11, color: "var(--color-text-tertiary)", margin: "3px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.course_applying_for}</p>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1, flexShrink: 0 }}>
-                  <span style={{ fontSize: 9, fontWeight: 600, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{nDate(s.created_at)}</span>
-                  {idx === 0 && <span style={{ fontSize: 7, fontWeight: 500, color: C.dim }}>Latest</span>}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flexShrink: 0 }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: "var(--color-text-tertiary)", fontFamily: "var(--font-mono)" }}>{nDate(s.created_at)}</span>
+                  {idx === 0 && <span style={{ fontSize: 10, fontWeight: 500, color: "var(--color-accent-teal)" }}>Latest</span>}
                 </div>
               </div>
             ))}
@@ -707,11 +836,18 @@ export default function AdminDashboardPage() {
       )}
 
       {/* ── Footer ── */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 4, padding: "10px 0 0", marginTop: 12, borderTop: `1px solid ${C.border}` }} className="sm:flex-row sm:justify-between sm:items-center sm:gap-0">
-        <span style={{ fontSize: 9, color: C.muted, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+      <div style={{ 
+        display: "flex", 
+        flexDirection: "column", 
+        gap: 6, 
+        padding: "14px 0 0", 
+        marginTop: 16, 
+        borderTop: "1px solid var(--color-border-default)" 
+      }} className="sm:flex-row sm:justify-between sm:items-center sm:gap-0">
+        <span style={{ fontSize: 11, color: "var(--color-text-tertiary)", fontFamily: "var(--font-mono)" }}>
           {total} records · {enrolled} enrolled · {pending} pending
         </span>
-        <span style={{ fontSize: 9, color: C.dim, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+        <span style={{ fontSize: 11, color: "var(--color-text-disabled)", fontFamily: "var(--font-mono)" }}>
           Beyund LMS v1.0
         </span>
       </div>
@@ -721,49 +857,128 @@ export default function AdminDashboardPage() {
 
 /* ── Components ── */
 
-function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor, C }: any) {
+function Kpi({ icon, label, value, sub, href, onToggle, showEye, valueColor }: any) {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
-      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: "10px 12px", transition: "border-color 0.15s" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-          <span style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>{label}</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+      <div style={{ 
+        background: "var(--color-bg-elevated)", 
+        border: "1px solid var(--color-border-default)", 
+        borderRadius: 14, 
+        padding: "16px 18px",
+        transition: "all 0.2s",
+        boxShadow: "var(--shadow-sm)",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-2px)";
+        e.currentTarget.style.boxShadow = "var(--shadow-md)";
+        e.currentTarget.style.borderColor = "var(--color-border-strong)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "var(--shadow-sm)";
+        e.currentTarget.style.borderColor = "var(--color-border-default)";
+      }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+          <span style={{ fontSize: 11, color: "var(--color-text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>{label}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             {showEye !== undefined && onToggle && (
-              <button onClick={e => { e.preventDefault(); e.stopPropagation(); onToggle(); }}
-                style={{ background: "transparent", border: "none", cursor: "pointer", padding: 2, color: C.muted, display: "flex" }}>
-                {showEye ? <EyeOff size={11} /> : <Eye size={11} />}
+              <button 
+                onClick={e => { e.preventDefault(); e.stopPropagation(); onToggle(); }}
+                style={{ 
+                  background: "transparent", 
+                  border: "none", 
+                  cursor: "pointer", 
+                  padding: 4, 
+                  color: "var(--color-text-tertiary)", 
+                  display: "flex",
+                  borderRadius: 6,
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "var(--color-sidebar-hover)";
+                  e.currentTarget.style.color = "var(--color-text-primary)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = "var(--color-text-tertiary)";
+                }}
+              >
+                {showEye ? <EyeOff size={14} /> : <Eye size={14} />}
               </button>
             )}
-            <span style={{ color: C.muted }}>{icon}</span>
+            <span style={{ 
+              color: "var(--color-accent-teal)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: "var(--color-bg-secondary)",
+            }}>
+              {icon}
+            </span>
           </div>
         </div>
-        <p style={{ fontSize: 20, fontWeight: 700, color: valueColor || C.text, margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace", lineHeight: 1.2 }}>{value}</p>
-        <p style={{ fontSize: 9, color: C.muted, margin: "2px 0 0" }}>{sub}</p>
+        <p style={{ fontSize: 26, fontWeight: 700, color: valueColor || "var(--color-text-primary)", margin: 0, fontFamily: "var(--font-mono)", lineHeight: 1.2, letterSpacing: "-0.02em" }}>{value}</p>
+        <p style={{ fontSize: 12, color: "var(--color-text-tertiary)", margin: "4px 0 0", fontWeight: 500 }}>{sub}</p>
       </div>
     </Link>
   );
 }
 
-function Card({ title, sub, icon, children, C }: any) {
+function Card({ title, sub, icon, children }: any) {
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: 10 }} className="sm:p-4">
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-        <span style={{ color: C.muted, display: "flex" }}>{icon}</span>
-        <span style={{ fontSize: 11, fontWeight: 600, color: C.text }}>{title}</span>
-        <span style={{ fontSize: 9, color: C.muted, marginLeft: "auto", fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>{sub}</span>
+    <div style={{ 
+      background: "var(--color-bg-elevated)", 
+      border: "1px solid var(--color-border-default)", 
+      borderRadius: 14, 
+      padding: 20,
+      boxShadow: "var(--shadow-sm)",
+      transition: "all 0.2s",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.boxShadow = "var(--shadow-md)";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.boxShadow = "var(--shadow-sm)";
+    }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        <span style={{ 
+          color: "var(--color-accent-teal)", 
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 32,
+          height: 32,
+          borderRadius: 8,
+          background: "var(--color-bg-secondary)",
+        }}>
+          {icon}
+        </span>
+        <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)" }}>{title}</span>
+        <span style={{ fontSize: 11, color: "var(--color-text-tertiary)", marginLeft: "auto", fontFamily: "var(--font-mono)", fontWeight: 500 }}>{sub}</span>
       </div>
       {children}
     </div>
   );
 }
 
-function CTip({ active, payload, label, C }: any) {
+function CTip({ active, payload, label }: any) {
   if (!active || !payload) return null;
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 4, padding: "6px 8px", boxShadow: "0 4px 12px rgba(0,0,0,0.4)" }}>
-      {label && <p style={{ fontSize: 9, color: C.muted, margin: "0 0 2px" }}>{label}</p>}
+    <div style={{ 
+      background: "var(--color-bg-elevated)", 
+      border: "1px solid var(--color-border-default)", 
+      borderRadius: 10, 
+      padding: "10px 14px", 
+      boxShadow: "var(--shadow-lg)",
+    }}>
+      {label && <p style={{ fontSize: 11, color: "var(--color-text-tertiary)", margin: "0 0 4px", fontWeight: 500 }}>{label}</p>}
       {payload.map((p: any, i: number) => (
-        <p key={i} style={{ fontSize: 10, fontWeight: 600, color: C.text, margin: 0, fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+        <p key={i} style={{ fontSize: 12, fontWeight: 600, color: "var(--color-text-primary)", margin: 0, fontFamily: "var(--font-mono)" }}>
           {p.name}: {typeof p.value === "number" && p.value > 100000 ? `₦${p.value.toLocaleString()}` : p.value}
         </p>
       ))}
@@ -771,12 +986,29 @@ function CTip({ active, payload, label, C }: any) {
   );
 }
 
-function SBadge({ status, C }: any) {
+function SBadge({ status }: any) {
   const map: Record<string, string> = {
-    enrolled: C.green, pending: C.amber, contacted: C.accent, rejected: C.red,
+    enrolled: "#10b981", pending: "#f59e0b", contacted: "#3b82f6", rejected: "#ef4444",
   };
   return (
-    <span style={{ fontSize: 8, fontWeight: 600, color: map[status] || C.muted, textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "'JetBrains Mono','SF Mono',monospace" }}>
+    <span style={{ 
+      fontSize: 11, 
+      fontWeight: 600, 
+      color: map[status] || "var(--color-text-tertiary)", 
+      textTransform: "uppercase", 
+      letterSpacing: "0.04em", 
+      fontFamily: "var(--font-mono)",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 6,
+    }}>
+      <span style={{
+        width: 6,
+        height: 6,
+        borderRadius: "50%",
+        background: map[status] || "var(--color-text-tertiary)",
+        boxShadow: `0 0 0 2px ${map[status] || "var(--color-text-tertiary)"}30`,
+      }} />
       {status}
     </span>
   );

@@ -78,10 +78,10 @@ export default function SettingsPage() {
     <div className="w-full space-y-5">
       {/* PAGE HEADER */}
       <div>
-        <h1 className="text-[13px] font-semibold text-neutral-900 dark:text-white tracking-[-0.02em]">
+        <h1 className="text-xl font-semibold" style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em", lineHeight: 1.3 }}>
           Settings
         </h1>
-        <p className="text-[10px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+        <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>
           Manage your admin profile and dashboard preferences.
         </p>
       </div>
@@ -90,12 +90,12 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* ── Admin Profile Card ── */}
-        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5 lg:row-span-2">
+        <div className="rounded-2xl border p-5 lg:row-span-2" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
           <div className="mb-4">
-            <h2 className="text-[13px] font-semibold text-neutral-900 dark:text-white">
+            <h2 className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
               Admin Profile
             </h2>
-            <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
+            <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
               Your account information
             </p>
           </div>
@@ -108,7 +108,7 @@ export default function SettingsPage() {
             onChange={handleImageChange}
             className="hidden"
           />
-          <div className="flex items-center gap-3 mb-4 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-3">
+          <div className="flex items-center gap-3 mb-4 rounded-xl border p-3" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
             <div
               role="button"
               tabIndex={0}
@@ -120,56 +120,67 @@ export default function SettingsPage() {
                 <img
                   src={profileImage}
                   alt="Profile"
-                  className="w-14 h-14 rounded-full object-cover border-2 border-[#e2e8f0] dark:border-[#1a1a1a]"
+                  className="w-14 h-14 rounded-full object-cover"
+                  style={{ border: "2px solid var(--color-border-default)" }}
                 />
               ) : (
-                <div className="w-14 h-14 rounded-full bg-[#f1f5f9] dark:bg-[#181818] border-2 border-[#e2e8f0] dark:border-[#1a1a1a] flex items-center justify-center overflow-hidden">
-                  <Camera className="w-5 h-5 text-neutral-400" />
+                <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden" style={{ background: "var(--color-bg-secondary)", border: "2px solid var(--color-border-default)" }}>
+                  <Camera className="w-5 h-5" style={{ color: "var(--color-text-tertiary)" }} />
                 </div>
               )}
-              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-neutral-900 dark:bg-white flex items-center justify-center border-2 border-white dark:border-[#111827] shadow-sm">
-                <Pencil className="w-2.5 h-2.5 text-white dark:text-neutral-900" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "var(--color-text-primary)", border: "2px solid var(--color-bg-elevated)" }}>
+                <Pencil className="w-2.5 h-2.5" style={{ color: "var(--color-bg-elevated)" }} />
               </div>
             </div>
             <div>
-              <p className="text-[11px] font-medium text-neutral-900 dark:text-white">
+              <p className="text-xs font-medium" style={{ color: "var(--color-text-primary)" }}>
                 Profile Photo
               </p>
-              <p className="text-[10px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+              <p className="text-[11px] mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
                 Click to upload a profile photo
               </p>
             </div>
           </div>
 
-          <div className="space-y-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-3">
+          <div className="space-y-3 rounded-xl border p-3" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
             {/* Name */}
             <div>
-              <label className="block text-[11px] font-medium text-neutral-900 dark:text-white mb-1">
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--color-text-primary)" }}>
                 Name
               </label>
               <input
                 type="text"
                 value={adminName}
                 onChange={(e) => setAdminName(e.target.value)}
-                className="w-full h-[36px] px-3 rounded-[8px] bg-white dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 text-[12px] text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/15 dark:focus:ring-white/10 transition-all"
+                className="w-full h-9 px-3 rounded-lg text-xs transition-all"
+                style={{
+                  background: "var(--color-bg-elevated)",
+                  border: "1px solid var(--color-border-default)",
+                  color: "var(--color-text-primary)",
+                }}
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-[11px] font-medium text-neutral-900 dark:text-white mb-1">
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--color-text-primary)" }}>
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none" style={{ color: "var(--color-text-tertiary)" }} />
                 <input
                   type="email"
                   value={adminEmail}
                   disabled
-                  className="w-full h-[36px] pl-9 pr-3 rounded-[8px] bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200/80 dark:border-neutral-800 text-[12px] text-neutral-400 dark:text-neutral-500 cursor-not-allowed"
+                  className="w-full h-9 pl-9 pr-3 rounded-lg text-xs cursor-not-allowed"
+                  style={{
+                    background: "var(--color-bg-secondary)",
+                    border: "1px solid var(--color-border-default)",
+                    color: "var(--color-text-tertiary)",
+                  }}
                 />
               </div>
-              <p className="text-[10px] text-neutral-400 dark:text-neutral-500 mt-1">
+              <p className="text-[11px] mt-1" style={{ color: "var(--color-text-tertiary)" }}>
                 Email cannot be changed here
               </p>
             </div>
@@ -178,7 +189,17 @@ export default function SettingsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 h-[34px] px-4 rounded-[8px] bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[11px] font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all disabled:opacity-50 active:scale-[0.98] cursor-pointer"
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-lg text-xs font-semibold transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50"
+              style={{
+                background: "var(--color-accent-teal)",
+                color: "#ffffff",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "0.9";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "1";
+              }}
             >
               {saving ? (
                 <>
@@ -198,26 +219,39 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Password Card ── */}
-        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5">
+        <div className="rounded-2xl border p-5" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#181818] flex items-center justify-center">
-              <Lock className="w-4 h-4 text-neutral-400" />
+            <div className="w-8 h-8 rounded-lg border flex items-center justify-center" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-secondary)" }}>
+              <Lock className="w-4 h-4" style={{ color: "var(--color-text-tertiary)" }} />
             </div>
             <div>
-              <h2 className="text-[13px] font-semibold text-neutral-900 dark:text-white">
+              <h2 className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
                 Password
               </h2>
-              <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
+              <p className="text-[11px]" style={{ color: "var(--color-text-tertiary)" }}>
                 Reset your password
               </p>
             </div>
           </div>
-          <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mb-3">
+          <p className="text-xs mb-3" style={{ color: "var(--color-text-secondary)" }}>
             A password reset link will be sent to your email address.
           </p>
           <button
             onClick={() => setShowResetModal(true)}
-            className="inline-flex items-center gap-1.5 h-[32px] px-3.5 rounded-[8px] border border-neutral-200 dark:border-neutral-700 text-[11px] font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg border text-xs font-medium transition-all cursor-pointer"
+            style={{
+              borderColor: "var(--color-border-default)",
+              background: "var(--color-bg-secondary)",
+              color: "var(--color-text-secondary)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--color-bg-tertiary)";
+              e.currentTarget.style.borderColor = "var(--color-border-strong)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "var(--color-bg-secondary)";
+              e.currentTarget.style.borderColor = "var(--color-border-default)";
+            }}
           >
             <Shield className="w-3.5 h-3.5" />
             Reset Password
@@ -225,68 +259,82 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Appearance Card ── */}
-        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5">
+        <div className="rounded-2xl border p-5" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-[#f1f5f9] dark:bg-[#181818] flex items-center justify-center">
-              <Palette className="w-4 h-4 text-amber-500" />
+            <div className="w-8 h-8 rounded-lg border flex items-center justify-center" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-secondary)" }}>
+              <Palette className="w-4 h-4" style={{ color: "#f59e0b" }} />
             </div>
             <div>
-              <h2 className="text-[13px] font-semibold text-neutral-900 dark:text-white">
+              <h2 className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
                 Appearance
               </h2>
-              <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
+              <p className="text-[11px]" style={{ color: "var(--color-text-tertiary)" }}>
                 Customize your view
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
+          <div className="flex items-center justify-between p-3 rounded-xl border" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
             <div className="flex items-center gap-3">
               {theme === "dark" ? (
-                <Moon className="w-4 h-4 text-neutral-500" />
+                <Moon className="w-4 h-4" style={{ color: "var(--color-text-tertiary)" }} />
               ) : (
-                <Sun className="w-4 h-4 text-amber-500" />
+                <Sun className="w-4 h-4" style={{ color: "#f59e0b" }} />
               )}
               <div>
-                <p className="text-[11px] font-medium text-neutral-900 dark:text-white">
+                <p className="text-xs font-medium" style={{ color: "var(--color-text-primary)" }}>
                   Theme
                 </p>
-                <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
+                <p className="text-[11px]" style={{ color: "var(--color-text-tertiary)" }}>
                   {theme === "dark" ? "Dark mode" : "Light mode"}
                 </p>
               </div>
             </div>
             <button
               onClick={toggleTheme}
-              className="relative w-12 h-7 rounded-full bg-neutral-200 dark:bg-neutral-700 transition-colors cursor-pointer"
+              className="relative w-12 h-7 rounded-full transition-colors"
+              style={{ background: "var(--color-bg-tertiary)" }}
             >
               <div
-                className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white dark:bg-neutral-900 shadow transition-transform duration-200 ${
-                  theme === "dark" ? "translate-x-[25px]" : "translate-x-[3px]"
-                }`}
+                className="absolute top-[3px] w-[22px] h-[22px] rounded-full shadow transition-transform duration-200"
+                style={{
+                  background: "var(--color-bg-elevated)",
+                  transform: theme === "dark" ? "translateX(25px)" : "translateX(3px)",
+                }}
               />
             </button>
           </div>
         </div>
 
         {/* ── Account Card ── */}
-        <div className="rounded-[14px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212] p-5 lg:col-span-1">
+        <div className="rounded-2xl border p-5" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
           <div className="mb-3">
-            <h2 className="text-[13px] font-semibold text-neutral-900 dark:text-white">
+            <h2 className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
               Account
             </h2>
-            <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
+            <p className="text-[11px]" style={{ color: "var(--color-text-tertiary)" }}>
               Sign out from your admin account
             </p>
           </div>
 
-          <div className="p-3 rounded-[10px] border border-[#e2e8f0] dark:border-[#1a1a1a] bg-white dark:bg-[#121212]">
-            <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mb-2.5">
+          <div className="p-3 rounded-xl border" style={{ borderColor: "var(--color-border-default)", background: "var(--color-bg-elevated)" }}>
+            <p className="text-xs mb-2.5" style={{ color: "var(--color-text-secondary)" }}>
               Sign out from your admin account. You will need to sign in again.
             </p>
             <button
               onClick={() => setShowSignOutModal(true)}
-              className="inline-flex items-center gap-1.5 h-[32px] px-3.5 rounded-[8px] border border-red-500/20 text-[11px] font-medium text-red-500 hover:bg-red-500/5 transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg border text-xs font-medium transition-all cursor-pointer"
+              style={{
+                borderColor: "rgba(239, 68, 68, 0.3)",
+                background: "rgba(239, 68, 68, 0.1)",
+                color: "#ef4444",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(239, 68, 68, 0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+              }}
             >
               <LogOut className="w-3.5 h-3.5" />
               Sign Out
@@ -299,38 +347,54 @@ export default function SettingsPage() {
       {showResetModal && (
         <>
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+            className="fixed inset-0 z-50"
+            style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
             onClick={() => setShowResetModal(false)}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-              className="w-full max-w-sm bg-white dark:bg-[#181818] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
+              className="w-full max-w-sm rounded-2xl border overflow-hidden"
+              style={{
+                background: "var(--color-bg-elevated)",
+                borderColor: "var(--color-border-default)",
+                boxShadow: "var(--shadow-xl)",
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 pb-0 flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-[#ff9f0a]/10 flex items-center justify-center mb-4">
-                  <AlertTriangle className="w-6 h-6 text-[#ff9f0a]" />
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: "rgba(245, 158, 11, 0.1)" }}>
+                  <AlertTriangle className="w-6 h-6" style={{ color: "#f59e0b" }} />
                 </div>
-                <h3 className="text-[17px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.01em]">
+                <h3 className="text-base font-semibold" style={{ color: "var(--color-text-primary)" }}>
                   Reset Password?
                 </h3>
-                <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-2 max-w-[280px]">
-                  A reset link will be sent to{" "}
-                  <span className="font-medium text-[#1d1d1f] dark:text-white">{adminEmail}</span>.
+                <p className="text-xs mt-2 max-w-[280px]" style={{ color: "var(--color-text-secondary)" }}>
+                  A reset link will be sent to <span className="font-medium" style={{ color: "var(--color-text-primary)" }}>{adminEmail}</span>.
                   You will need to use the new password to sign back in.
                 </p>
               </div>
               <div className="flex items-center gap-2.5 p-6 pt-5">
                 <button
                   onClick={() => setShowResetModal(false)}
-                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#181818] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
+                  className="flex-1 h-10 rounded-xl text-xs font-medium transition-colors"
+                  style={{
+                    background: "var(--color-bg-secondary)",
+                    color: "var(--color-text-secondary)",
+                    border: "1px solid var(--color-border-default)",
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "var(--color-bg-tertiary)"}
+                  onMouseLeave={(e) => e.currentTarget.style.background = "var(--color-bg-secondary)"}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handlePasswordReset}
                   disabled={resetting}
-                  className="flex-1 inline-flex items-center justify-center gap-2 h-[40px] rounded-[10px] bg-[#1d1d1f] dark:bg-white text-white dark:text-[#1d1d1f] text-[13px] font-semibold hover:bg-[#2d2d2f] dark:hover:bg-[#f0f0f0] transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+                  className="flex-1 inline-flex items-center justify-center gap-2 h-10 rounded-xl text-xs font-semibold transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+                  style={{
+                    background: "var(--color-text-primary)",
+                    color: "var(--color-bg-elevated)",
+                  }}
                 >
                   {resetting ? (
                     <>
@@ -354,36 +418,53 @@ export default function SettingsPage() {
       {showSignOutModal && (
         <>
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+            className="fixed inset-0 z-50"
+            style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
             onClick={() => setShowSignOutModal(false)}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-              className="w-full max-w-sm bg-white dark:bg-[#181818] rounded-[20px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.5)] border border-[#e5e5ea]/60 dark:border-[#38383a]/60 overflow-hidden animate-in zoom-in-95 duration-200"
+              className="w-full max-w-sm rounded-2xl border overflow-hidden"
+              style={{
+                background: "var(--color-bg-elevated)",
+                borderColor: "var(--color-border-default)",
+                boxShadow: "var(--shadow-xl)",
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 pb-0 flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-[#ff453a]/10 flex items-center justify-center mb-4">
-                  <LogOut className="w-6 h-6 text-[#ff453a]" />
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: "rgba(239, 68, 68, 0.1)" }}>
+                  <LogOut className="w-6 h-6" style={{ color: "#ef4444" }} />
                 </div>
-                <h3 className="text-[17px] font-semibold text-[#1d1d1f] dark:text-white tracking-[-0.01em]">
+                <h3 className="text-base font-semibold" style={{ color: "var(--color-text-primary)" }}>
                   Sign Out?
                 </h3>
-                <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-2 max-w-[280px]">
+                <p className="text-xs mt-2 max-w-[280px]" style={{ color: "var(--color-text-secondary)" }}>
                   You will be signed out of your admin account. You will need to sign in again to access the dashboard.
                 </p>
               </div>
               <div className="flex items-center gap-2.5 p-6 pt-5">
                 <button
                   onClick={() => setShowSignOutModal(false)}
-                  className="flex-1 h-[40px] rounded-[10px] text-[13px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f2f2f7] dark:bg-[#181818] hover:bg-[#e8e8ed] dark:hover:bg-[#38383a] transition-colors cursor-pointer"
+                  className="flex-1 h-10 rounded-xl text-xs font-medium transition-colors"
+                  style={{
+                    background: "var(--color-bg-secondary)",
+                    color: "var(--color-text-secondary)",
+                    border: "1px solid var(--color-border-default)",
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "var(--color-bg-tertiary)"}
+                  onMouseLeave={(e) => e.currentTarget.style.background = "var(--color-bg-secondary)"}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSignOut}
                   disabled={signingOut}
-                  className="flex-1 inline-flex items-center justify-center gap-2 h-[40px] rounded-[10px] bg-[#ff453a] text-white text-[13px] font-semibold hover:bg-[#e53e36] transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+                  className="flex-1 inline-flex items-center justify-center gap-2 h-10 rounded-xl text-xs font-semibold transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+                  style={{
+                    background: "#ef4444",
+                    color: "#ffffff",
+                  }}
                 >
                   {signingOut ? (
                     <>
