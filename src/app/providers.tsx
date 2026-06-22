@@ -12,7 +12,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
 
@@ -49,6 +49,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+export { Providers as ThemeProvider };
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {
