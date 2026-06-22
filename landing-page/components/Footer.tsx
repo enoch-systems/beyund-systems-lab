@@ -4,11 +4,11 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-6">
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-400">
-            <a href="#mentor" className="hover:text-white transition">Mentorship</a>
-            <a href="#outcome" className="hover:text-white transition">What You Build</a>
-            <a href="#what-you-become" className="hover:text-white transition">What You Become</a>
-            <a href="#layers" className="hover:text-white transition">Fullstack Toolkit</a>
-            <a href="#contact" className="hover:text-white transition">Registration</a>
+            {/* <a href="#mentor" className="hover:text-white transition">Mentorship</a> */}
+            {/* <a href="#outcome" className="hover:text-white transition">What You Build</a> */}
+            {/* <a href="#what-you-become" className="hover:text-white transition">What You Become</a> */}
+            {/* <a href="#layers" className="hover:text-white transition">Fullstack Toolkit</a> */}
+            {/* <a href="#contact" className="hover:text-white transition">Registration</a> */}
           </div>
 
           <div className="flex items-center gap-5">
@@ -62,7 +62,7 @@ export default function Footer() {
                   style={{ textShadow: "0 0 30px rgba(255,255,255,0.08)" }}
                 >
                   <span className="text-white text-base md:text-xl lg:text-2xl font-light tracking-wide group-hover:text-white transition-colors duration-300">
-                    eyund
+                    eeyund
                   </span>
                   <span
                     className="text-slate-300/90 group-hover:text-slate-200 transition-colors duration-300 ml-1 text-sm md:text-lg lg:text-xl font-mono"
@@ -77,7 +77,7 @@ export default function Footer() {
                 </div>
               </div>
             </div>
-            <p className="text-slate-400 text-sm mt-1">Powered by Beyund Technologies</p>
+            <p className="text-slate-400 text-sm mt-1">Powered by Beeyund Technologies</p>
           </div>
         </div>
       </div>

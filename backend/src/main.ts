@@ -7,7 +7,7 @@ async function bootstrap() {
 
   // Enable CORS for the Next.js frontend
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:4001', 'http://127.0.0.1:4001'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
@@ -15,7 +15,7 @@ async function bootstrap() {
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
-  const port = process.env.PORT ?? 4000;
+  const port = process.env.PORT ?? 4002;
   await app.listen(port);
   console.log(`NestJS backend running on http://localhost:${port}`);
 }

@@ -39,7 +39,7 @@ export default function Navbar() {
               style={{ textShadow: "0 0 30px rgba(255,255,255,0.08)" }}
             >
               <span className="text-white text-base md:text-xl lg:text-2xl font-light tracking-wide group-hover:text-white transition-colors duration-300">
-                eyund
+                eeyund
               </span>
               <span
                 className="text-slate-300/90 group-hover:text-slate-200 transition-colors duration-300 ml-1 text-sm md:text-lg lg:text-xl font-mono"

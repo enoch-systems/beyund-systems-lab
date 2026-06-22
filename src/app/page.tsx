@@ -39,10 +39,10 @@ export default function Home() {
         <PricingBadge />
 
         {/* Outcome-first flow: Problem → Proof → Curriculum → Identity → Mentor → CTA */}
-        <ProblemHook />
-        <VisionOutcome />
-        <Layers />
-        <WhatYouBecome />
+     
+       
+        
+      
         <MeetTheMentor />
         <Contact />
         <Footer />
