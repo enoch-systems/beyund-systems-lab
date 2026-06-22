@@ -14,12 +14,9 @@ import {
   CreditCard,
   Settings,
   ChevronLeft,
-  ChevronRight,
   Menu,
   X,
   LogOut,
-  Sun,
-  Moon,
   Mail,
 } from "lucide-react";
 
@@ -55,7 +52,7 @@ function useActiveRoute() {
   };
 }
 
-function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: boolean; setCollapsed: (v: boolean) => void; onNavigate: () => void }) {
+function DesktopSidebar({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: (v: boolean) => void }) {
   const isActive = useActiveRoute();
   return (
     <aside 
@@ -66,7 +63,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
         bottom: 0, 
         zIndex: 30,
         background: "var(--color-sidebar-bg)",
-        borderRight: "1px solid var(--color-border-default)",
+        boxShadow: "var(--shadow-sm)",
         width: collapsed ? 72 : 256, 
         transition: "width 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
       }} 
@@ -76,7 +73,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
         display: "flex", 
         alignItems: "center", 
         height: 56,
-        borderBottom: "1px solid var(--color-border-default)", 
+        background: "var(--color-bg-tertiary)",
         padding: collapsed ? "0 16px" : "0 20px",
         justifyContent: collapsed ? "center" : "space-between",
         gap: 12,
@@ -93,6 +90,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
               justifyContent: "center",
               overflow: "hidden",
               flexShrink: 0,
+              boxShadow: "0 2px 4px rgba(13, 148, 136, 0.2)",
             }}>
               <Image 
                 src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
@@ -121,7 +119,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
             alignItems: "center",
             justifyContent: "center",
             overflow: "hidden",
-            border: "1px solid var(--color-border-default)",
+            boxShadow: "0 2px 4px rgba(13, 148, 136, 0.2)",
           }}>
             <Image 
               src="https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png"
@@ -136,7 +134,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
           <button 
             onClick={() => setCollapsed(!collapsed)}
             style={{ 
-              background: "transparent", 
+              background: "var(--color-bg-tertiary)", 
               border: "none", 
               cursor: "pointer", 
               padding: 6, 
@@ -182,7 +180,6 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
                 <Link 
                   key={item.href} 
                   href={item.href} 
-                  onClick={onNavigate}
                   style={{
                     display: "flex", 
                     alignItems: "center", 
@@ -193,12 +190,13 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
                     textDecoration: "none", 
                     fontSize: 13, 
                     fontWeight: 500,
-                    background: active ? "var(--color-sidebar-active)" : "transparent",
+                    background: active ? "var(--color-bg-tertiary)" : "transparent",
                     color: active ? "var(--color-text-primary)" : "var(--color-text-secondary)",
                     marginBottom: 4, 
                     transition: "all 0.15s", 
                     cursor: "pointer",
                     position: "relative",
+                    boxShadow: active ? "var(--shadow-sm)" : "none",
                   }}
                   title={collapsed ? item.label : undefined}
                   onMouseEnter={(e) => { 
@@ -224,6 +222,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
                       height: 20,
                       background: "var(--color-accent-teal)",
                       borderRadius: "0 2px 2px 0",
+                      boxShadow: "0 0 8px rgba(13, 148, 136, 0.4)",
                     }} />
                   )}
                   <span style={{ 
@@ -242,7 +241,7 @@ function DesktopSidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
                       borderRadius: 6,
                       background: "var(--color-bg-tertiary)", 
                       color: "var(--color-text-tertiary)", 
-                      border: "1px solid var(--color-border-default)",
+                      boxShadow: "var(--shadow-sm)",
                     }}>
                       {item.badge}
                     </span>
@@ -282,7 +281,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
         zIndex: 51, 
         width: 280,
         background: "var(--color-sidebar-bg)",
-        borderRight: "1px solid var(--color-border-default)",
+        boxShadow: "var(--shadow-xl)",
         transform: open ? "translateX(0)" : "translateX(-100%)", 
         transition: "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
         display: "flex",
@@ -294,7 +293,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
           justifyContent: "space-between", 
           height: 56, 
           padding: "0 20px", 
-          borderBottom: "1px solid var(--color-border-default)" 
+          background: "var(--color-bg-tertiary)" 
         }}>
           <Link href="/admin" style={{ 
             fontWeight: 700, 
@@ -327,7 +326,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
           <button 
             onClick={onClose} 
             style={{ 
-              background: "transparent", 
+              background: "var(--color-bg-tertiary)", 
               border: "none", 
               cursor: "pointer", 
               padding: 8, 
@@ -381,11 +380,12 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
                       fontWeight: 500, 
                       cursor: "pointer", 
                       textAlign: "left",
-                      background: active ? "var(--color-sidebar-active)" : "transparent",
+                      background: active ? "var(--color-bg-tertiary)" : "transparent",
                       color: active ? "var(--color-text-primary)" : "var(--color-text-secondary)", 
                       marginBottom: 4,
                       transition: "all 0.15s",
                       position: "relative",
+                      boxShadow: active ? "var(--shadow-sm)" : "none",
                     }}
                     onMouseEnter={(e) => { 
                       if (!active) { 
@@ -410,6 +410,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
                         height: 20,
                         background: "var(--color-accent-teal)",
                         borderRadius: "0 2px 2px 0",
+                        boxShadow: "0 0 8px rgba(13, 148, 136, 0.4)",
                       }} />
                     )}
                     <span style={{ 
@@ -428,7 +429,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
                         borderRadius: 6, 
                         background: "var(--color-bg-tertiary)", 
                         color: "var(--color-text-tertiary)", 
-                        border: "1px solid var(--color-border-default)",
+                        boxShadow: "var(--shadow-sm)",
                       }}>
                         {item.badge}
                       </span>
@@ -458,7 +459,7 @@ function MobileTabBar({ onMenuOpen }: { onMenuOpen: () => void }) {
         height: 64,
         paddingBottom: "env(safe-area-inset-bottom, 0)", 
         background: "var(--color-sidebar-bg)",
-        borderTop: "1px solid var(--color-border-default)", 
+        boxShadow: "0 -1px 3px rgba(0,0,0,0.04)", 
         display: "none",
       }}
       className="lg:!hidden flex"
@@ -499,7 +500,8 @@ function MobileTabBar({ onMenuOpen }: { onMenuOpen: () => void }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: active ? "var(--color-sidebar-active)" : "transparent",
+                background: active ? "var(--color-bg-tertiary)" : "transparent",
+                boxShadow: active ? "var(--shadow-sm)" : "none",
                 transition: "all 0.15s",
               }}>
                 {item.icon}
@@ -585,7 +587,6 @@ function ProfileDropdown({ onClose, onRequestSignOut }: { onClose: () => void; o
         minWidth: 240, 
         zIndex: 60, 
         background: "var(--color-bg-elevated)",
-        border: "1px solid var(--color-border-default)", 
         borderRadius: 12, 
         padding: 6,
         boxShadow: "var(--shadow-xl)",
@@ -596,15 +597,16 @@ function ProfileDropdown({ onClose, onRequestSignOut }: { onClose: () => void; o
         alignItems: "center", 
         gap: 10,
         padding: "12px 12px 14px", 
-        borderBottom: "1px solid var(--color-border-default)", 
+        background: "var(--color-bg-tertiary)", 
         marginBottom: 6,
+        borderRadius: 8,
       }}>
         <div style={{
           width: 36, 
           height: 36, 
           borderRadius: "50%",
           background: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
-          border: "2px solid var(--color-border-default)", 
+          boxShadow: "var(--shadow-md)",
           display: "flex",
           alignItems: "center", 
           justifyContent: "center",
@@ -655,7 +657,7 @@ function ProfileDropdown({ onClose, onRequestSignOut }: { onClose: () => void; o
         <span>Settings</span>
       </Link>
 
-      <div style={{ height: 1, background: "var(--color-border-default)", margin: "4px 0" }} />
+      <div style={{ height: 1, background: "var(--color-bg-tertiary)", margin: "4px 0" }} />
 
       <button
         onClick={() => { onClose(); onRequestSignOut(); }}
@@ -726,7 +728,7 @@ function SignOutOverlay({ onClose }: { onClose: () => void }) {
         position: "fixed", 
         inset: 0, 
         zIndex: 99999,
-        background: "rgba(0,0,0,0.6)", 
+        background: "rgba(0,0,0,0.5)", 
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         display: "flex", 
@@ -741,7 +743,6 @@ function SignOutOverlay({ onClose }: { onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
         style={{
           background: "var(--color-bg-elevated)", 
-          border: "1px solid var(--color-border-default)",
           borderRadius: 16, 
           padding: "28px 32px",
           maxWidth: 360, 
@@ -786,19 +787,19 @@ function SignOutOverlay({ onClose }: { onClose: () => void }) {
               flex: 1, 
               padding: "11px 0", 
               borderRadius: 10,
-              border: "1px solid var(--color-border-default)", 
-              background: "transparent",
+              background: "var(--color-bg-tertiary)",
               color: "var(--color-text-primary)", 
               fontSize: 13, 
               fontWeight: 500, 
               cursor: "pointer",
               transition: "all 0.15s",
+              boxShadow: "var(--shadow-sm)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--color-sidebar-hover)";
+              e.currentTarget.style.background = "var(--color-bg-secondary)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.background = "var(--color-bg-tertiary)";
             }}
           >
             Cancel
@@ -809,13 +810,13 @@ function SignOutOverlay({ onClose }: { onClose: () => void }) {
               flex: 1, 
               padding: "11px 0", 
               borderRadius: 10,
-              border: "none", 
               background: "var(--color-status-error)",
               color: "#ffffff", 
               fontSize: 13, 
               fontWeight: 600, 
               cursor: "pointer",
               transition: "all 0.15s",
+              boxShadow: "0 2px 4px rgba(239, 68, 68, 0.2)",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.opacity = "0.9";
@@ -841,7 +842,7 @@ function HeaderAvatar() {
   );
 }
 
-function AdminTopbar({ onMobileMenuOpen, collapsed, onRequestSignOut }: { onMobileMenuOpen: () => void; collapsed: boolean; onRequestSignOut: () => void }) {
+function AdminTopbar({ onMobileMenuOpen, onRequestSignOut }: { onMobileMenuOpen: () => void; onRequestSignOut: () => void }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -866,10 +867,9 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, onRequestSignOut }: { onMobi
     <header
       className="fixed top-0 left-0 right-0 z-[120] h-16"
       data-header="mobile-fixed"
-      data-collapsed={collapsed ? "true" : "false"}
       style={{
-        borderBottom: "1px solid var(--color-border-default)",
-        background: "var(--color-bg-primary)",
+        background: "var(--color-bg-secondary)",
+        boxShadow: "var(--shadow-sm)",
         backdropFilter: "saturate(140%) blur(12px)",
         WebkitBackdropFilter: "saturate(140%) blur(12px)",
       }}
@@ -892,7 +892,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, onRequestSignOut }: { onMobi
             title="Open menu"
             className="lg:hidden flex items-center justify-center"
             style={{
-              background: "transparent", 
+              background: "var(--color-bg-tertiary)", 
               border: "none", 
               cursor: "pointer",
               padding: 8, 
@@ -920,7 +920,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, onRequestSignOut }: { onMobi
             aria-label="Notifications"
             style={{
               position: "relative", 
-              background: "transparent", 
+              background: "var(--color-bg-tertiary)", 
               border: "none",
               cursor: "pointer", 
               padding: 8, 
@@ -959,7 +959,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, onRequestSignOut }: { onMobi
                 justifyContent: "center",
                 padding: "0 5px", 
                 lineHeight: 1,
-                border: "2px solid var(--color-bg-primary)",
+                boxShadow: "0 2px 4px rgba(239, 68, 68, 0.3)",
               }}>
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
@@ -972,7 +972,6 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, onRequestSignOut }: { onMobi
                 height: 6, 
                 borderRadius: "50%", 
                 background: "var(--color-text-disabled)",
-                border: "1.5px solid var(--color-bg-primary)",
               }} />
             )}
           </Link>
@@ -987,7 +986,7 @@ function AdminTopbar({ onMobileMenuOpen, collapsed, onRequestSignOut }: { onMobi
                 height: 36, 
                 borderRadius: "50%",
                 background: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
-                border: dropdownOpen ? "2px solid var(--color-accent-teal)" : "2px solid var(--color-border-default)",
+                boxShadow: dropdownOpen ? "0 0 0 2px var(--color-accent-teal)" : "var(--shadow-sm)",
                 display: "flex", 
                 alignItems: "center", 
                 justifyContent: "center",
@@ -1035,7 +1034,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-bg-primary)", color: "var(--color-text-primary)" }}>
-      <DesktopSidebar collapsed={collapsed} setCollapsed={setCollapsed} onNavigate={() => {}} />
+      <DesktopSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <div
         style={{
@@ -1055,7 +1054,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             [data-collapsed="false"] { margin-left: 256px !important; }
           }
         `}</style>
-        <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} collapsed={collapsed} onRequestSignOut={() => setSignOutOpen(true)} />
+        <AdminTopbar onMobileMenuOpen={() => setDrawerOpen(true)} onRequestSignOut={() => setSignOutOpen(true)} />
         <main style={{ 
           flex: 1, 
           overflow: "auto", 
