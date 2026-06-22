@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTheme } from "@/app/providers";
 import {
   Lock,
   Sun,
@@ -18,8 +19,7 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
-  const [theme, setTheme] = useState("dark");
-  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+  const { theme, toggleTheme } = useTheme();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [adminName, setAdminName] = useState("Admin");
   const [adminEmail, setAdminEmail] = useState("admin@beyund.com");
