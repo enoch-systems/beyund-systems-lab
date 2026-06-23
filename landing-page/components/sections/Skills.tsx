@@ -1,6 +1,6 @@
-import SectionHeader from "@/client/components/common/SectionHeader";
-import SkillCard from "./SkillCard";
-import { skills } from "@/shared/constants/data";
+import SectionHeader from "@landing/components/ui/SectionHeader";
+import SkillCard from "@landing/components/ui/SkillCard";
+import { skills } from "@landing/data";
 
 export default function Skills() {
   return (

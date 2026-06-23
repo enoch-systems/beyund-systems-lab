@@ -18,7 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem("admin-theme") as Theme | null;
+    const saved = localStorage.getItem("theme") as Theme | null;
     if (saved) {
       setThemeState(saved);
       document.documentElement.classList.toggle("dark", saved === "dark");
@@ -29,7 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem("admin-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 

@@ -27,9 +27,11 @@
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "landing-page/**/*.ts",
+    "landing-page/**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "landing-page"]
+  "exclude": ["node_modules"]
 }

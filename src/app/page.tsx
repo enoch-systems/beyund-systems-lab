@@ -1,15 +1,15 @@
-import Navbar from "@landing/components/Navbar";
-import SocialSidebar from "@landing/components/SocialSidebar";
-import PricingBadge from "@landing/components/PricingBadge";
-import ProblemHook from "@landing/components/ProblemHook";
-import VisionOutcome from "@landing/components/VisionOutcome";
-import Layers from "@landing/components/Layers";
-import WhatYouBecome from "@landing/components/WhatYouBecome";
-import MeetTheMentor from "@landing/components/MeetTheMentor";
-import Contact from "@landing/components/Contact";
-import Footer from "@landing/components/Footer";
-import WhatsAppButton from "@landing/components/WhatsAppButton";
-import ScrollToTop from "@landing/components/ScrollToTop";
+import Navbar from "@landing/components/layout/Navbar";
+import SocialSidebar from "@landing/components/layout/SocialSidebar";
+import PricingBadge from "@landing/components/ui/PricingBadge";
+import ProblemHook from "@landing/components/sections/ProblemHook";
+import VisionOutcome from "@landing/components/sections/VisionOutcome";
+import Layers from "@landing/components/sections/Layers";
+import WhatYouBecome from "@landing/components/sections/WhatYouBecome";
+import MeetTheMentor from "@landing/components/sections/MeetTheMentor";
+import Contact from "@landing/components/sections/Contact";
+import Footer from "@landing/components/layout/Footer";
+import WhatsAppButton from "@landing/components/layout/WhatsAppButton";
+import ScrollToTop from "@landing/components/layout/ScrollToTop";
 
 export default function Home() {
   return (
@@ -39,10 +39,10 @@ export default function Home() {
         <PricingBadge />
 
         {/* Outcome-first flow: Problem → Proof → Curriculum → Identity → Mentor → CTA */}
-     
-       
-        
-      
+        <ProblemHook />
+        <VisionOutcome />
+        <Layers />
+        <WhatYouBecome />
         <MeetTheMentor />
         <Contact />
         <Footer />
