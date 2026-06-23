@@ -1,15 +1,16 @@
-import Navbar from "@landing/components/layout/Navbar";
-import SocialSidebar from "@landing/components/layout/SocialSidebar";
-import PricingBadge from "@landing/components/ui/PricingBadge";
-import ProblemHook from "@landing/components/sections/ProblemHook";
-import VisionOutcome from "@landing/components/sections/VisionOutcome";
-import Layers from "@landing/components/sections/Layers";
-import WhatYouBecome from "@landing/components/sections/WhatYouBecome";
-import MeetTheMentor from "@landing/components/sections/MeetTheMentor";
-import Contact from "@landing/components/sections/Contact";
-import Footer from "@landing/components/layout/Footer";
-import WhatsAppButton from "@landing/components/layout/WhatsAppButton";
-import ScrollToTop from "@landing/components/layout/ScrollToTop";
+import Navbar from "@/components/layout/Navbar";
+import SocialSidebar from "@/components/layout/SocialSidebar";
+import PricingBadge from "@/components/ui/PricingBadge";
+import ProblemHook from "@/components/sections/ProblemHook";
+import VisionOutcome from "@/components/sections/VisionOutcome";
+import Layers from "@/components/sections/Layers";
+import WhatYouBecome from "@/components/sections/WhatYouBecome";
+import MeetTheMentor from "@/components/sections/MeetTheMentor";
+import Contact from "@/components/sections/Contact";
+import Footer from "@/components/layout/Footer";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import ScrollToTop from "@/components/layout/ScrollToTop";
+
 
 export default function Home() {
   return (
@@ -30,8 +31,10 @@ export default function Home() {
           transform: "scale(1.05)",
         }}
       />
+
+    
       {/* Fixed gradient overlay */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
+    <div className="fixed inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
 
       <div className="relative z-10">
         <Navbar />
@@ -51,3 +54,4 @@ export default function Home() {
     </main>
   );
 }
+

@@ -1,5 +1,5 @@
-import SectionHeader from "@landing/components/ui/SectionHeader";
-import { caseStudies } from "@landing/data";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { caseStudies } from "@/data";
 
 export default function CaseStudies() {
   return (
