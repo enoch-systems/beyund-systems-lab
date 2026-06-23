@@ -1,6 +1,6 @@
 /**
- * Beyund Labs Academy - Admin Design System
- * Unified design tokens for consistent UI across the admin dashboard
+ * Beyund Labs Academy - Design System
+ * Unified design tokens for consistent UI
  */
 
 export const colors = {
