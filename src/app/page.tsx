@@ -36,16 +36,13 @@ export default function Home() {
       {/* Fixed gradient overlay */}
     <div className="fixed inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 md:mx-8 lg:mx-16">
         <Navbar />
         <SocialSidebar />
         <PricingBadge />
 
         {/* Outcome-first flow: Problem → Proof → Curriculum → Identity → Mentor → CTA */}
-        <ProblemHook />
-        <VisionOutcome />
-        <Layers />
-        <WhatYouBecome />
+        
         <MeetTheMentor />
         <Contact />
         <Footer />

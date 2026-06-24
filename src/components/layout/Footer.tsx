@@ -64,12 +64,7 @@ export default function Footer() {
                   <span className="text-white text-base md:text-xl lg:text-2xl font-light tracking-wide group-hover:text-white transition-colors duration-300">
                     eeyund
                   </span>
-                  <span
-                    className="text-slate-300/90 group-hover:text-slate-200 transition-colors duration-300 ml-1 text-sm md:text-lg lg:text-xl font-mono"
-                    style={{ fontVariant: "small-caps" }}
-                  >
-                    𝙻𝚊𝚋𝚜.
-                  </span>
+                 
                   <span className="group-hover:text-green-300 transition-colors duration-300 ml-1 font-light tracking-widest uppercase flex items-baseline">
                     <span className="text-green-400/80 text-sm md:text-lg lg:text-xl font-normal">A</span>
                     <span className="text-green-300/80 text-xs md:text-sm lg:text-base">cademy</span>
