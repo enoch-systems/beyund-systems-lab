@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 /* Theme preset styles: these override CSS variables based on the selected data-theme-preset */
