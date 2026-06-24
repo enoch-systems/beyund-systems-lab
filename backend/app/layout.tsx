@@ -27,21 +27,37 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex">
-        <aside className="fixed top-0 left-0 h-screen w-64 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 p-6 overflow-y-auto">
-          <h1 className="text-2xl font-bold mb-8 text-black dark:text-zinc-50">Academy Admin</h1>
-          <nav className="flex flex-col gap-4">
-            <a href="/" className="p-3 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">Dashboard</a>
-            <a href="/students" className="p-3 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">Students</a>
-            <a href="/courses" className="p-3 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">Courses</a>
-            <a href="/payments" className="p-3 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">Payments</a>
-            <a href="/notifications" className="p-3 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">Notifications</a>
-            <a href="/certificates" className="p-3 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">Certificates</a>
-            <a href="/settings" className="p-3 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">Settings</a>
-            <a href="/email-history" className="p-3 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">Email History</a>
+      <body className="min-h-full flex bg-black text-zinc-100">
+        <aside className="fixed top-0 left-0 h-screen w-64 bg-zinc-950 border-r border-zinc-800 p-6 overflow-y-auto">
+          <h1 className="text-2xl font-bold mb-8 text-orange-500">CMSolutions</h1>
+          <nav className="flex flex-col gap-2">
+            <a href="/" className="flex items-center gap-3 p-3 rounded hover:bg-zinc-900 transition text-zinc-400 hover:text-white">
+              <span>🏠</span> Dashboard
+            </a>
+            <a href="/students" className="flex items-center gap-3 p-3 rounded hover:bg-zinc-900 transition text-zinc-400 hover:text-white">
+              <span>👥</span> Students
+            </a>
+            <a href="/courses" className="flex items-center gap-3 p-3 rounded hover:bg-zinc-900 transition text-zinc-400 hover:text-white">
+              <span>📚</span> Courses
+            </a>
+            <a href="/payments" className="flex items-center gap-3 p-3 rounded hover:bg-zinc-900 transition text-zinc-400 hover:text-white">
+              <span>💳</span> Payments
+            </a>
+            <a href="/notifications" className="flex items-center gap-3 p-3 rounded hover:bg-zinc-900 transition text-zinc-400 hover:text-white">
+              <span>🔔</span> Notifications
+            </a>
+            <a href="/certificates" className="flex items-center gap-3 p-3 rounded hover:bg-zinc-900 transition text-zinc-400 hover:text-white">
+              <span>📜</span> Certificates
+            </a>
+            <a href="/settings" className="flex items-center gap-3 p-3 rounded hover:bg-zinc-900 transition text-zinc-400 hover:text-white">
+              <span>⚙️</span> Settings
+            </a>
+            <a href="/email-history" className="flex items-center gap-3 p-3 rounded hover:bg-zinc-900 transition text-zinc-400 hover:text-white">
+              <span>📧</span> Email History
+            </a>
           </nav>
         </aside>
-        <main className="ml-64 flex-1 p-8">{children}</main>
+        <main className="ml-64 flex-1 p-8 bg-zinc-950">{children}</main>
       </body>
     </html>
   );
