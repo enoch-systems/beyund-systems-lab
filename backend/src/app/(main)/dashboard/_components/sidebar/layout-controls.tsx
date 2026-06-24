@@ -162,13 +162,13 @@ export function LayoutControls() {
                 value={themeMode}
                 onValueChange={onThemeModeChange}
               >
-                <ToggleGroupItem value="light" aria-label="Toggle light">
+                <ToggleGroupItem value="light" aria-label="Toggle light" className="cursor-pointer">
                   Light
                 </ToggleGroupItem>
-                <ToggleGroupItem value="dark" aria-label="Toggle dark">
+                <ToggleGroupItem value="dark" aria-label="Toggle dark" className="cursor-pointer">
                   Dark
                 </ToggleGroupItem>
-                <ToggleGroupItem value="system" aria-label="Toggle system">
+                <ToggleGroupItem value="system" aria-label="Toggle system" className="cursor-pointer">
                   System
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -183,10 +183,10 @@ export function LayoutControls() {
                 value={contentLayout}
                 onValueChange={onContentLayoutChange}
               >
-                <ToggleGroupItem value="centered" aria-label="Toggle centered">
+                <ToggleGroupItem value="centered" aria-label="Toggle centered" className="cursor-pointer">
                   Centered
                 </ToggleGroupItem>
-                <ToggleGroupItem value="full-width" aria-label="Toggle full-width">
+                <ToggleGroupItem value="full-width" aria-label="Toggle full-width" className="cursor-pointer">
                   Full Width
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -201,10 +201,10 @@ export function LayoutControls() {
                 value={navbarStyle}
                 onValueChange={onNavbarStyleChange}
               >
-                <ToggleGroupItem value="sticky" aria-label="Toggle sticky">
+                <ToggleGroupItem value="sticky" aria-label="Toggle sticky" className="cursor-pointer">
                   Sticky
                 </ToggleGroupItem>
-                <ToggleGroupItem value="scroll" aria-label="Toggle scroll">
+                <ToggleGroupItem value="scroll" aria-label="Toggle scroll" className="cursor-pointer">
                   Scroll
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -219,13 +219,13 @@ export function LayoutControls() {
                 value={variant}
                 onValueChange={onSidebarStyleChange}
               >
-                <ToggleGroupItem value="inset" aria-label="Toggle inset">
+                <ToggleGroupItem value="inset" aria-label="Toggle inset" className="cursor-pointer">
                   Inset
                 </ToggleGroupItem>
-                <ToggleGroupItem value="sidebar" aria-label="Toggle sidebar">
+                <ToggleGroupItem value="sidebar" aria-label="Toggle sidebar" className="cursor-pointer">
                   Sidebar
                 </ToggleGroupItem>
-                <ToggleGroupItem value="floating" aria-label="Toggle floating">
+                <ToggleGroupItem value="floating" aria-label="Toggle floating" className="cursor-pointer">
                   Floating
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -240,10 +240,10 @@ export function LayoutControls() {
                 value={collapsible}
                 onValueChange={onSidebarCollapseModeChange}
               >
-                <ToggleGroupItem value="icon" aria-label="Toggle icon">
+                <ToggleGroupItem value="icon" aria-label="Toggle icon" className="cursor-pointer">
                   Icon
                 </ToggleGroupItem>
-                <ToggleGroupItem value="offcanvas" aria-label="Toggle offcanvas">
+                <ToggleGroupItem value="offcanvas" aria-label="Toggle offcanvas" className="cursor-pointer">
                   OffCanvas
                 </ToggleGroupItem>
               </ToggleGroup>
