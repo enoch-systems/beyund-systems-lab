@@ -2,11 +2,9 @@ import {
   Award,
   Banknote,
   Bell,
-  Fingerprint,
   GraduationCap,
   type LucideIcon,
   Mail,
-  SquareArrowUpRight,
   Users,
 } from "lucide-react";
 
@@ -69,28 +67,6 @@ export const sidebarItems: NavGroup[] = [
         title: "Email History",
         url: "/dashboard/email-history",
         icon: Mail,
-      },
-    ],
-  },
-  {
-    id: 3,
-    label: "Pages",
-    items: [
-      {
-        title: "Email",
-        url: "/dashboard/mail",
-        icon: Mail,
-      },
-      {
-        title: "Authentication",
-        url: "/auth",
-        icon: Fingerprint,
-        subItems: [
-          { title: "Login v1", url: "/auth/v1/login", newTab: true },
-          { title: "Login v2", url: "/auth/v2/login", newTab: true },
-          { title: "Register v1", url: "/auth/v1/register", newTab: true },
-          { title: "Register v2", url: "/auth/v2/register", newTab: true },
-        ],
       },
     ],
   },
