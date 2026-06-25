@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactCompiler: false,
+  reactCompiler: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: "/dashboard",
-        destination: "/dashboard/students",
+        destination: "/dashboard/default",
         permanent: false,
       },
     ];

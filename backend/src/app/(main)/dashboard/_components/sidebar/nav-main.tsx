@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { ChevronRight, LayoutDashboard } from "lucide-react";
+import { ChevronRight, MailIcon, PlusCircleIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   DropdownMenu,
@@ -37,14 +39,10 @@ const NavItemExpanded = ({
   item,
   isActive,
   isSubmenuOpen,
-  isMobile,
-  setOpenMobile,
 }: {
   item: NavMainItem;
   isActive: (url: string, subItems?: NavMainItem["subItems"]) => boolean;
   isSubmenuOpen: (subItems?: NavMainItem["subItems"]) => boolean;
-  isMobile: boolean;
-  setOpenMobile: (open: boolean) => void;
 }) => {
   return (
     <Collapsible key={item.title} asChild defaultOpen={isSubmenuOpen(item.subItems)} className="group/collapsible">
@@ -68,7 +66,7 @@ const NavItemExpanded = ({
               isActive={isActive(item.url)}
               tooltip={item.title}
             >
-              <Link prefetch={false} href={item.url} target={item.newTab ? "_blank" : undefined} onClick={() => { if (isMobile) setOpenMobile(false); }}>
+              <Link prefetch={false} href={item.url} target={item.newTab ? "_blank" : undefined}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
                 {item.comingSoon && <IsComingSoon />}
@@ -82,7 +80,7 @@ const NavItemExpanded = ({
               {item.subItems.map((subItem) => (
                 <SidebarMenuSubItem key={subItem.title}>
                   <SidebarMenuSubButton aria-disabled={subItem.comingSoon} isActive={isActive(subItem.url)} asChild>
-                    <Link prefetch={false} href={subItem.url} target={subItem.newTab ? "_blank" : undefined} onClick={() => { if (isMobile) setOpenMobile(false); }}>
+                    <Link prefetch={false} href={subItem.url} target={subItem.newTab ? "_blank" : undefined}>
                       {subItem.icon && <subItem.icon />}
                       <span>{subItem.title}</span>
                       {subItem.comingSoon && <IsComingSoon />}
@@ -101,13 +99,9 @@ const NavItemExpanded = ({
 const NavItemCollapsed = ({
   item,
   isActive,
-  isMobile,
-  setOpenMobile,
 }: {
   item: NavMainItem;
   isActive: (url: string, subItems?: NavMainItem["subItems"]) => boolean;
-  isMobile: boolean;
-  setOpenMobile: (open: boolean) => void;
 }) => {
   return (
     <SidebarMenuItem key={item.title}>
@@ -133,7 +127,7 @@ const NavItemCollapsed = ({
                 aria-disabled={subItem.comingSoon}
                 isActive={isActive(subItem.url)}
               >
-                <Link prefetch={false} href={subItem.url} target={subItem.newTab ? "_blank" : undefined} onClick={() => { if (isMobile) setOpenMobile(false); }}>
+                <Link prefetch={false} href={subItem.url} target={subItem.newTab ? "_blank" : undefined}>
                   {subItem.icon && <subItem.icon className="[&>svg]:text-sidebar-foreground" />}
                   <span>{subItem.title}</span>
                   {subItem.comingSoon && <IsComingSoon />}
@@ -149,7 +143,7 @@ const NavItemCollapsed = ({
 
 export function NavMain({ items }: NavMainProps) {
   const path = usePathname();
-  const { state, isMobile, setOpenMobile } = useSidebar();
+  const { state, isMobile } = useSidebar();
 
   const isItemActive = (url: string, subItems?: NavMainItem["subItems"]) => {
     if (subItems?.length) {
@@ -167,17 +161,22 @@ export function NavMain({ items }: NavMainProps) {
       <SidebarGroup>
         <SidebarGroupContent className="flex flex-col gap-2">
           <SidebarMenu>
-            <SidebarMenuItem>
+            <SidebarMenuItem className="flex items-center gap-2">
               <SidebarMenuButton
-                asChild
-                tooltip="Dashboard"
+                tooltip="Quick Create"
                 className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
               >
-                <Link href="/dashboard/default" onClick={() => { if (isMobile) setOpenMobile(false); }}>
-                  <LayoutDashboard />
-                  <span>Dashboard</span>
-                </Link>
+                <PlusCircleIcon />
+                <span>Quick Create</span>
               </SidebarMenuButton>
+              <Button
+                size="icon"
+                className="h-9 w-9 shrink-0 group-data-[collapsible=icon]:opacity-0"
+                variant="outline"
+              >
+                <MailIcon />
+                <span className="sr-only">Inbox</span>
+              </Button>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroupContent>
@@ -199,7 +198,7 @@ export function NavMain({ items }: NavMainProps) {
                           tooltip={item.title}
                           isActive={isItemActive(item.url)}
                         >
-                          <Link prefetch={false} href={item.url} target={item.newTab ? "_blank" : undefined} onClick={() => { if (isMobile) setOpenMobile(false); }}>
+                          <Link prefetch={false} href={item.url} target={item.newTab ? "_blank" : undefined}>
                             {item.icon && <item.icon />}
                             <span>{item.title}</span>
                           </Link>
@@ -208,11 +207,11 @@ export function NavMain({ items }: NavMainProps) {
                     );
                   }
                   // Otherwise, render the dropdown as before
-                  return <NavItemCollapsed key={item.title} item={item} isActive={isItemActive} isMobile={isMobile} setOpenMobile={setOpenMobile} />;
+                  return <NavItemCollapsed key={item.title} item={item} isActive={isItemActive} />;
                 }
                 // Expanded view
                 return (
-                  <NavItemExpanded key={item.title} item={item} isActive={isItemActive} isSubmenuOpen={isSubmenuOpen} isMobile={isMobile} setOpenMobile={setOpenMobile} />
+                  <NavItemExpanded key={item.title} item={item} isActive={isItemActive} isSubmenuOpen={isSubmenuOpen} />
                 );
               })}
             </SidebarMenu>

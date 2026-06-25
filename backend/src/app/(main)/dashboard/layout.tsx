@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
+import { siGithub } from "simple-icons";
+
 import { AppSidebar } from "@/app/(main)/dashboard/_components/sidebar/app-sidebar";
 import { SimpleIcon } from "@/components/simple-icon";
 import { Button } from "@/components/ui/button";
@@ -47,7 +49,9 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
       >
         <header
           className={cn(
-            "sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[height:100dvh]:h-16 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-16",
+            "flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12",
+            // Handle sticky navbar style with conditional classes so blur, background, z-index, and rounded corners remain consistent across all SidebarVariant layouts.
+            "[html[data-navbar-style=sticky]_&]:sticky [html[data-navbar-style=sticky]_&]:top-0 [html[data-navbar-style=sticky]_&]:z-50 [html[data-navbar-style=sticky]_&]:overflow-hidden [html[data-navbar-style=sticky]_&]:rounded-t-[inherit] [html[data-navbar-style=sticky]_&]:bg-background/50 [html[data-navbar-style=sticky]_&]:backdrop-blur-md",
           )}
         >
           <div className="flex w-full items-center justify-between px-4 lg:px-6">
@@ -62,6 +66,17 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
             <div className="flex items-center gap-2">
               <LayoutControls />
               <ThemeSwitcher />
+              <Button asChild size="icon">
+                <Link
+                  prefetch={false}
+                  href="https://github.com/arhamkhnz/next-shadcn-admin-dashboard"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Open GitHub repository"
+                >
+                  <SimpleIcon icon={siGithub} className="fill-primary-foreground" />
+                </Link>
+              </Button>
               <AccountSwitcher users={users} />
             </div>
           </div>

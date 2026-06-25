@@ -13,7 +13,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { APP_CONFIG } from "@/config/app-config";
 import { rootUser } from "@/data/users";
@@ -22,6 +21,7 @@ import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+import { SidebarSupportCard } from "./sidebar-support-card";
 
 const _data = {
   navSecondary: [
@@ -71,7 +71,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const variant = isSynced ? sidebarVariant : props.variant;
   const collapsible = isSynced ? sidebarCollapsible : props.collapsible;
-  const { isMobile, setOpenMobile } = useSidebar();
 
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>
@@ -79,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link prefetch={false} href="/dashboard/default" onClick={() => { if (isMobile) setOpenMobile(false); }}>
+              <Link prefetch={false} href="/dashboard/default">
                 <Command />
                 <span className="font-semibold text-base">{APP_CONFIG.name}</span>
               </Link>
@@ -93,6 +92,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
+        <SidebarSupportCard />
         <NavUser user={rootUser} />
       </SidebarFooter>
     </Sidebar>
