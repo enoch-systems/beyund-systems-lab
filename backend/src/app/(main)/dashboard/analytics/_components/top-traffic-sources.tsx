@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const chartConfig = {
   visitors: {
     color: "var(--chart-1)",
-    label: "Visitors",
+    label: "Users",
   },
 } satisfies ChartConfig;
 

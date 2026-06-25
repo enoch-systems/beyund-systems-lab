@@ -9,7 +9,7 @@ export function AnalyticsKpiStrip() {
       <div className="grid divide-y *:data-[slot=card]:rounded-none *:data-[slot=card]:ring-0 md:grid-cols-2 md:divide-x md:divide-y-0 xl:grid-cols-5">
         <Card>
           <CardHeader>
-            <CardTitle className="font-normal text-sm">Unique Visitors</CardTitle>
+            <CardTitle className="font-normal text-sm">Unique Users</CardTitle>
             <CardAction>
               <Ellipsis className="size-4" />
             </CardAction>
@@ -35,7 +35,7 @@ export function AnalyticsKpiStrip() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="font-normal text-sm">Sessions</CardTitle>
+            <CardTitle className="font-normal text-sm">Learning Sessions</CardTitle>
             <CardAction>
               <Ellipsis className="size-4" />
             </CardAction>
@@ -61,7 +61,7 @@ export function AnalyticsKpiStrip() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="font-normal text-sm">Pageviews</CardTitle>
+            <CardTitle className="font-normal text-sm">Page Views</CardTitle>
             <CardAction>
               <Ellipsis className="size-4" />
             </CardAction>
@@ -87,7 +87,7 @@ export function AnalyticsKpiStrip() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="font-normal text-sm">Engagement Rate</CardTitle>
+            <CardTitle className="font-normal text-sm">Participation Rate</CardTitle>
             <CardAction>
               <Ellipsis className="size-4" />
             </CardAction>
@@ -113,7 +113,7 @@ export function AnalyticsKpiStrip() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="font-normal text-sm">Conversion Rate</CardTitle>
+            <CardTitle className="font-normal text-sm">Enrollment Rate</CardTitle>
             <CardAction>
               <Ellipsis className="size-4" />
             </CardAction>

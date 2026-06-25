@@ -42,7 +42,7 @@ const realtimeData = [
 const chartConfig = {
   visitors: {
     color: "var(--chart-3)",
-    label: "Visitors",
+    label: "Users",
   },
 } satisfies ChartConfig;
 
@@ -92,7 +92,7 @@ export function RealtimeVisitors() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="font-normal">Realtime Visitors</CardTitle>
+        <CardTitle className="font-normal">Realtime Users</CardTitle>
         <CardAction>
           <Ellipsis className="size-4" />
         </CardAction>

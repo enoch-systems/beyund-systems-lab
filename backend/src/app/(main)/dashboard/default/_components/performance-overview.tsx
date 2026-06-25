@@ -216,15 +216,15 @@ const chartData = chartValues.map((point, index) => ({
 
 const chartConfig = {
   newCustomers: {
-    label: "New Customers",
+    label: "New Enrollments",
     color: "var(--chart-1)",
   },
   activeAccounts: {
-    label: "Active Accounts",
+    label: "Active Students",
     color: "var(--chart-2)",
   },
   returningUsers: {
-    label: "Returning Users",
+    label: "Returning Students",
     color: "var(--chart-3)",
   },
 } satisfies ChartConfig;
@@ -233,9 +233,9 @@ export function PerformanceOverview() {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle className="leading-none">Customer Activity</CardTitle>
+        <CardTitle className="leading-none">Student Activity</CardTitle>
         <CardDescription>
-          <span className="@[540px]/card:block hidden">Customer activity for the last 3 months</span>
+          <span className="@[540px]/card:block hidden">Student activity for the last 3 months</span>
           <span className="@[540px]/card:hidden">Last 3 months</span>
         </CardDescription>
         <CardAction className="flex items-center gap-2">
@@ -257,8 +257,8 @@ export function PerformanceOverview() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Segments</SelectLabel>
-                <SelectItem value="all">All segments</SelectItem>
+                <SelectLabel>Categories</SelectLabel>
+                <SelectItem value="all">All categories</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>
                 <SelectItem value="organic">Organic</SelectItem>
               </SelectGroup>
