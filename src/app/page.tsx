@@ -7,7 +7,7 @@ import Layers from "@/components/sections/Layers";
 import WhatYouBecome from "@/components/sections/WhatYouBecome";
 import MeetTheMentor from "@/components/sections/MeetTheMentor";
 import Contact from "@/components/sections/Contact";
-import SideInfo from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 
@@ -44,8 +44,8 @@ export default function Home() {
         {/* Outcome-first flow: Problem → Proof → Curriculum → Identity → Mentor → CTA */}
        
         <Contact />
-        <SideInfo />
         <WhatsAppButton />
+        <Footer />
       </div>
     </main>
   );

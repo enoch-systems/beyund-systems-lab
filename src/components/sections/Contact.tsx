@@ -313,8 +313,8 @@ export default function Contact() {
 
   /* ----------------------------- main render --------------------------- */
   return (
-    <section id="contact" className="relative overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 flex items-center justify-center min-h-[calc(100vh-8rem)]">
+    <section id="contact" className="relative overflow-hidden py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 flex items-center justify-center">
         <div className="max-w-2xl mx-auto text-center">
           {/* Title */}
           <div className="mb-10 md:mb-12">
