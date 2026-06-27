@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Registration {
+  id        String   @id @default(cuid())
+  fullName  String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  
+  @@map("registrations")
+}

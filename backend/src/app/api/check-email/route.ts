@@ -1,19 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
+import { PrismaClient } from "@prisma/client";
 
-const DATA_FILE = join(process.cwd(), "backend", "data", "registrations.json");
-
-function ensureDataFile() {
-  const dir = join(process.cwd(), "backend", "data");
-  if (!existsSync(dir)) {
-    const { mkdirSync } = require("fs");
-    mkdirSync(dir, { recursive: true });
-  }
-  if (!existsSync(DATA_FILE)) {
-    writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-}
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,20 +15,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    ensureDataFile();
-    const data = readFileSync(DATA_FILE, "utf-8");
-    const registrations = JSON.parse(data);
+    const existing = await prisma.registration.findUnique({
+      where: { email: email.trim().toLowerCase() },
+    });
 
-    const exists = registrations.some(
-      (r: { email: string }) => r.email.toLowerCase() === email.toLowerCase()
-    );
-
-    return NextResponse.json({ exists });
+    return NextResponse.json({ exists: !!existing });
   } catch (error) {
     console.error("Error checking email:", error);
     return NextResponse.json(
       { exists: false },
       { status: 200 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

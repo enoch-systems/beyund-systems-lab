@@ -1,37 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
+import { PrismaClient } from "@prisma/client";
 
-const DATA_FILE = join(process.cwd(), "backend", "data", "registrations.json");
-
-interface Registration {
-  id: string;
-  fullName: string;
-  email: string;
-  createdAt: string;
-}
-
-function ensureDataFile() {
-  const dir = join(process.cwd(), "backend", "data");
-  if (!existsSync(dir)) {
-    const { mkdirSync } = require("fs");
-    mkdirSync(dir, { recursive: true });
-  }
-  if (!existsSync(DATA_FILE)) {
-    writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-}
-
-function readRegistrations(): Registration[] {
-  ensureDataFile();
-  const data = readFileSync(DATA_FILE, "utf-8");
-  return JSON.parse(data);
-}
-
-function writeRegistrations(registrations: Registration[]) {
-  ensureDataFile();
-  writeFileSync(DATA_FILE, JSON.stringify(registrations, null, 2));
-}
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,10 +17,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for duplicate email
-    const registrations = readRegistrations();
-    const exists = registrations.some((r) => r.email.toLowerCase() === email.toLowerCase());
+    const existing = await prisma.registration.findUnique({
+      where: { email: email.trim().toLowerCase() },
+    });
     
-    if (exists) {
+    if (existing) {
       return NextResponse.json(
         { error: "This email has already been registered" },
         { status: 409 }
@@ -58,16 +29,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new registration
-    const newRegistration: Registration = {
-      id: Date.now().toString(),
-      fullName: fullName.trim(),
-      email: email.trim().toLowerCase(),
-      createdAt: new Date().toISOString(),
-    };
-
-    // Save to file
-    registrations.push(newRegistration);
-    writeRegistrations(registrations);
+    const newRegistration = await prisma.registration.create({
+      data: {
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase(),
+      },
+    });
 
     return NextResponse.json(
       { success: true, data: newRegistration },
@@ -79,12 +46,16 @@ export async function POST(request: NextRequest) {
       { error: "Failed to save registration" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
 export async function GET() {
   try {
-    const registrations = readRegistrations();
+    const registrations = await prisma.registration.findMany({
+      orderBy: { createdAt: "desc" },
+    });
     return NextResponse.json({ success: true, data: registrations });
   } catch (error) {
     console.error("Error fetching registrations:", error);
@@ -92,5 +63,7 @@ export async function GET() {
       { error: "Failed to fetch registrations" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }
