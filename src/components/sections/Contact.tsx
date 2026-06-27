@@ -314,11 +314,11 @@ export default function Contact() {
   /* ----------------------------- main render --------------------------- */
   return (
     <section id="contact" className="relative overflow-hidden py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 flex items-center justify-center">
-        <div className="max-w-2xl mx-auto text-center">
-          {/* Title */}
-          <div className="mb-10 md:mb-12">
-            <div className="flex items-center justify-center gap-4 md:gap-6 mb-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center max-w-6xl mx-auto">
+          {/* Left Column - Title and Info */}
+          <div className="text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-4 md:gap-6 mb-6">
               <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20" />
               <div>
                 <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
@@ -335,7 +335,7 @@ export default function Contact() {
               <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20" />
             </div>
 
-            <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed max-w-md mx-auto">
+            <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed max-w-md mx-auto md:mx-0">
               No prior experience required, just the willingness to build. 60 seconds to apply.
             </p>
 
@@ -356,8 +356,8 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Form Card */}
-          <div className="max-w-xl mx-auto">
+          {/* Right Column - Form */}
+          <div className="max-w-xl mx-auto w-full">
             <div className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm">
               <div className="mb-6">
                 <h3 className="text-xl sm:text-2xl font-normal text-white mb-1">
