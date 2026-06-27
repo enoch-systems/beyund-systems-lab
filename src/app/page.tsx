@@ -7,7 +7,7 @@ import Layers from "@/components/sections/Layers";
 import WhatYouBecome from "@/components/sections/WhatYouBecome";
 import MeetTheMentor from "@/components/sections/MeetTheMentor";
 import Contact from "@/components/sections/Contact";
-import Footer from "@/components/layout/Footer";
+import SideInfo from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 
@@ -39,13 +39,12 @@ export default function Home() {
       <div className="relative z-10 md:mx-8 lg:mx-16">
         <Navbar />
         <SocialSidebar />
-        <PricingBadge />
+  
 
         {/* Outcome-first flow: Problem → Proof → Curriculum → Identity → Mentor → CTA */}
-        
-        <MeetTheMentor />
+       
         <Contact />
-        <Footer />
+        <SideInfo />
         <WhatsAppButton />
       </div>
     </main>

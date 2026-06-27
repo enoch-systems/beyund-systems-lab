@@ -313,185 +313,188 @@ export default function Contact() {
 
   /* ----------------------------- main render --------------------------- */
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Title */}
-        <div className="flex items-start gap-4 md:gap-6 mb-10 md:mb-14 max-w-2xl mx-auto">
-          <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20 mt-1" />
-          <div>
-            <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
-              ready to start building?
-            </p>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-none">
-              Build Your First{" "}
-              <span className="text-green-300">Real Fullstack App</span>
-            </h2>
-            <p className="text-xl sm:text-2xl md:text-3xl font-normal tracking-[0.2em] text-white/60 uppercase mt-1">
-              Apply for Cohort 1
-            </p>
-          </div>
-        </div>
-
-        <div className="max-w-xl mx-auto text-left mb-8 space-y-4">
-          <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-            No prior experience required, just the willingness to build. 60 seconds to apply.
-          </p>
-
-          {/* Pricing card */}
-          <div className="inline-flex items-center gap-3 md:gap-5 px-5 md:px-7 py-3 md:py-4 rounded-2xl border border-white/20 bg-white/[0.05] backdrop-blur-sm">
-            <div className="text-left">
-              <p className="text-[10px] md:text-xs font-mono tracking-[0.25em] text-white/50 uppercase">
-                Cohort 1 pricing
-              </p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-3xl md:text-4xl font-normal text-white">₦60,000</span>
-                <span className="text-sm text-white/50">for 12 weeks</span>
-              </div>
-              <p className="text-xs text-white/40 mt-0.5">
-                That is ₦5,000 per week for all 9 layers with direct mentorship.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Form Card */}
-        <div className="max-w-xl mx-auto">
-          <div className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm">
-            <div className="mb-6">
-              <h3 className="text-xl sm:text-2xl font-normal text-white mb-1">
-                Hey, what should we call you?
-              </h3>
-              <p className="text-white/50 text-sm">
-                Just the basics so we can reach you.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {/* Name field */}
+    <section id="contact" className="relative overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 flex items-center justify-center min-h-[calc(100vh-8rem)]">
+        <div className="max-w-2xl mx-auto text-center">
+          {/* Title */}
+          <div className="mb-10 md:mb-12">
+            <div className="flex items-center justify-center gap-4 md:gap-6 mb-6">
+              <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20" />
               <div>
-                <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
-                  Your name
-                </label>
-                <input
-                  id="err-name"
-                  type="text"
-                  placeholder="e.g. Ada Lovelace"
-                  value={form.name}
-                  autoFocus
-                  onChange={(e) =>
-                    updateForm("name", e.target.value.replace(/[0-9]/g, ""))
-                  }
-                  className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-base focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
-                    errors.name ? "border-red-500/50" : "border-white/20"
-                  }`}
-                />
-                {errors.name && (
-                  <p className="text-red-400 text-xs mt-1.5">{errors.name}</p>
-                )}
-                <p className="text-white/30 text-[11px] mt-2">
-                  First and last name. We use it to greet you.
+                <p className="text-[10px] md:text-xs font-mono tracking-[0.35em] text-white/30 uppercase mb-2">
+                  ready to start building?
+                </p>
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-none">
+                  Build Your First{" "}
+                  <span className="text-green-300">Real Fullstack App</span>
+                </h2>
+                <p className="text-xl sm:text-2xl md:text-3xl font-normal tracking-[0.2em] text-white/60 uppercase mt-1">
+                  Apply for Cohort 1
+                </p>
+              </div>
+              <div className="shrink-0 w-0.5 h-14 md:h-18 bg-white/20" />
+            </div>
+
+            <p className="text-xs sm:text-sm md:text-base text-white/70 leading-relaxed max-w-md mx-auto">
+              No prior experience required, just the willingness to build. 60 seconds to apply.
+            </p>
+
+            {/* Pricing card */}
+            <div className="inline-flex items-center gap-3 md:gap-5 px-5 md:px-7 py-3 md:py-4 rounded-2xl border border-white/20 bg-white/[0.05] backdrop-blur-sm mt-6">
+              <div className="text-left">
+                <p className="text-[10px] md:text-xs font-mono tracking-[0.25em] text-white/50 uppercase">
+                  Cohort 1 pricing
+                </p>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="text-3xl md:text-4xl font-normal text-white">₦60,000</span>
+                  <span className="text-sm text-white/50">for 12 weeks</span>
+                </div>
+                <p className="text-xs text-white/40 mt-0.5">
+                  That is ₦5,000 per week for all 9 layers with direct mentorship.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Form Card */}
+          <div className="max-w-xl mx-auto">
+            <div className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm">
+              <div className="mb-6">
+                <h3 className="text-xl sm:text-2xl font-normal text-white mb-1">
+                  Hey, what should we call you?
+                </h3>
+                <p className="text-white/50 text-sm">
+                  Just the basics so we can reach you.
                 </p>
               </div>
 
-              {/* Email field */}
-              <div>
-                <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
-                  Email
-                </label>
-                <div className="relative">
+              <div className="space-y-4">
+                {/* Name field */}
+                <div>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    Your name
+                  </label>
                   <input
-                    id="err-email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    placeholder="you@somewhere.com"
-                    value={form.email}
-                    onChange={(e) => updateForm("email", e.target.value)}
-                    onBlur={(e) => checkEmailDuplicate(e.target.value)}
+                    id="err-name"
+                    type="text"
+                    placeholder="e.g. Ada Lovelace"
+                    value={form.name}
+                    autoFocus
+                    onChange={(e) =>
+                      updateForm("name", e.target.value.replace(/[0-9]/g, ""))
+                    }
                     className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-base focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
-                      errors.email
-                        ? "border-red-500/50"
-                        : emailStatus.status === "duplicate"
-                        ? "border-red-500/50"
-                        : emailStatus.status === "available"
-                        ? "border-green-500/50"
-                        : "border-white/20"
-                    } ${emailChecking ? "opacity-70" : ""}`}
+                      errors.name ? "border-red-500/50" : "border-white/20"
+                    }`}
                   />
-                  {emailStatus.status === "checking" && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                      <div className="w-4 h-4 border-2 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin" />
-                    </div>
+                  {errors.name && (
+                    <p className="text-red-400 text-xs mt-1.5">{errors.name}</p>
                   )}
-                  {emailStatus.status === "available" && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-green-400 text-sm">
-                      ✓
-                    </div>
+                  <p className="text-white/30 text-[11px] mt-2">
+                    First and last name. We use it to greet you.
+                  </p>
+                </div>
+
+                {/* Email field */}
+                <div>
+                  <label className="block text-[11px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="err-email"
+                      type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      placeholder="you@somewhere.com"
+                      value={form.email}
+                      onChange={(e) => updateForm("email", e.target.value)}
+                      onBlur={(e) => checkEmailDuplicate(e.target.value)}
+                      className={`w-full px-5 py-4 rounded-xl bg-white/10 border text-white placeholder-white/30 text-base focus:outline-none focus:border-yellow-500/50 focus:bg-white/15 transition-all duration-200 ${
+                        errors.email
+                          ? "border-red-500/50"
+                          : emailStatus.status === "duplicate"
+                          ? "border-red-500/50"
+                          : emailStatus.status === "available"
+                          ? "border-green-500/50"
+                          : "border-white/20"
+                      } ${emailChecking ? "opacity-70" : ""}`}
+                    />
+                    {emailStatus.status === "checking" && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                        <div className="w-4 h-4 border-2 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin" />
+                      </div>
+                    )}
+                    {emailStatus.status === "available" && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-green-400 text-sm">
+                        ✓
+                      </div>
+                    )}
+                    {emailStatus.status === "duplicate" && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-red-400 text-sm">
+                        ✗
+                      </div>
+                    )}
+                  </div>
+                  {emailStatus.status === "duplicate" && emailStatus.message && (
+                    <p className="text-red-400 text-xs mt-1.5">{emailStatus.message}</p>
                   )}
-                  {emailStatus.status === "duplicate" && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-red-400 text-sm">
-                      ✗
-                    </div>
+                  {errors.email && (
+                    <p className="text-red-400 text-xs mt-1.5">{errors.email}</p>
                   )}
                 </div>
-                {emailStatus.status === "duplicate" && emailStatus.message && (
-                  <p className="text-red-400 text-xs mt-1.5">{emailStatus.message}</p>
-                )}
-                {errors.email && (
-                  <p className="text-red-400 text-xs mt-1.5">{errors.email}</p>
-                )}
+
+                {/* Submit button */}
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-lg bg-green-500 text-white text-base font-normal hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-6"
+                >
+                  {submitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending…
+                    </>
+                  ) : (
+                    <>
+                      Submit
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </>
+                  )}
+                </button>
               </div>
-
-              {/* Submit button */}
-              <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={submitting}
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-lg bg-green-500 text-white text-base font-normal hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-6"
-              >
-                {submitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Sending…
-                  </>
-                ) : (
-                  <>
-                    Submit
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </>
-                )}
-              </button>
             </div>
-          </div>
 
-          <p className="text-center text-white/30 text-[11px] mt-5 flex items-center justify-center gap-1.5">
-            <svg
-              className="w-3 h-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-            Your info is safe. We never spam.
-          </p>
+            <p className="text-center text-white/30 text-[11px] mt-5 flex items-center justify-center gap-1.5">
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              Your info is safe. We never spam.
+            </p>
+          </div>
         </div>
       </div>
     </section>
