@@ -447,7 +447,7 @@ export default function Contact() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-lg bg-green-500 text-white text-base font-normal hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-lg bg-green-500 text-white text-base font-normal hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-6"
               >
                 {submitting ? (
                   <>
