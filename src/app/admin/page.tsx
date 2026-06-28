@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Search } from "lucide-react";
 
 const PER_PAGE = 7;
 
@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ fullName: "", email: "" });
   const [saving, setSaving] = useState(false);
@@ -25,7 +26,10 @@ export default function AdminDashboard() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/registrations");
+      const url = search
+        ? `/api/registrations?q=${encodeURIComponent(search)}`
+        : "/api/registrations";
+      const res = await fetch(url);
       const json = await res.json();
       if (json.success) {
         setRegistrations(json.data);
@@ -42,7 +46,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [search]);
 
   const startEdit = (r: Registration) => {
     setEditingId(r.id);
@@ -156,19 +160,30 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-200 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
             <h1 className="text-2xl font-normal text-white">📋 Registrations</h1>
             <p className="text-sm text-zinc-500 mt-1">
               Live from Supabase (PostgreSQL)
             </p>
           </div>
-          <button
-            onClick={fetchData}
-            className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm hover:bg-green-700 transition cursor-pointer"
-          >
-            ⟳ Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search name or email..."
+                className="pl-9 pr-4 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-green-500/50 transition w-full sm:w-64"
+              />
+            </div>
+            <button
+              onClick={fetchData}
+              className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm hover:bg-green-700 transition cursor-pointer whitespace-nowrap"
+            >
+              ⟳ Refresh
+            </button>
+          </div>
         </div>
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6 inline-block min-w-[200px]">

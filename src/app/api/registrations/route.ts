@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, QueryMode } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -49,9 +49,22 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const url = new URL(request.url);
+    const q = url.searchParams.get("q")?.toLowerCase() || "";
+
+    const where = q
+      ? {
+          OR: [
+            { fullName: { contains: q, mode: "insensitive" as QueryMode } },
+            { email: { contains: q, mode: "insensitive" as QueryMode } },
+          ],
+        }
+      : {};
+
     const registrations = await prisma.registration.findMany({
+      where,
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json({ success: true, data: registrations });
