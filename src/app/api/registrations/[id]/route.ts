@@ -30,10 +30,9 @@ export async function PUT(
     return NextResponse.json({ success: true, data: updated });
   } catch (error) {
     console.error("Error updating registration:", error);
-    return NextResponse.json(
-      { error: "Failed to update registration" },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Failed to update registration";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -50,9 +49,8 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting registration:", error);
-    return NextResponse.json(
-      { error: "Failed to delete registration" },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Failed to delete registration";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
