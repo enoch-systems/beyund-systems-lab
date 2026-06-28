@@ -5,11 +5,12 @@ const prisma = new PrismaClient();
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
     const { fullName, email } = body;
+    const { id } = await params;
 
     if (!fullName || !email) {
       return NextResponse.json(
@@ -19,7 +20,7 @@ export async function PUT(
     }
 
     const updated = await prisma.registration.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         fullName: fullName.trim(),
         email: email.trim().toLowerCase(),
@@ -38,11 +39,12 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.registration.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });
