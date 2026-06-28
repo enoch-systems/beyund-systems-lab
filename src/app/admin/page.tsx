@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 
 const PER_PAGE = 7;
 
@@ -284,22 +285,22 @@ export default function AdminDashboard() {
                       <td className="p-4 text-sm text-zinc-400">{r.email}</td>
                       <td className="p-4 text-sm text-zinc-500">{formatDate(r.createdAt)}</td>
                       <td className="p-4">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => startEdit(r)}
-                            className="text-zinc-500 hover:text-green-500 transition cursor-pointer"
-                            title="Edit"
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            onClick={() => deleteReg(r.id)}
-                            className="text-zinc-500 hover:text-red-500 transition cursor-pointer"
-                            title="Delete"
-                          >
-                            🗑️
-                          </button>
-                        </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => startEdit(r)}
+                              className="text-zinc-500 hover:text-green-500 transition cursor-pointer"
+                              title="Edit"
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            <button
+                              onClick={() => deleteReg(r.id)}
+                              className="text-zinc-500 hover:text-red-500 transition cursor-pointer"
+                              title="Delete"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
                       </td>
                     </tr>
                   )
@@ -380,13 +381,13 @@ export default function AdminDashboard() {
                         onClick={() => startEdit(r)}
                         className="text-zinc-500 hover:text-green-500 transition cursor-pointer"
                       >
-                        ✏️
+                        <Pencil size={16} />
                       </button>
                       <button
                         onClick={() => deleteReg(r.id)}
                         className="text-zinc-500 hover:text-red-500 transition cursor-pointer"
                       >
-                        🗑️
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   </div>
