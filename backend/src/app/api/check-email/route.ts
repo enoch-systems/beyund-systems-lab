@@ -3,6 +3,18 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 200, headers: corsHeaders() });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -19,12 +31,12 @@ export async function POST(request: NextRequest) {
       where: { email: email.trim().toLowerCase() },
     });
 
-    return NextResponse.json({ exists: !!existing });
+    return NextResponse.json({ exists: !!existing }, { headers: corsHeaders() });
   } catch (error) {
     console.error("Error checking email:", error);
     return NextResponse.json(
       { exists: false },
-      { status: 200 }
+      { status: 200, headers: corsHeaders() }
     );
   } finally {
     await prisma.$disconnect();
