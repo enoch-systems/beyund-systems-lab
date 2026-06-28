@@ -69,7 +69,8 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        {/* Desktop table */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hidden sm:block">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-zinc-800">
@@ -130,6 +131,38 @@ export default function AdminDashboard() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile cards */}
+        <div className="block sm:hidden space-y-3">
+          {loading ? (
+            <div className="p-8 text-center text-zinc-600">Loading...</div>
+          ) : error ? (
+            <div className="p-8 text-center text-red-500">⚠️ {error}</div>
+          ) : registrations.length === 0 ? (
+            <div className="p-8 text-center text-zinc-600">No registrations yet 🙃</div>
+          ) : (
+            registrations.map((r) => (
+              <div key={r.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-2">
+                <p className="text-sm text-zinc-300 font-medium">{r.fullName}</p>
+                <p className="text-sm text-zinc-400">{r.email}</p>
+                <p className="text-sm text-zinc-500">
+                  {new Date(r.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+                <div>
+                  <span className="inline-block px-3 py-1 rounded-full text-xs bg-green-500/10 text-green-500 border border-green-500/20">
+                    Active
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
