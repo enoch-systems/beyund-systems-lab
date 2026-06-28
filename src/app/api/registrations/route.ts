@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, QueryMode } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -57,8 +57,8 @@ export async function GET(request: NextRequest) {
     const where = q
       ? {
           OR: [
-            { fullName: { contains: q, mode: "insensitive" as QueryMode } },
-            { email: { contains: q, mode: "insensitive" as QueryMode } },
+            { fullName: { contains: q, mode: "insensitive" as const } },
+            { email: { contains: q, mode: "insensitive" as const } },
           ],
         }
       : {};
