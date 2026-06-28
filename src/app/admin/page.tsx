@@ -16,6 +16,9 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ fullName: "", email: "" });
+  const [saving, setSaving] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -39,6 +42,57 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const startEdit = (r: Registration) => {
+    setEditingId(r.id);
+    setEditForm({ fullName: r.fullName, email: r.email });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditForm({ fullName: "", email: "" });
+  };
+
+  const saveEdit = async (id: string) => {
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/registrations/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editForm),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setRegistrations((prev) =>
+          prev.map((r) => (r.id === id ? json.data : r))
+        );
+        setEditingId(null);
+      } else {
+        alert(json.error || "Failed to save");
+      }
+    } catch {
+      alert("Network error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteReg = async (id: string) => {
+    if (!confirm("Delete this registration?")) return;
+    try {
+      const res = await fetch(`/api/registrations/${id}`, {
+        method: "DELETE",
+      });
+      const json = await res.json();
+      if (json.success) {
+        setRegistrations((prev) => prev.filter((r) => r.id !== id));
+      } else {
+        alert(json.error || "Failed to delete");
+      }
+    } catch {
+      alert("Network error");
+    }
+  };
 
   const totalPages = Math.max(1, Math.ceil(registrations.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
@@ -95,6 +149,9 @@ export default function AdminDashboard() {
     );
   };
 
+  const localIndex = (r: Registration) =>
+    paginated.findIndex((x) => x.id === r.id);
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-200 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
@@ -127,7 +184,7 @@ export default function AdminDashboard() {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-zinc-800">
-                <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium">
+                <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium w-10">
                   #
                 </th>
                 <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium">
@@ -139,8 +196,8 @@ export default function AdminDashboard() {
                 <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium">
                   Date
                 </th>
-                <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium">
-                  Status
+                <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium w-28">
+                  Actions
                 </th>
               </tr>
             </thead>
@@ -164,22 +221,89 @@ export default function AdminDashboard() {
                   </td>
                 </tr>
               ) : (
-                paginated.map((r, i) => (
-                  <tr
-                    key={r.id}
-                    className="border-b border-zinc-800/50 hover:bg-zinc-800/30"
-                  >
-                    <td className="p-4 text-sm text-zinc-600">{start + i + 1}</td>
-                    <td className="p-4 text-sm text-zinc-300">{r.fullName}</td>
-                    <td className="p-4 text-sm text-zinc-400">{r.email}</td>
-                    <td className="p-4 text-sm text-zinc-500">{formatDate(r.createdAt)}</td>
-                    <td className="p-4">
-                      <span className="inline-block px-3 py-1 rounded-full text-xs bg-green-500/10 text-green-500 border border-green-500/20">
-                        Active
-                      </span>
-                    </td>
-                  </tr>
-                ))
+                paginated.map((r, i) =>
+                  editingId === r.id ? (
+                    <tr
+                      key={r.id}
+                      className="border-b border-zinc-800/50 bg-zinc-800/20"
+                    >
+                      <td colSpan={5} className="p-4">
+                        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                          <span className="text-xs text-zinc-600 w-8">
+                            #{start + i + 1}
+                          </span>
+                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <input
+                              value={editForm.fullName}
+                              onChange={(e) =>
+                                setEditForm((f) => ({
+                                  ...f,
+                                  fullName: e.target.value,
+                                }))
+                              }
+                              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-green-500/50"
+                              placeholder="Full name"
+                            />
+                            <input
+                              value={editForm.email}
+                              onChange={(e) =>
+                                setEditForm((f) => ({
+                                  ...f,
+                                  email: e.target.value,
+                                }))
+                              }
+                              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-green-500/50"
+                              placeholder="Email"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => saveEdit(r.id)}
+                              disabled={saving}
+                              className="px-3 py-2 rounded-lg bg-green-600 text-white text-sm hover:bg-green-700 disabled:opacity-50 transition cursor-pointer"
+                            >
+                              {saving ? "Saving..." : "Save"}
+                            </button>
+                            <button
+                              onClick={cancelEdit}
+                              className="px-3 py-2 rounded-lg bg-zinc-700 text-zinc-300 text-sm hover:bg-zinc-600 transition cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr
+                      key={r.id}
+                      className="border-b border-zinc-800/50 hover:bg-zinc-800/30"
+                    >
+                      <td className="p-4 text-sm text-zinc-600">{start + i + 1}</td>
+                      <td className="p-4 text-sm text-zinc-300">{r.fullName}</td>
+                      <td className="p-4 text-sm text-zinc-400">{r.email}</td>
+                      <td className="p-4 text-sm text-zinc-500">{formatDate(r.createdAt)}</td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => startEdit(r)}
+                            className="text-zinc-500 hover:text-green-500 transition cursor-pointer"
+                            title="Edit"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => deleteReg(r.id)}
+                            className="text-zinc-500 hover:text-red-500 transition cursor-pointer"
+                            title="Delete"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                )
               )}
             </tbody>
           </table>
@@ -197,26 +321,85 @@ export default function AdminDashboard() {
               No registrations yet 🙃
             </div>
           ) : (
-            paginated.map((r, i) => (
-              <div
-                key={r.id}
-                className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-2"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-zinc-600">#{start + i + 1}</span>
-                  <p className="text-sm text-zinc-300 font-medium">
-                    {r.fullName}
-                  </p>
+            paginated.map((r, i) =>
+              editingId === r.id ? (
+                <div
+                  key={r.id}
+                  className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-3"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-600">#{start + i + 1}</span>
+                    <p className="text-sm text-zinc-300 font-medium">Edit registration</p>
+                  </div>
+                  <input
+                    value={editForm.fullName}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, fullName: e.target.value }))
+                    }
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-green-500/50"
+                    placeholder="Full name"
+                  />
+                  <input
+                    value={editForm.email}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, email: e.target.value }))
+                    }
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-green-500/50"
+                    placeholder="Email"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => saveEdit(r.id)}
+                      disabled={saving}
+                      className="flex-1 px-3 py-2 rounded-lg bg-green-600 text-white text-sm hover:bg-green-700 disabled:opacity-50 transition cursor-pointer"
+                    >
+                      {saving ? "Saving..." : "Save"}
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      className="flex-1 px-3 py-2 rounded-lg bg-zinc-700 text-zinc-300 text-sm hover:bg-zinc-600 transition cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-                <p className="text-sm text-zinc-400">{r.email}</p>
-                <p className="text-sm text-zinc-500">{formatDate(r.createdAt)}</p>
-                <div>
-                  <span className="inline-block px-3 py-1 rounded-full text-xs bg-green-500/10 text-green-500 border border-green-500/20">
-                    Active
-                  </span>
+              ) : (
+                <div
+                  key={r.id}
+                  className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-zinc-600">#{start + i + 1}</span>
+                      <p className="text-sm text-zinc-300 font-medium">
+                        {r.fullName}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => startEdit(r)}
+                        className="text-zinc-500 hover:text-green-500 transition cursor-pointer"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => deleteReg(r.id)}
+                        className="text-zinc-500 hover:text-red-500 transition cursor-pointer"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-sm text-zinc-400">{r.email}</p>
+                  <p className="text-sm text-zinc-500">{formatDate(r.createdAt)}</p>
+                  <div>
+                    <span className="inline-block px-3 py-1 rounded-full text-xs bg-green-500/10 text-green-500 border border-green-500/20">
+                      Active
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))
+              )
+            )
           )}
           <Pagination />
         </div>
