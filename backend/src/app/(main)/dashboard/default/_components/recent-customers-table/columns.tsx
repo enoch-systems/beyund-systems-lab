@@ -2,7 +2,7 @@
 "use no memo";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { addMinutes, differenceInCalendarDays, endOfToday, format, parseISO } from "date-fns";
+import { addMinutes, differenceInCalendarDays, endOfToday, format, isValid, parseISO } from "date-fns";
 import { UserRound } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -66,7 +66,10 @@ export const recentCustomersColumns: ColumnDef<RecentCustomerRow>[] = [
   {
     id: "joinedWindow",
     accessorFn: (row) => {
-      const daysSinceJoined = differenceInCalendarDays(endOfToday(), parseISO(row.joined));
+      const parsedDate = parseISO(row.joined);
+      if (!isValid(parsedDate)) return [];
+
+      const daysSinceJoined = differenceInCalendarDays(endOfToday(), parsedDate);
 
       if (daysSinceJoined <= 30) return ["30", "90"];
       if (daysSinceJoined <= 90) return ["90"];
@@ -80,6 +83,14 @@ export const recentCustomersColumns: ColumnDef<RecentCustomerRow>[] = [
     header: "Joined",
     cell: ({ row }) => {
       const baseDate = parseISO(row.original.joined);
+      if (!isValid(baseDate)) {
+        return (
+          <div className="grid gap-0.5">
+            <span className="text-sm text-muted-foreground">Unknown date</span>
+          </div>
+        );
+      }
+
       const joinedAt = addMinutes(baseDate, 9 * 60 + (Number(row.original.id) % 12) * 17);
 
       return (

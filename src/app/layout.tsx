@@ -1,54 +1,68 @@
-import type { ReactNode } from "react";
-
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "@/app/globals.css";
+import { Providers } from "@/app/providers";
 
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { APP_CONFIG } from "@/config/app-config";
-import { fontVars } from "@/lib/fonts/registry";
-import { PREFERENCE_DEFAULTS } from "@/lib/preferences/preferences-config";
-import { ThemeBootScript } from "@/scripts/theme-boot";
-import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provider";
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-import "./globals.css";
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: APP_CONFIG.meta.title,
-  description: APP_CONFIG.meta.description,
+  title: "Beyund Labs Academy - Acquire Building Skills in Software Fullstack Development",
+  description: "Acquire real-world building skills in software fullstack development at Beyund Labs Academy. Master frontend, backend, APIs, databases, and system architecture through hands-on projects.",
+  keywords: ["Fullstack Development", "Software Engineering", "Web Development", "Learn to Code", "Building Skills", "Next.js", "TypeScript", "Beyund Labs Academy"],
+  authors: [{ name: "Enoch Chukwudi" }],
+  creator: "Beyund Labs Academy",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://beyund-systems-lab.vercel.app",
+    title: "Beyund Labs Academy - Acquire Building Skills in Software Fullstack Development",
+    description: "Acquire real-world building skills in software fullstack development at Beyund Labs Academy. Master frontend, backend, APIs, databases, and system architecture through hands-on projects.",
+    siteName: "Beyund Labs Academy",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Beyund Labs Academy - Acquire Building Skills in Software Fullstack Development",
+    description: "Acquire real-world building skills in software fullstack development at Beyund Labs Academy. Master frontend, backend, APIs, databases, and system architecture through hands-on projects.",
+    creator: "@enochchukwudi",
+  },
+  icons: {
+    icon: "https://res.cloudinary.com/djdbcoyot/image/upload/v1780147439/bjswj073yms1b0tub3mc.png",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
-  const { theme_mode, theme_preset, content_layout, navbar_style, sidebar_variant, sidebar_collapsible, font } =
-    PREFERENCE_DEFAULTS;
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
       lang="en"
-      data-theme-mode={theme_mode}
-      data-theme-preset={theme_preset}
-      data-content-layout={content_layout}
-      data-navbar-style={navbar_style}
-      data-sidebar-variant={sidebar_variant}
-      data-sidebar-collapsible={sidebar_collapsible}
-      data-font={font}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        {/* Applies theme and layout preferences on load to avoid flicker and unnecessary server rerenders. */}
-        <ThemeBootScript />
-      </head>
-      <body className={`${fontVars} min-h-screen antialiased`}>
-        <TooltipProvider>
-          <PreferencesStoreProvider
-            themeMode={theme_mode}
-            themePreset={theme_preset}
-            contentLayout={content_layout}
-            navbarStyle={navbar_style}
-            font={font}
-          >
-            {children}
-            <Toaster />
-          </PreferencesStoreProvider>
-        </TooltipProvider>
+      <head />
+      <body className="min-h-full flex flex-col">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

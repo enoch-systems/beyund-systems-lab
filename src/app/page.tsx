@@ -32,7 +32,6 @@ export default function Home() {
         }}
       />
 
-    
       {/* Fixed gradient overlay */}
     <div className="fixed inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
 
@@ -40,9 +39,7 @@ export default function Home() {
         <Navbar />
         <SocialSidebar />
   
-
-        {/* Outcome-first flow: Problem → Proof → Curriculum → Identity → Mentor → CTA */}
-        
+       
         <Contact />
         <WhatsAppButton />
         <Footer />
