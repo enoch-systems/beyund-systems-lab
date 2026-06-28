@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 
+const PER_PAGE = 7;
+
 type Registration = {
   id: string;
   fullName: string;
@@ -13,6 +15,7 @@ export default function AdminDashboard() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
 
   const fetchData = async () => {
     setLoading(true);
@@ -22,6 +25,7 @@ export default function AdminDashboard() {
       const json = await res.json();
       if (json.success) {
         setRegistrations(json.data);
+        setPage(1);
       } else {
         setError(json.error || "Failed to fetch");
       }
@@ -36,11 +40,60 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayCount = registrations.filter(
-    (r) => new Date(r.createdAt) >= today
-  ).length;
+  const totalPages = Math.max(1, Math.ceil(registrations.length / PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const start = (safePage - 1) * PER_PAGE;
+  const paginated = registrations.slice(start, start + PER_PAGE);
+
+  const goTo = (p: number) => setPage(Math.max(1, Math.min(p, totalPages)));
+
+  const formatDate = (d: string) =>
+    new Date(d).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+  /* ---------- Pagination component ---------- */
+  const Pagination = () => {
+    if (totalPages <= 1) return null;
+    const pages: number[] = [];
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+
+    return (
+      <div className="flex items-center justify-center gap-2 mt-5 pb-2">
+        <button
+          onClick={() => goTo(safePage - 1)}
+          disabled={safePage <= 1}
+          className="px-3 py-1.5 rounded-lg text-sm bg-zinc-800 text-zinc-400 hover:bg-zinc-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+        >
+          ‹ Prev
+        </button>
+        {pages.map((p) => (
+          <button
+            key={p}
+            onClick={() => goTo(p)}
+            className={`w-9 h-9 rounded-lg text-sm transition cursor-pointer ${
+              p === safePage
+                ? "bg-green-600 text-white"
+                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+            }`}
+          >
+            {p}
+          </button>
+        ))}
+        <button
+          onClick={() => goTo(safePage + 1)}
+          disabled={safePage >= totalPages}
+          className="px-3 py-1.5 rounded-lg text-sm bg-zinc-800 text-zinc-400 hover:bg-zinc-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+        >
+          Next ›
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-200 p-4 sm:p-8">
@@ -75,6 +128,9 @@ export default function AdminDashboard() {
             <thead>
               <tr className="border-b border-zinc-800">
                 <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium">
+                  #
+                </th>
+                <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium">
                   Name
                 </th>
                 <th className="p-4 text-xs uppercase tracking-widest text-zinc-500 font-medium">
@@ -91,36 +147,32 @@ export default function AdminDashboard() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-zinc-600">
+                  <td colSpan={5} className="p-8 text-center text-zinc-600">
                     Loading...
                   </td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-red-500">
+                  <td colSpan={5} className="p-8 text-center text-red-500">
                     ⚠️ {error}
                   </td>
                 </tr>
               ) : registrations.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-zinc-600">
+                  <td colSpan={5} className="p-8 text-center text-zinc-600">
                     No registrations yet 🙃
                   </td>
                 </tr>
               ) : (
-                registrations.map((r) => (
-                  <tr key={r.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
+                paginated.map((r, i) => (
+                  <tr
+                    key={r.id}
+                    className="border-b border-zinc-800/50 hover:bg-zinc-800/30"
+                  >
+                    <td className="p-4 text-sm text-zinc-600">{start + i + 1}</td>
                     <td className="p-4 text-sm text-zinc-300">{r.fullName}</td>
                     <td className="p-4 text-sm text-zinc-400">{r.email}</td>
-                    <td className="p-4 text-sm text-zinc-500">
-                      {new Date(r.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </td>
+                    <td className="p-4 text-sm text-zinc-500">{formatDate(r.createdAt)}</td>
                     <td className="p-4">
                       <span className="inline-block px-3 py-1 rounded-full text-xs bg-green-500/10 text-green-500 border border-green-500/20">
                         Active
@@ -131,6 +183,7 @@ export default function AdminDashboard() {
               )}
             </tbody>
           </table>
+          <Pagination />
         </div>
 
         {/* Mobile cards */}
@@ -140,21 +193,23 @@ export default function AdminDashboard() {
           ) : error ? (
             <div className="p-8 text-center text-red-500">⚠️ {error}</div>
           ) : registrations.length === 0 ? (
-            <div className="p-8 text-center text-zinc-600">No registrations yet 🙃</div>
+            <div className="p-8 text-center text-zinc-600">
+              No registrations yet 🙃
+            </div>
           ) : (
-            registrations.map((r) => (
-              <div key={r.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-2">
-                <p className="text-sm text-zinc-300 font-medium">{r.fullName}</p>
+            paginated.map((r, i) => (
+              <div
+                key={r.id}
+                className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-2"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-zinc-600">#{start + i + 1}</span>
+                  <p className="text-sm text-zinc-300 font-medium">
+                    {r.fullName}
+                  </p>
+                </div>
                 <p className="text-sm text-zinc-400">{r.email}</p>
-                <p className="text-sm text-zinc-500">
-                  {new Date(r.createdAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
+                <p className="text-sm text-zinc-500">{formatDate(r.createdAt)}</p>
                 <div>
                   <span className="inline-block px-3 py-1 rounded-full text-xs bg-green-500/10 text-green-500 border border-green-500/20">
                     Active
@@ -163,6 +218,7 @@ export default function AdminDashboard() {
               </div>
             ))
           )}
+          <Pagination />
         </div>
       </div>
     </div>
