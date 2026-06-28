@@ -19,7 +19,7 @@ export function SubscriberOverview() {
     async function fetchRegistrations() {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:3001/api/admin/registrations");
+        const response = await fetch("/api/admin/registrations");
         
         if (!response.ok) {
           throw new Error("Failed to fetch registrations");
@@ -47,7 +47,7 @@ export function SubscriberOverview() {
           {loading ? "Loading..." : `${totalCount} Students`}
         </CardTitle>
         <CardDescription>
-          {error ? error : "Recent student records with plan, billing, status, and signup activity."}
+          {error ? error : "Recent student records with signup activity."}
         </CardDescription>
         <CardAction>
           <Button variant="outline" size="sm">

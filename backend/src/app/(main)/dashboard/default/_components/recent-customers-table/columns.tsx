@@ -3,27 +3,11 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { addMinutes, differenceInCalendarDays, endOfToday, format, parseISO } from "date-fns";
-import { CircleAlertIcon, CircleCheckIcon, Clock3Icon, LoaderIcon, UserRound } from "lucide-react";
+import { UserRound } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import type { RecentCustomerRow } from "./schema";
-
-function billingIcon(billing: string) {
-  switch (billing) {
-    case "Paid":
-      return <CircleCheckIcon className="fill-green-500 stroke-primary-foreground dark:fill-green-600" />;
-    case "Pending":
-      return <LoaderIcon />;
-    case "Overdue":
-      return <CircleAlertIcon className="text-amber-600 dark:text-amber-500" />;
-    case "Trial":
-      return <Clock3Icon className="text-muted-foreground" />;
-    default:
-      return null;
-  }
-}
 
 export const recentCustomersColumns: ColumnDef<RecentCustomerRow>[] = [
   {
@@ -50,7 +34,7 @@ export const recentCustomersColumns: ColumnDef<RecentCustomerRow>[] = [
   },
   {
     accessorKey: "name",
-    header: "Customer",
+    header: "Student",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <span className="flex size-8 items-center justify-center rounded-md border bg-muted">
@@ -75,30 +59,9 @@ export const recentCustomersColumns: ColumnDef<RecentCustomerRow>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    filterFn: "equalsString",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="px-1.5 text-muted-foreground">
-        {row.original.status}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "billing",
-    header: "Billing",
-    filterFn: "equalsString",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="px-1.5 text-muted-foreground">
-        {billingIcon(row.original.billing)}
-        {row.original.billing}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "plan",
-    header: "Plan",
-    cell: ({ row }) => <span className="text-sm">{row.original.plan}</span>,
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => <span className="text-sm">{row.original.email}</span>,
   },
   {
     id: "joinedWindow",

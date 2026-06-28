@@ -33,9 +33,6 @@ export async function GET(request: NextRequest) {
       name: reg.fullName,
       email: reg.email,
       joined: reg.createdAt.toISOString().split('T')[0], // Format as YYYY-MM-DD
-      plan: "N/A",
-      status: "Pending",
-      billing: "N/A",
     }));
 
     return NextResponse.json(
