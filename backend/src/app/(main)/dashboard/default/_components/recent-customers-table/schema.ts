@@ -8,5 +8,3 @@ export const recentCustomersSchema = z.object({
 });
 
 export type RecentCustomerRow = z.infer<typeof recentCustomersSchema>;
-
-
