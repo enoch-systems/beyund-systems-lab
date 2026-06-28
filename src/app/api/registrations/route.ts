@@ -48,3 +48,18 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    const registrations = await prisma.registration.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return NextResponse.json({ success: true, data: registrations });
+  } catch (error) {
+    console.error("Error fetching registrations:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch registrations" },
+      { status: 500 }
+    );
+  }
+}
